@@ -5,7 +5,7 @@ start,end,speaker,sentence
 14.52,15.52,SPEAKER_01, Okay.
 15.52,16.52,SPEAKER_01, Thank you.
 16.52,17.52,SPEAKER_01, My name is Natalie.
-17.52,21.20,SPEAKER_01,I'm an employee at GAG; and we are testing this new device.
+17.52,21.20,SPEAKER_01, I'm an employee at GAG; and we are testing this new device.
 21.20,24.56,SPEAKER_00, Okay; thank you.
 24.56,29.24,SPEAKER_00, My first question to you is; when is your next field trip?
 29.24,31.64,SPEAKER_01, That is a good question; Lars.
