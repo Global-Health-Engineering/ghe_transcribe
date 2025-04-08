@@ -62,20 +62,39 @@ def diarize_text(transcribe_res, diarization_result):
     result = merge_sentence(spk_text)
     return result
 
-
-def write_to_txt(spk_sent, file, semicolumn=False):
+def to_csv(result, semicolumn=False):
+    csv = []
+    start_line = f'start;end;speaker;sentence' if semicolumn else 'start,end,speaker,sentence'
+    csv.append(start_line)
     if semicolumn:
-        with open(file, 'w') as fp:
-            for seg, spk, sentence in spk_sent:
-                line = f'{seg.start:.2f};{seg.end:.2f};{spk};{sentence}\n'
-                fp.write(line)
-        return
+        for seg, spk, sentence in result:
+            line = f'{seg.start:.2f};{seg.end:.2f};{spk};{sentence}'
+            csv.append(line.strip())
     else:
-        with open(file, 'w') as fp:
-            for seg, spk, sentence in spk_sent:
-                line = f'{seg.start:.2f} {seg.end:.2f} {spk} {sentence}\n'
-                fp.write(line)
+        # Convert all ',' in sentence to ';'
+        for seg, spk, sentence in result:
+            sentence = sentence.replace(',', ';')
+            line = f'{seg.start:.2f},{seg.end:.2f},{spk},{sentence}'
+            csv.append(line.strip())
+    return csv
 
+def to_md(result):
+    md = []
+    previous_spk = None
+    for seg, spk, sentence in result:
+        if spk != previous_spk:
+            md.append('\n---')
+            md.append(f'#### {spk}')
+            md.append(f'({seg.start:.2f}) {sentence}'.strip())
+            previous_spk = spk
+        else:
+            md.append(f'({seg.start:.2f}) {sentence}'.strip())
+    return md
+
+def md_to_csv(md_file):
+    # to be implemented
+    csv = []
+    return csv
 
 # Convert generated segments from faster_whisper to Whisper format
 def to_whisper_format(generated_segments):
@@ -100,20 +119,22 @@ def to_whisper_format(generated_segments):
 def to_wav(file_name):
     if file_name.endswith('.wav'):
         return file_name
-    elif file_name.endswith('.mp3'):
-        file_name_wav = file_name.replace('.mp3', '.wav')
-        if os.path.exists(file_name_wav):
-            print(f"File {file_name_wav} already exists", "\nUsing existing file")
-            return file_name_wav
-        else:
-            try:
-                stream = ffmpeg.input(file_name)
-                stream = ffmpeg.output(stream, file_name_wav)
-                ffmpeg.run(stream)
-                print("Conversion successful")
-                return file_name_wav
-            except ffmpeg.Error as e:
-                print(f"Error: {e.stderr.decode()}")
-                return
     else:
-        raise ValueError('Unsupported file format')
+        file_name_wav = os.path.splitext(file_name)[0]+'.wav'
+        try:
+            if os.path.exists(file_name_wav):
+                print(f"File {file_name_wav} already exists", "\nUsing existing file")
+                return file_name_wav
+            else:
+                try:
+                    stream = ffmpeg.input(file_name)
+                    stream = ffmpeg.output(stream, file_name_wav)
+                    ffmpeg.run(stream)
+                    print("Conversion successful")
+                    return file_name_wav
+                except ffmpeg.Error as e:
+                    print(f"Error: {e.stderr.decode()}")
+                    return
+        except FileNotFoundError:
+            print(f"File not found: {file_name}")
+            return
