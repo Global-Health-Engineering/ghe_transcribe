@@ -8,7 +8,7 @@ import os
 from utils import to_wav, to_whisper_format, diarize_text, to_csv, to_md, timing
 
 @timing
-def transcribe(audio_file, save_output=True, device=None, whisper_model='medium.en', pyannote_model='pyannote/speaker-diarization-3.1', semicolon=False, info=True):
+def transcribe(audio_file, device=None, whisper_model='medium.en', pyannote_model='pyannote/speaker-diarization-3.1', save_output=True, semicolon=False, info=True):
     # Convert audio file to .wav
     audio_file = to_wav(audio_file)
 

@@ -82,17 +82,19 @@ Options for `ghe_transcribe`:
 
 ```python
 ghe_transcribe(audio_file,
-               output_file,
                device='cpu'|'cuda'|'mps',
                whisper_model='small.en'|'base.en'|'medium.en'|'small'|'base'|'medium'|'large'|'turbo',
+               pyannote_model='pyannote/speaker-diarization@2.1'|'pyannote/speaker-diarization-3.1',
+               save_output=True|False,
                semicolon=True|False,
                info=True|False
 )
 ```
 
 - `audio_file`: The path to the audio file you want to transcribe. Accepted formats are .mp3, .wav.
-- `output` (optional): Default is `True`. It will create both `output.csv` and `output.md`. If `output = None`, the transcription will only be returned as a list of strings.
 - `device` (optional): The device on which to run the model (`cpu`|`cuda`|`mps`). By default, the device is automatically detected based on whether CUDA or MPS is available.
-- `whisper_model` (optional): The size of the Faster Whisper model to use for transcription. Available options include `small`, `base`, `medium`, `large`, `turbo`. By default, the English model `medium.en` is used.
+- `whisper_model` (optional): The size of the Faster Whisper model to use for transcription. Available options include `small.en`, `base.en`, `medium.en`, `small`, `base`, `medium`, `large`, `turbo`. By default, the English model `medium.en` is used.
+- `pyannote_model` (optional): The Pyannote model, defaults to `pyannote/speaker-diarization-3.1`.
+- `save_output` (optional): Default is `True`. It will create both `output.csv` and `output.md`. If `output = None`, the transcription will only be returned as a list of strings.
 - `semicolon` (optional): Specify whether to use semicolons or commas as the column separator in the CSV output. The default is commas.
 - `info` (optional): If you want the transcription tool to print additional information about the detected language and its probability.
