@@ -8,7 +8,7 @@ import os
 from utils import to_wav, to_whisper_format, diarize_text, to_csv, to_md, timing
 
 @timing
-def transcribe(audio_file, save_output=True, device=None, whisper_model='medium.en', pyannote_model='pyannote/speaker-diarization-3.1', semicolumn=False, info=True):
+def transcribe(audio_file, save_output=True, device=None, whisper_model='medium.en', pyannote_model='pyannote/speaker-diarization-3.1', semicolon=False, info=True):
     # Convert audio file to .wav
     audio_file = to_wav(audio_file)
 
@@ -48,7 +48,7 @@ def transcribe(audio_file, save_output=True, device=None, whisper_model='medium.
     output_file_name = 'output/'+os.path.splitext(os.path.basename(audio_file))[0]
 
     if save_output: 
-        csv = to_csv(text, semicolumn=semicolumn)
+        csv = to_csv(text, semicolon=semicolon)
         with open(output_file_name+'.csv', 'w') as f:
             f.write('\n'.join(csv))
             print('Output saved to'+output_file_name+'.csv')

@@ -75,11 +75,11 @@ def diarize_text(transcribe_res, diarization_result):
     result = merge_sentence(spk_text)
     return result
 
-def to_csv(result, semicolumn=False):
+def to_csv(result, semicolon=False):
     csv = []
-    start_line = f'start;end;speaker;sentence' if semicolumn else 'start,end,speaker,sentence'
+    start_line = f'start;end;speaker;sentence' if semicolon else 'start,end,speaker,sentence'
     csv.append(start_line)
-    if semicolumn:
+    if semicolon:
         for seg, spk, sentence in result:
             line = f'{seg.start:.2f};{seg.end:.2f};{spk};{sentence}'
             csv.append(line.strip())
