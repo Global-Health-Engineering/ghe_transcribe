@@ -1,6 +1,7 @@
 from pyannote.audio import Pipeline
 from faster_whisper import WhisperModel
 from torch import device as to_torch_device
+from torch import set_num_threads, get_num_threads
 from torch.cuda import is_available as cuda_is_available
 from torch.backends.mps import is_available as mps_is_available
 import os
@@ -17,17 +18,20 @@ def transcribe(audio_file, save_output=True, device=None, whisper_model='medium.
     except Exception as e:
         print(f"Device Error: {e}")
         return
+    
+    # CPU Threads 
+    cpu_threads = get_num_threads()
+    # set_num_threads(cpu_threads)
 
     # Whisper model 
     try: 
-        if device == 'mps': 
-            model = WhisperModel(whisper_model, device='cpu', compute_type='float32')
-        else:
-            model = WhisperModel(whisper_model, device=torch_device, compute_type='float32')
+        match device:
+            case 'mps' | 'cpu':
+                model = WhisperModel(whisper_model, device='cpu', compute_type='float32', cpu_threads=cpu_threads)
+            case _:
+                model = WhisperModel(whisper_model, device=torch_device, compute_type='float32')            
     except Exception as e:
         print(f"WhisperModel Device Error: {e}")
-        print("Fallbacking to CPU.")
-        model = WhisperModel(whisper_model, device='cpu', compute_type='float32')
 
     segments, info = model.transcribe(audio_file, beam_size=5)
     generated_segments = list(segments)
