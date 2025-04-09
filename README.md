@@ -59,6 +59,23 @@ Then, run the following command:
 python ghe_transcribe.py example/241118_1543.mp3 output.csv --device='cpu'
 ```
 
+### Timing
+
+Euler Cluster (12 CPU cores, 16GB RAM)
+```
+func:'transcribe' args:[('media/241118_1543.mp3',), {'device': 'cpu'}] took: 51.2057 sec
+```
+
+MacOS (Apple M2, 16GB RAM)
+```
+func:'transcribe' args:[('media/241118_1543.mp3',), {'device': 'mps'}] took: 41.2122 sec
+```
+
+MacOS (Apple M2, 16GB RAM)
+```
+func:'transcribe' args:[('media/241118_1543.mp3',), {'device': 'cpu'}] took: 64.7549 sec
+```
+
 ### Options
 
 Options for `ghe_transcribe`:
