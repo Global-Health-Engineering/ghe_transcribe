@@ -5,8 +5,9 @@ from torch import set_num_threads, get_num_threads
 from torch.cuda import is_available as cuda_is_available
 from torch.backends.mps import is_available as mps_is_available
 import os
-from utils import to_wav, to_whisper_format, diarize_text, to_csv, to_md
+from utils import to_wav, to_whisper_format, diarize_text, to_csv, to_md, timing
 
+@timing
 def transcribe(audio_file, save_output=True, device=None, whisper_model='medium.en', pyannote_model='pyannote/speaker-diarization-3.1', semicolumn=False, info=True):
     # Convert audio file to .wav
     audio_file = to_wav(audio_file)
@@ -50,9 +51,11 @@ def transcribe(audio_file, save_output=True, device=None, whisper_model='medium.
         csv = to_csv(text, semicolumn=semicolumn)
         with open(output_file_name+'.csv', 'w') as f:
             f.write('\n'.join(csv))
+            print('Output saved to'+output_file_name+'.csv')
         md = to_md(text)
         with open(output_file_name+'.md', 'w') as f:
             f.write('\n'.join(md))
+            print('Output saved to'+output_file_name+'.md')
     else:
         if info: 
             print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
