@@ -6,7 +6,7 @@ from torch.backends.mps import is_available as mps_is_available
 import os
 from utils import to_wav, to_whisper_format, diarize_text, to_csv, to_md
 
-def transcribe(audio_file, output_file=None, device=None, whisper_model='medium.en', pyannote_model='pyannote/speaker-diarization-3.1', semicolumn=False, info=True):
+def transcribe(audio_file, save_output=True, device=None, whisper_model='medium.en', pyannote_model='pyannote/speaker-diarization-3.1', semicolumn=False, info=True):
     # Convert audio file to .wav
     audio_file = to_wav(audio_file)
 
@@ -39,19 +39,19 @@ def transcribe(audio_file, output_file=None, device=None, whisper_model='medium.
     except Exception as e:
         print(f"Diarization Error: {e}")
 
-    # Remove suffix from output_file
-    output_file_name = os.path.splitext(output_file)[0]
+    # Extract audio_file name
+    output_file_name = 'output/'+os.path.splitext(os.path.basename(audio_file))[0]
 
-    if output_file is not None: 
+    if save_output: 
         csv = to_csv(text, semicolumn=semicolumn)
         with open(output_file_name+'.csv', 'w') as f:
             f.write('\n'.join(csv))
         md = to_md(text)
         with open(output_file_name+'.md', 'w') as f:
             f.write('\n'.join(md))
-
-    if info: 
-        print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
-        return text
-    else: 
-        return text
+    else:
+        if info: 
+            print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
+            return text
+        else: 
+            return text
