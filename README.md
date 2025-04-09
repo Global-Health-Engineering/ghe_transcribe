@@ -15,11 +15,7 @@ This tool has been tested on Euler. To set up the environment, you will need to 
 
 ### Euler Cluster
 
-First time environment setup, first load system modules:
-```bash
-module load stack/2024-06 python/3.11.6
-```
-then create a Python environment and create a kernel:
+First time environment setup, Create a Python environment and create a kernel:
 ```bash
 python3.11 -m venv venv3.11_ghe_transcribe --system-site-packages
 source venv3.11_ghe_transcribe/bin/activate
@@ -61,9 +57,14 @@ python ghe_transcribe.py example/241118_1543.mp3 output.csv --device='cpu'
 
 ### Timing
 
-Euler Cluster (12 CPU cores, 16GB RAM)
+Euler Cluster (16 CPU cores, 16GB RAM)
 ```
-func:'transcribe' args:[('media/241118_1543.mp3',), {'device': 'cpu'}] took: 51.2057 sec
+func:'transcribe' args:[('media/241118_1543.mp3',), {'device': 'cpu'}] took: 67.4988 sec
+```
+
+Euler Cluster (32 CPU cores, 16GB RAM)
+```
+func:'transcribe' args:[('media/241118_1543.mp3',), {'device': 'cpu'}] took: 44.3622 sec
 ```
 
 MacOS (Apple M2, 16GB RAM)
