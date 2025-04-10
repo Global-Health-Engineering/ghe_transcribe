@@ -4,9 +4,8 @@ This repository contains a Python script called `ghe_transcribe` that transcribe
 
 ## Table of Contents
 1. [Requirements](#requirements)
-2. [Installation](#installation)
 3. [Usage](#usage)
-4. [Example Usage](#example-usage)
+4. [Research](#research)
 
 ## Requirements
 
@@ -15,28 +14,39 @@ This tool has been tested on Euler. To set up the environment, you will need to 
 
 ### Euler Cluster
 
-First time environment setup, Create a Python environment and create a kernel:
+#### First time environment setup:
+Open [https://jupyter.euler.hpc.ethz.ch/](https://jupyter.euler.hpc.ethz.ch/) and login with your @ethz.ch account. We can use the default modules loaded in the JupyterHub instance, running `module list` on a terminal should return:
+```bash
+1) stack/2024-05   2) gcc/13.2.0   3) cuda/12.2.1   4) python/3.11.6_cuda   5) eth_proxy   6) r/4.3.2   7) hdf5/1.14.3   8) julia/1.10.3
+```
+the modules `stack/2024-05  gcc/13.2.0  cuda/12.2.1 python/3.11.6_cuda` are what we are interested in.
+#### Create a Python environment and create a kernel:
 ```bash
 python3.11 -m venv venv3.11_ghe_transcribe --system-site-packages
 source venv3.11_ghe_transcribe/bin/activate
 pip3.11 install faster-whisper pyannote.audio ffmpeg-python huggingface-hub
 ipython kernel install --user --name=venv3.11_ghe_transcribe
 ```
-setup JupyterHub starting configuration, open:
-
+#### Setup JupyterHub starting configuration:
+To have all new JupyterHub instanced with the `venv3.11_ghe_transcribe` Python environment,
 ```bash
 nano .config/euler/jupyterhub/jupyterlabrc
 ```
-and paste
+and write:
 ```bash
-module load stack/2024-06 python_cuda/3.11.6
 source venv3.11_ghe_transcribe/bin/activate
 ```
-these commands will be run every session
 
-For Mac OS users,
+### Mac OS
 ```bash
-brew install ffmpeg cmake python3.12
+brew install ffmpeg cmake python3.11
+```
+
+```bash
+python3.11 -m venv venv3.11_ghe_transcribe --system-site-packages
+source venv3.11_ghe_transcribe/bin/activate
+pip3.11 install faster-whisper pyannote.audio ffmpeg-python huggingface-hub
+ipython kernel install --user --name=venv3.11_ghe_transcribe
 ```
 
 ## Usage
@@ -53,28 +63,6 @@ Then, run the following command:
 
 ```bash
 python ghe_transcribe.py example/241118_1543.mp3 output.csv --device='cpu'
-```
-
-### Timing
-
-Euler Cluster (16 CPU cores, 16GB RAM)
-```
-func:'transcribe' args:[('media/241118_1543.mp3',), {'device': 'cpu'}] took: 67.4988 sec
-```
-
-Euler Cluster (32 CPU cores, 16GB RAM)
-```
-func:'transcribe' args:[('media/241118_1543.mp3',), {'device': 'cpu'}] took: 44.3622 sec
-```
-
-MacOS (Apple M2, 16GB RAM)
-```
-func:'transcribe' args:[('media/241118_1543.mp3',), {'device': 'mps'}] took: 41.2122 sec
-```
-
-MacOS (Apple M2, 16GB RAM)
-```
-func:'transcribe' args:[('media/241118_1543.mp3',), {'device': 'cpu'}] took: 64.7549 sec
 ```
 
 ### Options
@@ -99,6 +87,20 @@ ghe_transcribe(audio_file,
 - `save_output` (optional): Default is `True`. It will create both `output.csv` and `output.md`. If `output = None`, the transcription will only be returned as a list of strings.
 - `semicolon` (optional): Specify whether to use semicolons or commas as the column separator in the CSV output. The default is commas.
 - `info` (optional): If you want the transcription tool to print additional information about the detected language and its probability.
+
+### Timings
+
+Euler Cluster (16 CPU cores, 16GB RAM)
+- `func:'transcribe' args:[('media/241118_1543.mp3',), {'device': 'cpu'}] took: 67.4988 sec`
+
+Euler Cluster (32 CPU cores, 16GB RAM)
+- `func:'transcribe' args:[('media/241118_1543.mp3',), {'device': 'cpu'}] took: 44.3622 sec`
+
+MacOS (Apple M2, 16GB RAM)
+- `func:'transcribe' args:[('media/241118_1543.mp3',), {'device': 'mps'}] took: 41.2122 sec`
+
+MacOS (Apple M2, 16GB RAM)
+- `func:'transcribe' args:[('media/241118_1543.mp3',), {'device': 'cpu'}] took: 64.7549 sec`
 
 ## Research
 
