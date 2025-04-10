@@ -107,10 +107,14 @@ MacOS (Apple M2, 16GB RAM)
 ### Transcription
 - [`faster-whisper`](https://github.com/SYSTRAN/faster-whisper) by Guillaume Klein, builds on OpenAI's open source transcription model [`Whisper`](https://github.com/openai/whisper).
 
+[comparison](https://deepgram.com/learn/benchmarking-top-open-source-speech-models)
+
 ### Diarization
 
 - [`pyannote.audio`](https://github.com/pyannote/pyannote-audio) by Hervé Bredin, open source diarization model of [pyannoteAI](https://www.pyannote.ai/), gated by HuggingFace access token [https://hf.co/settings/tokens](https://hf.co/settings/tokens).
 - [`NeMo`](https://github.com/NVIDIA/NeMo) by Nvidia, open source diarization model.
+
+[comparison](https://lajavaness.medium.com/comparing-state-of-the-art-speaker-diarization-frameworks-pyannote-vs-nemo-31a191c6300)
 
 ### Transcription + Diarization
 - [`WhisperX`](https://github.com/m-bain/whisperX) &larr; `faster-whisper`+`pyannote.audio`
