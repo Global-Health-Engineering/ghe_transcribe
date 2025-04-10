@@ -53,16 +53,9 @@ ipython kernel install --user --name=venv3.11_ghe_transcribe
 
 ### Quick Start
 
-Let's say you have an audio file called `audio.mp3` that you want to transcribe into a `.csv` and `.md` file. Open 
-
+Let's say you have an audio file called `testing_audio_01.mp3`, in the `media` folder, that you want to transcribe into a `.csv` and `.md` file. Then, run the following command:
 ```bash
-cd /path/to/ghe_transcribe
-```
-
-Then, run the following command:
-
-```bash
-python ghe_transcribe.py example/241118_1543.mp3 output.csv --device='cpu'
+python ghe_transcribe.py media/testing_audio_01.mp3
 ```
 
 ### Options
