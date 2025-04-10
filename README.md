@@ -99,3 +99,26 @@ ghe_transcribe(audio_file,
 - `save_output` (optional): Default is `True`. It will create both `output.csv` and `output.md`. If `output = None`, the transcription will only be returned as a list of strings.
 - `semicolon` (optional): Specify whether to use semicolons or commas as the column separator in the CSV output. The default is commas.
 - `info` (optional): If you want the transcription tool to print additional information about the detected language and its probability.
+
+## Research
+
+### Transcription
+- [`faster-whisper`](https://github.com/SYSTRAN/faster-whisper) by Guillaume Klein, builds on OpenAI's open source transcription model [`Whisper`](https://github.com/openai/whisper).
+
+### Diarization
+
+- [`pyannote.audio`](https://github.com/pyannote/pyannote-audio) by Hervé Bredin, open source diarization model of [pyannoteAI](https://www.pyannote.ai/), gated by HuggingFace access token [https://hf.co/settings/tokens](https://hf.co/settings/tokens).
+- [`NeMo`](https://github.com/NVIDIA/NeMo) by Nvidia, open source diarization model.
+
+### Transcription + Diarization
+- [`WhisperX`](https://github.com/m-bain/whisperX) &larr; `faster-whisper`+`pyannote.audio`
+- [`whisper-diarization`](https://github.com/MahmoudAshraf97/whisper-diarization) &larr; `faster-whisper`+`NeMo`
+- [`insanely-fast-whisper`](https://github.com/Vaibhavs10/insanely-fast-whisper) &larr; `insanely-faster-whisper`+`pyannote.audio`
+
+### Editors
+- [`wscribe-editor`](https://github.com/geekodour/wscribe-editor), works with wordlevel timestamps in a .json formatted like so [sample.json](https://github.com/geekodour/wscribe/blob/main/examples/output/sample.json).
+- [`QualCoder`](https://github.com/ccbogel/QualCoder), a qualitative data analysis application written in Python.
+
+### Existing Tools
+- [`noScribe`](https://github.com/kaixxx/noScribe) &larr; `faster-whisper`+`pyannote.audio`
+- [`TranscriboZH`](https://github.com/machinelearningZH/audio-transcription) &larr; `WhisperX`
