@@ -13,7 +13,7 @@ This repository contains a Python script called `ghe_transcribe` that transcribe
 ### First time environment setup:
 Open [https://jupyter.euler.hpc.ethz.ch/](https://jupyter.euler.hpc.ethz.ch/) and login with your @ethz.ch account. We can load the modules we need by running
 ```bash
-module load stack/2024-06 ffmpeg
+module load stack/2024-06 python/3.11.6
 ```
 ### Create a Python environment and create a kernel:
 ```bash
@@ -29,7 +29,7 @@ nano .config/euler/jupyterhub/jupyterlabrc
 ```
 and write:
 ```bash
-module load stack/2024-06 ffmpeg
+module load stack/2024-06 python/3.11.6
 source venv3.11_ghe_transcribe/bin/activate
 ```
 
