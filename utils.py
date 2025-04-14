@@ -1,11 +1,10 @@
 # CREDIT: https://github.com/yinruiqing/pyannote-whisper
 
 from pyannote.core import Segment
-import ffmpeg
+import av
 import os
 from functools import wraps
 from time import time
-import av
 
 def timing(f):
     @wraps(f)
