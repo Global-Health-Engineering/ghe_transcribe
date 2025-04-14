@@ -5,6 +5,7 @@ import ffmpeg
 import os
 from functools import wraps
 from time import time
+import av
 
 def timing(f):
     @wraps(f)
@@ -128,26 +129,35 @@ def to_whisper_format(generated_segments):
     return {"segments": whisper_formatted_generated_segment}
 
 
+
+    
+# CREDIT: https://stackoverflow.com/a/72386137
+def to_wav_pyav(in_path: str, out_path: str = None, sample_rate: int = 16000) -> str:
+    """Arbitrary media files to wav"""
+    if out_path is None:
+        out_path = os.path.splitext(in_path)[0] + '.wav'
+    with av.open(in_path) as in_container:
+        in_stream = in_container.streams.audio[0]
+        with av.open(out_path, 'w', 'wav') as out_container:
+            out_stream = out_container.add_stream(
+                'pcm_s16le',
+                rate=sample_rate,
+                layout='mono'
+            )
+            for frame in in_container.decode(in_stream):
+                for packet in out_stream.encode(frame):
+                    out_container.mux(packet)
+
+    return out_path
+
 # Convert audio file to .wav
 def to_wav(file_name):
     if file_name.endswith('.wav'):
         return file_name
     else:
-        file_name_wav = os.path.splitext(file_name)[0]+'.wav'
         try:
-            if os.path.exists(file_name_wav):
-                print(f"File {file_name_wav} already exists", "\nUsing existing file")
-                return file_name_wav
-            else:
-                try:
-                    stream = ffmpeg.input(file_name)
-                    stream = ffmpeg.output(stream, file_name_wav)
-                    ffmpeg.run(stream)
-                    print("Conversion successful")
-                    return file_name_wav
-                except ffmpeg.Error as e:
-                    print(f"Error: {e.stderr.decode()}")
-                    return
-        except FileNotFoundError:
-            print(f"File not found: {file_name}")
-            return
+            print("Converting audio file to .wav")
+            out_path = to_wav_pyav(in_path=file_name)
+            return out_path
+        except:
+            print(f"Error PyAV")
