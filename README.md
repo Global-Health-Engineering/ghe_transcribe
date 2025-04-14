@@ -11,11 +11,10 @@ This repository contains a Python script called `ghe_transcribe` that transcribe
 ## Installation on Euler
 
 ### First time environment setup:
-Open [https://jupyter.euler.hpc.ethz.ch/](https://jupyter.euler.hpc.ethz.ch/) and login with your @ethz.ch account. We can use the default modules loaded in the JupyterHub instance, running `module list` on a terminal should return:
+Open [https://jupyter.euler.hpc.ethz.ch/](https://jupyter.euler.hpc.ethz.ch/) and login with your @ethz.ch account. We can load the modules we need by running
 ```bash
-1) stack/2024-05   2) gcc/13.2.0   3) cuda/12.2.1   4) python/3.11.6_cuda   5) eth_proxy   6) r/4.3.2   7) hdf5/1.14.3   8) julia/1.10.3
+module load stack/2024-06 ffmpeg
 ```
-the modules `stack/2024-05  gcc/13.2.0  cuda/12.2.1 python/3.11.6_cuda` are what we are interested in.
 ### Create a Python environment and create a kernel:
 ```bash
 python3.11 -m venv venv3.11_ghe_transcribe --system-site-packages
@@ -30,6 +29,7 @@ nano .config/euler/jupyterhub/jupyterlabrc
 ```
 and write:
 ```bash
+module load stack/2024-06 ffmpeg
 source venv3.11_ghe_transcribe/bin/activate
 ```
 
