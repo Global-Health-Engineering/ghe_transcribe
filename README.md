@@ -10,8 +10,14 @@ This repository contains a Python script called `ghe_transcribe` that transcribe
 
 ## Installation on Euler
 
-### First time environment setup:
-Open [https://jupyter.euler.hpc.ethz.ch/](https://jupyter.euler.hpc.ethz.ch/) and login with your @ethz.ch account. We can load the modules we need by running
+### First login in Euler
+[Here](https://scicomp.ethz.ch/wiki/Getting_started_with_clusters) for the official wiki. If you have never logged into Euler, follow this [great documentation](https://www.gdc-docs.ethz.ch/EulerManual/site/access/) provided by the Genetic Diversity Center (GDC) at ETH.
+
+### Open a terminal in JupyterHub:
+Open [https://jupyter.euler.hpc.ethz.ch/](https://jupyter.euler.hpc.ethz.ch/) and login with your @ethz.ch account. Then, click on terminal.
+
+### Load modules
+We can load the modules we need by running
 ```bash
 module load stack/2024-06 python/3.11.6
 ```
