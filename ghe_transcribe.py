@@ -8,7 +8,7 @@ import os
 from utils import to_wav, to_whisper_format, diarize_text, to_csv, to_md, timing
 
 @timing
-def transcribe(audio_file, device=None, whisper_model='medium.en', pyannote_model='pyannote/speaker-diarization-3.1', save_output=True, semicolon=False, info=True):
+def transcribe(audio_file, device=None, whisper_model='large-v3-turbo', pyannote_model='pyannote/speaker-diarization-3.1', save_output=True, semicolon=False, info=True):
     # Convert audio file to .wav
     audio_file = to_wav(audio_file)
 
@@ -34,7 +34,7 @@ def transcribe(audio_file, device=None, whisper_model='medium.en', pyannote_mode
     except Exception as e:
         print(f"WhisperModel Device Error: {e}")
 
-    segments, info = model.transcribe(audio_file, beam_size=5)
+    segments, info = model.transcribe(audio_file, beam_size=5, word_timestamps=True)
     generated_segments = list(segments)
 
     # Pyannote pipeline
@@ -56,9 +56,9 @@ def transcribe(audio_file, device=None, whisper_model='medium.en', pyannote_mode
         with open(output_file_name+'.md', 'w') as f:
             f.write('\n'.join(md))
             print('Output saved to'+output_file_name+'.md')
-    else:
-        if info: 
-            print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
-            return text
-        else: 
-            return text
+
+    if info: 
+        print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
+        return text, to_whisper_format(generated_segments)
+    else: 
+        return text, to_whisper_format(generated_segments)

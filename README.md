@@ -84,7 +84,30 @@ ghe_transcribe(audio_file,
 
 - `audio_file`: The path to the audio file you want to transcribe. Accepted formats are .mp3, .wav.
 - `device` (optional): The device on which to run the model (`cpu`|`cuda`|`mps`). By default, the device is automatically detected based on whether CUDA or MPS is available.
-- `whisper_model` (optional): The size of the Faster Whisper model to use for transcription. Available options include `small.en`, `base.en`, `medium.en`, `small`, `base`, `medium`, `large`, `turbo`. By default, the English model `medium.en` is used.
+- `whisper_model` (optional): The size of the Faster Whisper model to use for transcription. Available options are:
+    ```python
+    _MODELS = {
+        "tiny.en": "Systran/faster-whisper-tiny.en",
+        "tiny": "Systran/faster-whisper-tiny",
+        "base.en": "Systran/faster-whisper-base.en",
+        "base": "Systran/faster-whisper-base",
+        "small.en": "Systran/faster-whisper-small.en",
+        "small": "Systran/faster-whisper-small",
+        "medium.en": "Systran/faster-whisper-medium.en",
+        "medium": "Systran/faster-whisper-medium",
+        "large-v1": "Systran/faster-whisper-large-v1",
+        "large-v2": "Systran/faster-whisper-large-v2",
+        "large-v3": "Systran/faster-whisper-large-v3",
+        "large": "Systran/faster-whisper-large-v3",
+        "distil-large-v2": "Systran/faster-distil-whisper-large-v2",
+        "distil-medium.en": "Systran/faster-distil-whisper-medium.en",
+        "distil-small.en": "Systran/faster-distil-whisper-small.en",
+        "distil-large-v3": "Systran/faster-distil-whisper-large-v3",
+        "large-v3-turbo": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+        "turbo": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+    }
+    ```
+    By default, `large-v3-turbo` is used.
 - `pyannote_model` (optional): The Pyannote model, defaults to `pyannote/speaker-diarization-3.1`.
 - `save_output` (optional): Default is `True`. It will create both `output.csv` and `output.md`. If `output = None`, the transcription will only be returned as a list of strings.
 - `semicolon` (optional): Specify whether to use semicolons or commas as the column separator in the CSV output. The default is commas.
