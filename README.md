@@ -47,7 +47,7 @@ brew install ffmpeg cmake python3.11
 ```bash
 python3.11 -m venv venv3.11_ghe_transcribe --system-site-packages
 source venv3.11_ghe_transcribe/bin/activate
-pip3.11 install faster-whisper pyannote.audio ffmpeg-python huggingface-hub
+pip3.11 install faster-whisper pyannote.audio huggingface-hub
 ipython kernel install --user --name=venv3.11_ghe_transcribe
 ```
 
