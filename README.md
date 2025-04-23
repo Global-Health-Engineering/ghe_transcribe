@@ -56,7 +56,10 @@ ipython kernel install --user --name=venv3.11_ghe_transcribe
 ### Quick Start
 
 Let's say you have an audio file called `testing_audio_01.mp3`, in the `media` folder, that you want to transcribe into a `.csv` and `.md` file. 
-- setup `config.json` file
+1. Accept [`pyannote/segmentation-3.0`](https://hf.co/pyannote/segmentation-3.0) user conditions
+2. Accept [`pyannote/speaker-diarization-3.1`](https://hf.co/pyannote/speaker-diarization-3.1) user conditions
+3. Create access token at [`hf.co/settings/tokens`](https://hf.co/settings/tokens).
+4. Create a file called `config.json` and
 ```json
 {
     "HF_TOKEN": "hf_*********************"
@@ -128,7 +131,7 @@ Timing tests are run by using the timing function as defined in [`utils.py`](htt
 
 ### Transcription
 Why Whisper? See [Whisper, wav2vec2 and Kaldi](https://deepgram.com/learn/benchmarking-top-open-source-speech-models).
-- [`faster-whisper`](https://github.com/SYSTRAN/faster-whisper) by Guillaume Klein, builds on OpenAI's open source transcription model [`Whisper`](https://github.com/openai/whisper).
+- [`faster-whisper`](https://github.com/SYSTRAN/faster-whisper) by Guillaume Klein, builds on OpenAI's open source transcription model [`Whisper`](https://github.com/openai/whisper). For benchmarks check out [faster-whisper/issues/1030](https://github.com/SYSTRAN/faster-whisper/issues/1030)
 
 ### Diarization
 Why Pyannote? See [Pyannote vs NeMo](https://lajavaness.medium.com/comparing-state-of-the-art-speaker-diarization-frameworks-pyannote-vs-nemo-31a191c6300).
