@@ -1,0 +1,6 @@
+torch
+torchaudio
+av
+faster-whisper
+pyannote.audio
+huggingface-hub

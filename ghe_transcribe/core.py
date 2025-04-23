@@ -6,7 +6,7 @@ from torch import set_num_threads
 from torch.cuda import is_available as cuda_is_available
 from torch.backends.mps import is_available as mps_is_available
 import os
-from utils import to_wav, to_whisper_format, diarize_text, to_csv, to_md, timing, resampling
+from ghe_transcribe.utils import to_wav, to_whisper_format, diarize_text, to_csv, to_md, timing, resampling
 
 @timing
 def transcribe(audio_file,
