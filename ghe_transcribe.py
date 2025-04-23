@@ -2,7 +2,7 @@ import argparse
 from pyannote.audio import Pipeline
 from faster_whisper import WhisperModel
 from torch import device as to_torch_device
-from torch import set_num_threads, get_num_threads
+from torch import set_num_threads
 from torch.cuda import is_available as cuda_is_available
 from torch.backends.mps import is_available as mps_is_available
 import os
@@ -48,6 +48,7 @@ def transcribe(audio_file,
     whisper_model_kwargs = {}
     if cpu_threads is not None:
         whisper_model_kwargs['cpu_threads'] = cpu_threads
+        set_num_threads(cpu_threads)
 
     try:
         match device:
