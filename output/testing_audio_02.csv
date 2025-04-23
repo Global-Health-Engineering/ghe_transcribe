@@ -1,14 +1,8 @@
 start,end,speaker,sentence
-0.00,10.00,SPEAKER_00, So; hi Fiona; we're here to record an audio that I will use for testing.
-10.00,18.00,SPEAKER_01, Hi Nico; thanks so much for the honour to invite me to help you on this project.
-18.00,23.00,SPEAKER_00, You're welcome; you were the first person that came to mind.
-23.00,30.00,SPEAKER_00, We're here to ask you a couple of questions until we reach minute one.
-30.00,34.00,SPEAKER_00, So; what do you do in life; Fiona?
-34.00,36.00,SPEAKER_01, Good question; good question.
-36.00,39.00,SPEAKER_01, So; at the moment I do an internship; it's going great.
-39.00,45.00,SPEAKER_01, Everything I do is productive; will be published probably by tomorrow.
-45.00,50.00,SPEAKER_01, Just doing the grind.
-50.00,53.00,SPEAKER_00, Of course. Do you have plans for lunch?
-53.00,56.00,SPEAKER_01, Plans for lunch; yes actually I do; I'm meeting a friend.
-56.00,58.00,SPEAKER_01, If you want you're welcome to join.
-58.00,60.00,SPEAKER_00, Perfect; thank you very much.
+0.64,8.96,SPEAKER_00, So hi Fiona; we're here to record an audio that I will use for testing.
+10.40,17.60,SPEAKER_01, Hi Nicolo; thanks so much for the honor to invite me to help you on this project.
+18.24,34.16,SPEAKER_00, You're welcome; you were the first person that came to mind. So we're here to ask you a couple of questions until we reach minute one. So what do you do in life Fiona?
+34.16,44.40,SPEAKER_01, Good question; good question. So at the moment I do an internship; it's going great; everything I do is productive; will be published probably by tomorrow.
+46.40,53.28,SPEAKER_01, Yeah; just doing the grind; just yeah. Of course. Do you have plans for lunch?
+53.28,56.56,SPEAKER_01, Plans for lunch? Yes; actually I do; I'm meeting a friend.
+56.56,62.40,SPEAKER_01, If you want; you're welcome to join. Perfect; thank you very much.
