@@ -5,6 +5,8 @@ import av
 import os
 from functools import wraps
 from time import time
+from torchaudio import load, save
+from torchaudio.transforms import Resample
 
 def timing(f):
     @wraps(f)
@@ -91,17 +93,21 @@ def to_csv(result, semicolon=False):
             csv.append(line.strip())
     return csv
 
+def spk_to_id(spk):
+    # in_spk = "SPEAKER_00"
+    id = str(int(spk.split('_')[1]))
+    return id
+
 def to_md(result):
     md = []
     previous_spk = None
     for seg, spk, sentence in result:
         if spk != previous_spk:
-            md.append('\n---')
-            md.append(f'#### {spk}')
-            md.append(f'({seg.start:.2f}) {sentence}'.strip())
+            md.append(f'\n{spk}')
+            md.append(f'({format_time(seg.start)}){sentence}'.strip())
             previous_spk = spk
         else:
-            md.append(f'({seg.start:.2f}) {sentence}'.strip())
+            md.append(f'({format_time(seg.start)}){sentence}'.strip())
     return md
 
 def md_to_csv(md_file):
@@ -126,9 +132,6 @@ def to_whisper_format(generated_segments):
                                                     "temperature":segment.temperature
                                                    })
     return {"segments": whisper_formatted_generated_segment}
-
-
-
     
 # CREDIT: https://stackoverflow.com/a/72386137
 def to_wav_pyav(in_path: str, out_path: str = None, sample_rate: int = 16000) -> str:
@@ -160,3 +163,42 @@ def to_wav(file_name):
             return out_path
         except:
             print(f"Error PyAV")
+
+def resampling(file_name, sample_rate=16000):
+    # Resample audio to 16kHz if needed
+    waveform, sr = load(file_name)
+    if sr != sample_rate:
+        waveform = Resample(orig_freq=sr, new_freq=sample_rate)(waveform)
+
+    # Save the resampled audio
+    save(file_name, waveform, sample_rate)
+
+def digit_to_string(num: int) -> str:
+    if 0 <= num <= 9:
+        return f'0{num}'
+    else:
+        return f'{num}'
+    
+def seconds_to_hours_minutes_seconds(time) -> int:
+    # Expects time in seconds float or string, e.g. time = '11.27', 63.9
+
+    seconds, minutes, hours = round(float(time)), 0, 0
+    if seconds >= 60:
+        minutes = seconds // 60
+        seconds -= minutes * 60
+    if minutes >= 60:
+        hours = minutes // 60
+        minutes -= hours * 60
+    return seconds, minutes, hours
+
+def format_time(time) -> str:
+    seconds, minutes, hours = seconds_to_hours_minutes_seconds(time)
+    try:
+        if minutes == 0 and hours == 0:
+            return digit_to_string(seconds)
+        elif hours == 0:
+            return f'{digit_to_string(minutes)}:{digit_to_string(seconds)}'
+        else:
+            return f'{digit_to_string(hours)}:{digit_to_string(minutes)}:{digit_to_string(seconds)}'
+    except Exception as e:
+        print(f'Time Formatting Error: {e}')
