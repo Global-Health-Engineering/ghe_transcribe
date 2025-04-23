@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg)](https://github.com/Global-Health-Engineering/ghe_transcribe/blob/main/CONTRIBUTING.md)
 
-This repository hosts `ghe_transcribe.py`, a powerful Python script designed to transcribe audio files and perform speaker diarization. It leverages the speed and accuracy of **Faster Whisper** (a highly optimized reimplementation of OpenAI's Whisper) for transcription and **Pyannote** for identifying and separating speakers within the audio. This tool is ideal for handling long recordings, enhancing transcription quality, and automatically segmenting audio by speaker.
+This repository hosts `ghe_transcribe`, a powerful Python script designed to transcribe audio files and perform speaker diarization. It leverages the speed and accuracy of **Faster Whisper** (a highly optimized reimplementation of OpenAI's Whisper) for transcription and **Pyannote** for identifying and separating speakers within the audio. This tool is ideal for handling long recordings, enhancing transcription quality, and automatically segmenting audio by speaker.
 
 ## Table of Contents
 
@@ -95,64 +95,41 @@ ipython kernel install --user --name=venv3.11_ghe_transcribe
 
 ### Quick Start
 
-To transcribe an audio file (e.g., `testing_audio_01.mp3` located in the `media` folder) and save the output as `.csv` and `.md` files with speaker diarization:
+To transcribe an audio file with speaker diarization:
 
 1.  **Accept Hugging Face Model Licenses:**
     * Visit and accept the user conditions for [`pyannote/segmentation-3.0`](https://hf.co/pyannote/segmentation-3.0).
     * Visit and accept the user conditions for [`pyannote/speaker-diarization-3.1`](https://hf.co/pyannote/speaker-diarization-3.1).
-2.  **Generate a Hugging Face Access Token:**
-    * Create a new access token at [`hf.co/settings/tokens`](https://hf.co/settings/tokens).
-3.  **Configure Access Token:**
-    * Create a file named `config.json` in the same directory as `ghe_transcribe.py`.
-    * Paste your Hugging Face access token into the `config.json` file:
-
-        ```json
-        {
-            "HF_TOKEN": "YOUR_HUGGING_FACE_ACCESS_TOKEN"
-        }
-        ```
-4.  **Run the script:**
-
-    ```bash
-    python3.11 ghe_transcribe.py media/testing_audio_01.mp3 --num_speakers 2
-    ```
-
-### Quick Start
-
-To transcribe an audio file (e.g., `testing_audio_01.mp3` located in the `media` folder) and save the output as `.csv` and `.md` files with speaker diarization:
-
-1.  **Clone the repository:**
+2.  **Clone the repository and enter:**
     ```bash
     git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
     cd ghe_transcribe
     ```
+3.  **Place your audio file:** Upload the audio file you want to transcribe (e.g., `my_audio.mp3`) into the `media` folder.
+4.  **Edit `script.py` to include audio file:** To transcribe a different audio file, you will need to edit the `script.py` file and change the audio file path (currently "media/testing_audio_01.mp3") to the path of your desired audio file in the media folder (e.g., "media/my_audio.mp3"). You can also adjust the num_speakers argument in `script.py` and many more options.
+5.  **Run the transcription script:** Execute the main script. You will be prompted to log in to Hugging Face if you haven't already.
+    ```bash
+    python script.py
+    ```
+### (Recommended) Save your Hugging Face token
 
-2.  **Accept Hugging Face Model Licenses:**
-    * Visit and accept the user conditions for [`pyannote/segmentation-3.0`](https://hf.co/pyannote/segmentation-3.0).
-    * Visit and accept the user conditions for [`pyannote/speaker-diarization-3.1`](https://hf.co/pyannote/speaker-diarization-3.1).
-3.  **Generate a Hugging Face Access Token:**
+1.  **Generate a Hugging Face Access Token:**
     * Create a new access token at [`hf.co/settings/tokens`](https://hf.co/settings/tokens).
-4.  **Configure Access Token:**
-    * Create a file named `config.json` in the same directory as `ghe_transcribe.py`.
-    * Paste your Hugging Face access token into the `config.json` file, replacing the asterisks:
-
+2.  **Configure Access Token:**
+    * You can edit `config.json` file in the root directory to save your access token for future use, avoiding repeated logins. The content of the file should be:
         ```json
         {
             "HF_TOKEN": "YOUR_HUGGING_FACE_ACCESS_TOKEN"
         }
         ```
-5.  **Run the script:**
-
-    ```bash
-    python3.11 ghe_transcribe.py media/testing_audio_01.mp3 --num_speakers 2
-    ```
+    * Replace `"YOUR_HUGGING_FACE_ACCESS_TOKEN"` with the token you used during the login prompt.
 
 ### Command-Line Options
 
-The `ghe_transcribe.py` script accepts the following command-line arguments for customization:
+The `ghe_transcribe.core` module accepts the following command-line arguments for customization:
 
 ```
-usage: ghe_transcribe.py [-h] [--device {cuda,mps,cpu}]
+usage: python -m ghe_transcribe.core [-h] [--device {cuda,mps,cpu}]
                         [--whisper_model {tiny.en,tiny,base.en,base,small.en,small,medium.en,medium,large-v1,large-v2,large-v3,large,distil-large-v2,distil-medium.en,distil-small.en,distil-large-v3,large-v3-turbo,turbo}]
                         [--device_index DEVICE_INDEX]
                         [--compute_type {float32,float16,int8}]
@@ -226,11 +203,16 @@ options:
   - `--save_output` (bool, optional): If set (default), the transcription with speaker labels will be saved to both `.csv` and `.md` files in the `output` directory.
   - `--info` (bool, optional): When enabled (default), the script will print information about the detected language and its confidence score.
 
+From terminal, run:
+  ```bash
+  python -m ghe_transcribe.core media/testing_audio_01.mp3 --num_speakers 2
+  ```
+
 ## Performance
 
 ### Timing Tests
 
-The following table shows the execution time of `ghe_transcribe.py` on the audio file [`media/testing_audio_01.mp3`](https://github.com/Global-Health-Engineering/ghe_transcribe/blob/main/media/testing_audio_01.mp3) across different environments. These tests were conducted using the `timing` function defined in [`utils.py`](https://github.com/Global-Health-Engineering/ghe_transcribe/blob/main/utils.py).
+The following table shows the execution time of `python -m ghe_transcribe.core` on the audio file [`media/testing_audio_01.wav`](https://github.com/Global-Health-Engineering/ghe_transcribe/blob/main/media/testing_audio_01.mp3) across different environments. These tests were conducted using the `timing` function defined in [`utils.py`](https://github.com/Global-Health-Engineering/ghe_transcribe/blob/main/utils.py).
 
 | Device                                      | Time (sec) |
 | :------------------------------------------ | :--------- |
