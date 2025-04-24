@@ -1,3 +1,4 @@
+import os
 import argparse
 from pyannote.audio import Pipeline
 from faster_whisper import WhisperModel
@@ -5,7 +6,6 @@ from torch import device as to_torch_device
 from torch import set_num_threads
 from torch.cuda import is_available as cuda_is_available
 from torch.backends.mps import is_available as mps_is_available
-import os
 from ghe_transcribe.utils import to_wav, to_whisper_format, diarize_text, to_csv, to_md, timing, resampling
 
 @timing
@@ -34,7 +34,8 @@ def transcribe(audio_file,
     # resampling(audio_file, sample_rate=16000)
 
     # Device
-    if device is None: device = 'cuda' if cuda_is_available() else 'mps' if mps_is_available() else 'cpu'
+    if device is None: 
+        device = 'cuda' if cuda_is_available() else 'mps' if mps_is_available() else 'cpu'
     try:
         torch_device = to_torch_device(device)
     except Exception as e:
@@ -129,10 +130,10 @@ def transcribe(audio_file,
             print(f'Output saved to {output_file_name}.md')
 
     if info:
-        print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
+        print(f"Detected language {info.language} with probability {info.language_probability}")
         return text
-    else:
-        return text
+    
+    return text
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Transcribe and diarize an audio file.')
