@@ -1,0 +1,32 @@
+{
+  "name": "ghe_transcribe",
+  "version": "0.1.0",
+  "description": "A Python tool to transcribe audio files with speaker diarization",
+  "scripts": {
+    "run": "python -m ghe_transcribe.core",
+    "install-python-deps": "pip install -r requirements.txt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Global-Health-Engineering/ghe_transcribe"
+  },
+  "keywords": [
+    "transcription",
+    "diarization",
+    "audio",
+    "faster-whisper",
+    "pyannote",
+    "python"
+  ],
+  "author": "Nicolò Massari",
+  "license": "MIT",
+  "dependencies": {
+    "torch": "installed-via-pip",
+    "torchaudio": "installed-via-pip",
+    "av": "installed-via-pip",
+    "faster-whisper": "installed-via-pip",
+    "pyannote.audio": "installed-via-pip",
+    "huggingface-hub": "installed-via-pip",
+    "python": ">=3.11"
+  }
+}
