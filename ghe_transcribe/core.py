@@ -15,39 +15,68 @@ from ghe_transcribe.utils import (
     to_md,
     to_wav,
     to_whisper_format,
+    snip_audio,
 )
 
+__TRANSCRIBE_CONFIG_DEFAULT__ = {
+    "snip": None,
+    "device": None,
+    "whisper_model": "large-v3-turbo",
+    "device_index": 0,
+    "compute_type": "float32",
+    "cpu_threads": None,
+    "beam_size": 5,
+    "temperature": 0.0,
+    "word_timestamps": None,
+    "vad_filter": False,
+    "vad_parameters": dict(min_silence_duration_ms=2000),
+    "pyannote_model": "pyannote/speaker-diarization-3.1",
+    "num_speakers": None,
+    "min_speakers": None,
+    "max_speakers": None,
+    "save_output": True,
+    "info": True,
+}
 
 @timing
-def transcribe(
-    audio_file,
-    device,
-    whisper_model,
-    device_index,
-    compute_type,
-    cpu_threads,
-    beam_size,
-    temperature,
-    word_timestamps,
-    vad_filter,
-    vad_parameters,
-    pyannote_model,
-    num_speakers,
-    min_speakers,
-    max_speakers,
-    save_output,
-    info,
-):
+def transcribe(audio_file,
+               snip = __TRANSCRIBE_CONFIG_DEFAULT__.get("snip"),
+               device = __TRANSCRIBE_CONFIG_DEFAULT__.get("device"),
+               whisper_model = __TRANSCRIBE_CONFIG_DEFAULT__.get("whisper_model"),
+               device_index = __TRANSCRIBE_CONFIG_DEFAULT__.get("device_index"),
+               compute_type = __TRANSCRIBE_CONFIG_DEFAULT__.get("compute_type"),
+               cpu_threads = __TRANSCRIBE_CONFIG_DEFAULT__.get("cpu_threads"),
+               beam_size = __TRANSCRIBE_CONFIG_DEFAULT__.get("beam_size"),
+               temperature = __TRANSCRIBE_CONFIG_DEFAULT__.get("temperature"),
+               word_timestamps = __TRANSCRIBE_CONFIG_DEFAULT__.get("word_timestamps"),
+               vad_filter = __TRANSCRIBE_CONFIG_DEFAULT__.get("vad_filter"),
+               vad_parameters = __TRANSCRIBE_CONFIG_DEFAULT__.get("vad_parameters"),
+               pyannote_model = __TRANSCRIBE_CONFIG_DEFAULT__.get("pyannote_model"),
+               num_speakers = __TRANSCRIBE_CONFIG_DEFAULT__.get("num_speakers"),
+               min_speakers = __TRANSCRIBE_CONFIG_DEFAULT__.get("min_speakers"),
+               max_speakers = __TRANSCRIBE_CONFIG_DEFAULT__.get("max_speakers"),
+               save_output = __TRANSCRIBE_CONFIG_DEFAULT__.get("save_output"),
+               info = __TRANSCRIBE_CONFIG_DEFAULT__.get("info")
+               ):
     # Convert audio file to .wav
     audio_file = to_wav(audio_file)
+
+    if snip is not None:
+        audio_file = snip_audio(
+            audio_file,
+            os.path.splitext(audio_file)[0] + "_snippet" + os.path.splitext(audio_file)[1],
+            0.0,
+            snip,
+        )
 
     # Device
     if device is None:
         device = (
             "cuda" if cuda_is_available() else "mps" if mps_is_available() else "cpu"
         )
+        print(f"Using device: {device}")
     try:
-        torch_device = to_torch_device(device     )
+        torch_device = to_torch_device(device)
     except Exception as e:
         print(f"Device Error: {e}")
         return
@@ -156,17 +185,18 @@ if __name__ == "__main__":
         description="Transcribe and diarize an audio file."
     )
     parser.add_argument("audio_file", type=str, help="Path to the audio file.")
+    parser.add_argument("snip", type=float, default=__TRANSCRIBE_CONFIG_DEFAULT__.get("snip"), help="Snip a number of seconds of the audio file.")
     parser.add_argument(
         "--device",
         type=str,
-        default=None,
+        default=__TRANSCRIBE_CONFIG_DEFAULT__.get("device"),
         choices=["cuda", "mps", "cpu"],
         help="Device to use (cuda, mps, or cpu). Defaults to auto-detection.",
     )
     parser.add_argument(
         "--whisper_model",
         type=str,
-        default="large-v3-turbo",
+        default=__TRANSCRIBE_CONFIG_DEFAULT__.get("whisper_model"),
         choices=[
             "tiny.en",
             "tiny",
@@ -190,86 +220,87 @@ if __name__ == "__main__":
         help="Faster Whisper model to use.",
     )
     parser.add_argument(
-        "--device_index", type=int, default=0, help="Index of the device to use."
+        "--device_index", type=int, default=__TRANSCRIBE_CONFIG_DEFAULT__.get("device_index"), help="Index of the device to use."
     )
     parser.add_argument(
         "--compute_type",
         type=str,
-        default="float32",
+        default=__TRANSCRIBE_CONFIG_DEFAULT__.get("compute_type"),
         choices=["float32", "float16", "int8"],
         help="Compute type for Whisper model.",
     )
     parser.add_argument(
         "--cpu_threads",
         type=int,
-        default=None,
+        default=__TRANSCRIBE_CONFIG_DEFAULT__.get("cpu_threads"),
         help="Number of CPU threads to use for Whisper.",
     )
     parser.add_argument(
-        "--beam_size", type=int, default=5, help="Beam size for Whisper decoding."
+        "--beam_size", type=int, default=__TRANSCRIBE_CONFIG_DEFAULT__.get("beam_size"), help="Beam size for Whisper decoding."
     )
     parser.add_argument(
         "--temperature",
         type=float,
-        default=0.0,
+        default=__TRANSCRIBE_CONFIG_DEFAULT__.get("temperature"),
         help="Temperature for Whisper sampling.",
     )
     parser.add_argument(
         "--word_timestamps",
         type=bool,
-        default=None,
+        default=__TRANSCRIBE_CONFIG_DEFAULT__.get("word_timestamps"),
         help="Enable word timestamps in Whisper output.",
     )
     parser.add_argument(
         "--vad_filter",
         type=bool,
-        default=False,
+        default=__TRANSCRIBE_CONFIG_DEFAULT__.get("vad_filter"),
         help="Enable voice activity detection in Whisper.",
     )
     parser.add_argument(
         "--min_silence_duration_ms",
         type=int,
-        default=2000,
+        default=__TRANSCRIBE_CONFIG_DEFAULT__.get("min_silence_duration_ms"),
         help="Minimum silence duration for VAD (ms).",
     )
     parser.add_argument(
         "--pyannote_model",
         type=str,
-        default="pyannote/speaker-diarization-3.1",
+        default=__TRANSCRIBE_CONFIG_DEFAULT__.get("pyannote_model"),
         help="Pyannote speaker diarization model to use.",
     )
     parser.add_argument(
         "--num_speakers",
         type=int,
-        default=None,
+        default=__TRANSCRIBE_CONFIG_DEFAULT__.get("num_speakers"),
         help="Number of speakers for diarization (if known).",
     )
     parser.add_argument(
         "--min_speakers",
         type=int,
-        default=None,
+        default=__TRANSCRIBE_CONFIG_DEFAULT__.get("min_speakers"),
         help="Minimum number of speakers for diarization.",
     )
     parser.add_argument(
         "--max_speakers",
         type=int,
-        default=None,
+        default=__TRANSCRIBE_CONFIG_DEFAULT__.get("max_speakers"),
         help="Maximum number of speakers for diarization.",
     )
     parser.add_argument(
         "--save_output",
         type=bool,
-        default=True,
+        default=__TRANSCRIBE_CONFIG_DEFAULT__.get("save_output"),
         help="Save output to .csv and .md files.",
     )
     parser.add_argument(
-        "--info", type=bool, default=True, help="Print detected language information."
+        "--info", type=bool, default=__TRANSCRIBE_CONFIG_DEFAULT__.get("info"), help="Print detected language information."
     )
 
     args = parser.parse_args()
 
     transcribe(
         audio_file=args.audio_file,
+        snip=args.snip,
         device=args.device,
         whisper_model=args.whisper_model,
         device_index=args.device_index,
