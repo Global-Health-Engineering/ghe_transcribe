@@ -8,16 +8,18 @@ from pyannote.core import Segment
 from torchaudio import load, save
 from torchaudio.transforms import Resample
 
+
 def timing(f):
     @wraps(f)
     def wrap(*args, **kw):
         ts = time()
         result = f(*args, **kw)
         te = time()
-        print('func:%r args:[%r, %r] took: %2.4f sec' % \
-          (f.__name__, args, kw, te-ts))
+        print('func:%r args:[%r, %r] took: %2.4f sec' %
+              (f.__name__, args, kw, te-ts))
         return result
     return wrap
+
 
 def get_text_with_timestamp(transcribe_res):
     timestamp_texts = []
@@ -77,6 +79,7 @@ def diarize_text(transcribe_res, diarization_result):
     result = merge_sentence(spk_text)
     return result
 
+
 def to_csv(result, semicolon=False):
     csv = []
     start_line = 'start;end;speaker;sentence' if semicolon else 'start,end,speaker,sentence'
@@ -93,10 +96,12 @@ def to_csv(result, semicolon=False):
             csv.append(line.strip())
     return csv
 
+
 def spk_to_id(spk):
     # in_spk = "SPEAKER_00"
     id = str(int(spk.split('_')[1]))
     return id
+
 
 def to_md(result):
     md = []
@@ -110,30 +115,35 @@ def to_md(result):
             md.append(f'({format_time(seg.start)}){sentence}'.strip())
     return md
 
+
 def md_to_csv(md_file):
     # to be implemented
     csv = []
     return csv
 
 # Convert generated segments from faster_whisper to Whisper format
+
+
 def to_whisper_format(generated_segments):
     whisper_formatted_generated_segment = []
     for segment in generated_segments:
-        whisper_formatted_generated_segment.append({"id":segment.id,
-                                                    "seek":segment.seek,
-                                                    "start":segment.start,
-                                                    "end":segment.end,
-                                                    "text":segment.text,
-                                                    "tokens":segment.tokens,
-                                                    "avg_logprob":segment.avg_logprob,
-                                                    "compression_ratio":segment.compression_ratio,
-                                                    "no_speech_prob":segment.no_speech_prob,
-                                                    "words":segment.words,
-                                                    "temperature":segment.temperature
-                                                   })
+        whisper_formatted_generated_segment.append({"id": segment.id,
+                                                    "seek": segment.seek,
+                                                    "start": segment.start,
+                                                    "end": segment.end,
+                                                    "text": segment.text,
+                                                    "tokens": segment.tokens,
+                                                    "avg_logprob": segment.avg_logprob,
+                                                    "compression_ratio": segment.compression_ratio,
+                                                    "no_speech_prob": segment.no_speech_prob,
+                                                    "words": segment.words,
+                                                    "temperature": segment.temperature
+                                                    })
     return {"segments": whisper_formatted_generated_segment}
 
 # CREDIT: https://stackoverflow.com/a/72386137
+
+
 def to_wav_pyav(in_path: str, out_path: str = None, sample_rate: int = 16000) -> str:
     """Arbitrary media files to wav"""
     if out_path is None:
@@ -153,6 +163,8 @@ def to_wav_pyav(in_path: str, out_path: str = None, sample_rate: int = 16000) ->
     return out_path
 
 # Convert audio file to .wav
+
+
 def to_wav(file_name):
     if file_name.endswith('.wav'):
         return file_name
@@ -164,6 +176,7 @@ def to_wav(file_name):
         except:
             print("Error PyAV")
 
+
 def resampling(file_name, sample_rate=16000):
     # Resample audio to 16kHz if needed
     waveform, sr = load(file_name)
@@ -173,11 +186,13 @@ def resampling(file_name, sample_rate=16000):
     # Save the resampled audio
     save(file_name, waveform, sample_rate)
 
+
 def digit_to_string(num: int) -> str:
     if 0 <= num <= 9:
         return f'0{num}'
     else:
         return f'{num}'
+
 
 def seconds_to_hours_minutes_seconds(num) -> int:
     # Expects time in seconds float or string, e.g. time = '11.27', 63.9
@@ -189,6 +204,7 @@ def seconds_to_hours_minutes_seconds(num) -> int:
         hours = minutes // 60
         minutes -= hours * 60
     return seconds, minutes, hours
+
 
 def format_time(num) -> str:
     seconds, minutes, hours = seconds_to_hours_minutes_seconds(num)
