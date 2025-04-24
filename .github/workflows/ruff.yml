@@ -1,5 +1,13 @@
 name: CI
-on: push
+on:
+  push:
+    branches:
+      - "dev"
+  pull_request:
+    branches:
+      - "main" 
+    paths:
+      - ".github/workflows/ruff.yaml"
 jobs:
   build:
     runs-on: ubuntu-latest
