@@ -1,10 +1,10 @@
 # CREDIT: https://github.com/yinruiqing/pyannote-whisper
 
-from pyannote.core import Segment
-import av
 import os
 from functools import wraps
 from time import time
+from av import open
+from pyannote.core import Segment
 from torchaudio import load, save
 from torchaudio.transforms import Resample
 
@@ -79,7 +79,7 @@ def diarize_text(transcribe_res, diarization_result):
 
 def to_csv(result, semicolon=False):
     csv = []
-    start_line = f'start;end;speaker;sentence' if semicolon else 'start,end,speaker,sentence'
+    start_line = 'start;end;speaker;sentence' if semicolon else 'start,end,speaker,sentence'
     csv.append(start_line)
     if semicolon:
         for seg, spk, sentence in result:
@@ -132,15 +132,15 @@ def to_whisper_format(generated_segments):
                                                     "temperature":segment.temperature
                                                    })
     return {"segments": whisper_formatted_generated_segment}
-    
+
 # CREDIT: https://stackoverflow.com/a/72386137
 def to_wav_pyav(in_path: str, out_path: str = None, sample_rate: int = 16000) -> str:
     """Arbitrary media files to wav"""
     if out_path is None:
         out_path = os.path.splitext(in_path)[0] + '.wav'
-    with av.open(in_path) as in_container:
+    with open(in_path) as in_container:
         in_stream = in_container.streams.audio[0]
-        with av.open(out_path, 'w', 'wav') as out_container:
+        with open(out_path, 'w', 'wav') as out_container:
             out_stream = out_container.add_stream(
                 'pcm_s16le',
                 rate=sample_rate,
@@ -162,7 +162,7 @@ def to_wav(file_name):
             out_path = to_wav_pyav(in_path=file_name)
             return out_path
         except:
-            print(f"Error PyAV")
+            print("Error PyAV")
 
 def resampling(file_name, sample_rate=16000):
     # Resample audio to 16kHz if needed
@@ -178,11 +178,10 @@ def digit_to_string(num: int) -> str:
         return f'0{num}'
     else:
         return f'{num}'
-    
-def seconds_to_hours_minutes_seconds(time) -> int:
-    # Expects time in seconds float or string, e.g. time = '11.27', 63.9
 
-    seconds, minutes, hours = round(float(time)), 0, 0
+def seconds_to_hours_minutes_seconds(num) -> int:
+    # Expects time in seconds float or string, e.g. time = '11.27', 63.9
+    seconds, minutes, hours = round(float(num)), 0, 0
     if seconds >= 60:
         minutes = seconds // 60
         seconds -= minutes * 60
@@ -191,8 +190,8 @@ def seconds_to_hours_minutes_seconds(time) -> int:
         minutes -= hours * 60
     return seconds, minutes, hours
 
-def format_time(time) -> str:
-    seconds, minutes, hours = seconds_to_hours_minutes_seconds(time)
+def format_time(num) -> str:
+    seconds, minutes, hours = seconds_to_hours_minutes_seconds(num)
     try:
         if minutes == 0 and hours == 0:
             return digit_to_string(seconds)
