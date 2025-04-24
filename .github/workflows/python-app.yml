@@ -28,9 +28,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Setup Hugging Face Access Token 
+    - name: Test with pytest
       env:
         HF_TOKEN: ${{secrets.HF_TOKEN}}
-    - name: Test with pytest
       run: |
         pytest tests/
