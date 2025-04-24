@@ -10,13 +10,13 @@ from torchaudio import load, save
 from torchaudio.transforms import Resample
 
 
-def timing(f):
-    @wraps(f)
+def timing(func):
+    @wraps(func)
     def wrap(*args, **kw):
         ts = time()
-        result = f(*args, **kw)
+        result = func(*args, **kw)
         te = time()
-        print(f"func:{f.__name__!r} args:[{args!r}, {kw!r}] took: {te - ts:2.4f} sec")
+        print(f"func:{func.__name__!r} args:[{args!r}, {kw!r}] took: {te - ts:2.4f} sec")
         return result
 
     return wrap
@@ -224,3 +224,58 @@ def format_time(num) -> str:
             return f"{digit_to_string(hours)}:{digit_to_string(minutes)}:{digit_to_string(seconds)}"
     except Exception as e:
         print(f"Time Formatting Error: {e}")
+
+
+def snip_audio(input_file, output_file, start_time, duration):
+    """
+    Snips a portion of an audio file using pyAV.
+
+    Args:
+        input_file (str): Path to the input audio file.
+        output_file (str): Path to save the snipped audio.
+        start_time (float): Start time of the snippet in seconds.
+        duration (float): Duration of the snippet in seconds.
+    """
+    try:
+        input_container = open(input_file)
+        audio_stream = None
+        for stream in input_container.streams:
+            if stream.type == 'audio':
+                audio_stream = stream
+                break
+
+        if not audio_stream:
+            print(f"Error: No audio stream found in {input_file}")
+            return
+
+        output_container = open(output_file, 'w', format=input_container.format.name)
+        output_stream = output_container.add_stream("pcm_s16le", rate=stream.rate)
+
+
+        start_pts_seconds = start_time
+        end_pts_seconds = start_time + duration
+
+        for packet in input_container.demux(audio_stream):
+            for frame in packet.decode():
+                frame_time_seconds = frame.pts * audio_stream.time_base
+
+                if start_pts_seconds <= frame_time_seconds < end_pts_seconds:
+                    for packet_out in output_stream.encode(frame):
+                        output_container.mux(packet_out)
+                elif frame_time_seconds >= end_pts_seconds:
+                    break
+
+            if frame_time_seconds >= end_pts_seconds:
+                break
+
+        for packet_out in output_stream.encode():
+            output_container.mux(packet_out)
+
+    except Exception as e:
+        print(f"Error processing file: {e}")
+    finally:
+        if input_container:
+            input_container.close()
+        if output_container:
+            output_container.close()
+    return output_file

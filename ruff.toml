@@ -12,4 +12,6 @@ select = [
     "SIM",
     # isort
     "I",
+    # line length
+    line-length = 120
 ]
