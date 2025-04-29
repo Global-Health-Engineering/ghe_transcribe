@@ -28,6 +28,6 @@ jobs:
         pip install -e .
     - name: Test with pytest
       env:
-        HUGGINGFACE_TOKEN: ${{secrets.huggingface_token}}
+        HUGGINGFACE_TOKEN: ${{secrets.HUGGINGFACE_TOKEN}}
       run: |
         pytest tests/
