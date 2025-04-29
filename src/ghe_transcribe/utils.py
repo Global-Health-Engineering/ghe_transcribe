@@ -15,7 +15,7 @@ def timing(func):
         ts = time()
         result = func(*args, **kw)
         te = time()
-        print(f"func:{func.__name__!r} args:[{args!r}, {kw!r}] took: {te - ts:2.4f} sec")
+        print(f"func:{func.__name__!r} took: {te - ts:2.4f} sec")
         return result
 
     return wrap
