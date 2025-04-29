@@ -120,7 +120,7 @@ To transcribe an audio file with speaker diarization:
     * You can edit `config.json` file in the root directory to save your access token for future use, avoiding repeated logins. The content of the file should be:
         ```json
         {
-            "HF_TOKEN": "YOUR_HUGGING_FACE_ACCESS_TOKEN"
+            "huggingface_token": "YOUR_HUGGING_FACE_ACCESS_TOKEN"
         }
         ```
     * Replace `"YOUR_HUGGING_FACE_ACCESS_TOKEN"` with the token you used during the login prompt.

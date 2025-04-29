@@ -1,5 +1,10 @@
 import os
+import json
+from typing import Optional
+from enum import Enum
 
+from typer import Typer, Argument, Option
+from huggingface_hub import login
 from faster_whisper import WhisperModel
 from pyannote.audio import Pipeline
 from torch import device as to_torch_device
@@ -15,89 +20,105 @@ from ghe_transcribe.utils import (
     to_wav,
     to_whisper_format,
     snip_audio,
-    ArgparseGenerator,
 )
 
-__config_transcribe__ = {
-    "default": {"huggingface_token": None,
-                "trim": None,
-                "device": "auto",
-                "cpu_threads": None,
-                "whisper_model": "large-v3-turbo",
-                "device_index": None,
-                "compute_type": "float32",
-                "beam_size": 5,
-                "temperature": 0.0,
-                "word_timestamps": None,
-                "vad_filter": False,
-                "vad_parameters": {'min_silence_duration_ms': 2000},
-                "pyannote_model": "pyannote/speaker-diarization-3.1",
-                "num_speakers": None,
-                "min_speakers": None,
-                "max_speakers": None,
-                "save_output": True,
-                "info": True},
-    "choices": {"device": ["cuda", "mps", "cpu"],
-                "whisper_model": ["tiny.en", "tiny", "base.en", "base", "small.en", "small", "medium.en", "medium",
-                                  "large-v1", "large-v2", "large-v3", "large", "distil-large-v2", "distil-medium.en",
-                                  "distil-small.en", "distil-large-v3", "large-v3-turbo", "turbo"],
-                "compute_type": ["float32", "float16", "int8"]},
-    }
+
+class DeviceChoice(str, Enum):
+    cuda = "cuda"
+    mps = "mps"
+    cpu = "cpu"
+
+class ComputeTypeChoice(str, Enum):
+    float32 = "float32"
+    float16 = "float16"
+    int8 = "int8"
+
+class WhisperModelChoice(str, Enum):
+    tiny_en = "tiny.en"
+    tiny = "tiny"
+    base_en = "base.en"
+    base = "base"
+    small_en = "small.en"
+    small = "small"
+    medium_en = "medium.en"
+    medium = "medium"
+    large_v1 = "large-v1"
+    large_v2 = "large-v2"
+    large_v3 = "large-v3"
+    large = "large"
+    distil_large_v2 = "distil-large-v2"
+    distil_medium_en = "distil-medium.en"
+    distil_small_en = "distil-small.en"
+    distil_large_v3 = "distil-large-v3"
+    large_v3_turbo = "large-v3-turbo"
+    turbo = "turbo"
+
+transcribe_config = {
+    "huggingface_token": None,
+    "trim": None,
+    "device": None,
+    "cpu_threads": 0,
+    "whisper_model": "large-v3-turbo",
+    "device_index": None,
+    "compute_type": "float32",
+    "beam_size": 5,
+    "temperature": 0.0,
+    "word_timestamps": None,
+    "vad_filter": False,
+    "min_silence_duration_ms": 2000,
+    "pyannote_model": "pyannote/speaker-diarization-3.1",
+    "num_speakers": None,
+    "min_speakers": None,
+    "max_speakers": None,
+    "save_output": True,
+    "info": True,
+}
+
+app = Typer(help="Transcribe and diarize an audio file.")
 
 @timing
-def transcribe(audio_file: str,
-               huggingface_token: str = __config_transcribe__.get("default", {}).get("huggingface_token"),
-               trim: float = __config_transcribe__.get("default", {}).get("trim"),
-               device: str = __config_transcribe__.get("default", {}).get("device"),
-               cpu_threads: int = __config_transcribe__.get("default", {}).get("cpu_threads"),
-               whisper_model: str = __config_transcribe__.get("default", {}).get("whisper_model"),
-               device_index: int = __config_transcribe__.get("default", {}).get("device_index"),
-               compute_type: str = __config_transcribe__.get("default", {}).get("compute_type"),
-               beam_size: int = __config_transcribe__.get("default", {}).get("beam_size"),
-               temperature: float = __config_transcribe__.get("default", {}).get("temperature"),
-               word_timestamps: bool = __config_transcribe__.get("default", {}).get("word_timestamps"),
-               vad_filter: bool = __config_transcribe__.get("default", {}).get("vad_filter"),
-               vad_parameters: dict = __config_transcribe__.get("default", {}).get("vad_parameters"),
-               pyannote_model: str = __config_transcribe__.get("default", {}).get("pyannote_model"),
-               num_speakers: int = __config_transcribe__.get("default", {}).get("num_speakers"),
-               min_speakers: int = __config_transcribe__.get("default", {}).get("min_speakers"),
-               max_speakers: int = __config_transcribe__.get("default", {}).get("max_speakers"),
-               save_output: bool = __config_transcribe__.get("default", {}).get("save_output"),
-               info: bool = __config_transcribe__.get("default", {}).get("info")
-               ):
-    """Transcribe and diarize an audio file.
+@app.command()
+def transcribe(
+    file: str = Argument(..., help="Path to the audio file."),
+    huggingface_token: Optional[str] = Option(transcribe_config.get("huggingface_token"), help="Hugging Face token for authentication."),
+    trim: Optional[float] = Option(transcribe_config.get("trim"), help="Trim the audio file from 0 to the specified number of seconds."),
+    device: Optional[DeviceChoice] = Option(transcribe_config.get("device"), help="Device to use."),
+    cpu_threads: Optional[int] = Option(transcribe_config.get("cpu_threads"), help="Number of CPU threads to use."),
+    whisper_model: Optional[WhisperModelChoice] = Option(transcribe_config.get("whisper_model"), help="Faster Whisper, model to use."),
+    device_index: Optional[int] = Option(transcribe_config.get("device_index"), help="Faster Whisper, index of the device to use."),
+    compute_type: Optional[ComputeTypeChoice] = Option(transcribe_config.get("compute_type"), help="Faster Whisper, compute type."),
+    beam_size: Optional[int] = Option(transcribe_config.get("beam_size"), help="Faster Whisper, beam size for decoding."),
+    temperature: Optional[float] = Option(transcribe_config.get("temperature"), help="Faster Whisper, sampling temperature."),
+    word_timestamps: Optional[bool] = Option(transcribe_config.get("word_timestamps"), help="Faster Whisper, enable word timestamps in the output."),
+    vad_filter: Optional[bool] = Option(transcribe_config.get("vad_filter"), help="Faster Whisper, enable voice activity detection."),
+    min_silence_duration_ms: Optional[int] = Option(transcribe_config.get("min_silence_duration_ms"), help="Faster Whisper, minimum silence duration detected by VAD in milliseconds."),
+    pyannote_model: Optional[str] = Option(transcribe_config.get("pyannote_model"), help="pyannote.audio, speaker diarization model to use."),
+    num_speakers: Optional[int] = Option(transcribe_config.get("num_speakers"), help="pyannote.audio, number of speakers."),
+    min_speakers: Optional[int] = Option(transcribe_config.get("min_speakers"), help="pyannote.audio, minimum number of speakers."),
+    max_speakers: Optional[int] = Option(transcribe_config.get("max_speakers"), help="pyannote.audio, maximum number of speakers."),
+    save_output: Optional[bool] = Option(transcribe_config.get("save_output"), help="Save output to .csv and .md files."),
+    info: Optional[bool] = Option(transcribe_config.get("info"), help="Print detected language information."),
+):
+    """Transcribe and diarize an audio file."""
+    try:
+        if huggingface_token:
+            login(token=huggingface_token)
+        else:
+            with open("config.json", "r") as f:
+                config = json.load(f)
 
-    Args:
-        audio_file (str): Path to the audio file.
-        trim (float, optional): Trim the audio file from 0 to the specified number of seconds.
-        device (str, optional): Device to use.
-        cpu_threads (int, optional): Number of CPU threads to use.
-        whisper_model (str, optional): Faster Whisper, model to use.
-        device_index (int, optional): Faster Whisper, index of the device to use.
-        compute_type (str, optional): Faster Whisper, compute type.
-        beam_size (int, optional): Faster Whisper, beam size for decoding.
-        temperature (float, optional): Faster Whisper, sampling temperature.
-        word_timestamps (bool, optional): Faster Whisper, enable word timestamps in the output.
-        vad_filter (bool, optional): Faster Whisper, enable voice activity detection.
-        vad_parameters (dict, optional): Faster Whisper, parameters for voice activity detection.
-        pyannote_model (str, optional): pyannote.audio, speaker diarization model to use.
-        num_speakers (int, optional): pyannote.audio, number of speakers.
-        min_speakers (int, optional): pyannote.audio, minimum number of speakers.
-        max_speakers (int, optional): pyannote.audio, maximum number of speakers.
-        save_output (bool, optional): Save output to .csv and .md files.
-        info (bool, optional): Print detected language information.
+            login(token=config["huggingface_token"])
+    except Exception as e:
+        print(f"Error: {e} Please provide a valid token through the --huggingface_token argument or configure the hugginface_token in config.json.")
+        return None
 
-    Returns:
-        list: A list of dictionaries, where each dictionary represents a transcribed segment
-              with speaker information and timestamps.
-    """
     # Convert audio file to .wav
-    audio_file = to_wav(audio_file)
+    file = to_wav(file)
 
     if trim is not None:
-        audio_file = snip_audio(
-            audio_file,
-            os.path.splitext(audio_file)[0] + "_snippet" + os.path.splitext(audio_file)[1],
+        file = snip_audio(
+            file,
+            os.path.splitext(file)[0] + "_snippet" + os.path.splitext(file)[1],
             0.0,
             trim,
         )
@@ -164,10 +185,10 @@ def transcribe(audio_file: str,
         whisper_transcribe_kwargs["word_timestamps"] = word_timestamps
     if vad_filter is not None:
         whisper_transcribe_kwargs["vad_filter"] = vad_filter
-    if vad_parameters is not None:
-        whisper_transcribe_kwargs["vad_parameters"] = vad_parameters
+    if min_silence_duration_ms is not None:
+        whisper_transcribe_kwargs["vad_parameters"] = {"min_silence_duration_ms": min_silence_duration_ms}
 
-    segments, info = model.transcribe(audio_file, **whisper_transcribe_kwargs)
+    segments, info = model.transcribe(file, **whisper_transcribe_kwargs)
     generated_segments = list(segments)
 
     # Speaker Diarization: pyannote.audio
@@ -183,7 +204,7 @@ def transcribe(audio_file: str,
 
     try:
         diarization_result = Pipeline.from_pretrained(pyannote_model).to(torch_device)(
-            audio_file, **pyannote_kwargs
+            file, **pyannote_kwargs
         )
     except Exception as e:
         print(f"Diarization Error: {e}")
@@ -192,7 +213,7 @@ def transcribe(audio_file: str,
     text = diarize_text(to_whisper_format(generated_segments), diarization_result)
 
     # Extract audio_file name
-    output_file_name = "output/" + os.path.splitext(os.path.basename(audio_file))[0]
+    output_file_name = "output/" + os.path.splitext(os.path.basename(file))[0]
 
     if save_output:
         csv = to_csv(text)
@@ -214,5 +235,4 @@ def transcribe(audio_file: str,
 
 
 if __name__ == "__main__":
-    args = ArgparseGenerator(transcribe, __config_transcribe__).parse_args()
-    transcribe(**vars(args))
+    app()

@@ -1,10 +1,7 @@
-# CREDIT: https://github.com/yinruiqing/pyannote-whisper
-import argparse
 import os
-import inspect
 from functools import wraps
 from time import time
-from typing import Dict, Any, Callable
+from datetime import timedelta
 
 from av import open
 from pyannote.core import Segment
@@ -22,6 +19,8 @@ def timing(func):
         return result
 
     return wrap
+
+# CREDIT: https://github.com/yinruiqing/pyannote-whisper
 
 
 def get_text_with_timestamp(transcribe_res):
@@ -114,10 +113,10 @@ def to_md(result):
     for seg, spk, sentence in result:
         if spk != previous_spk:
             md.append(f"\n{spk}")
-            md.append(f"({format_time(seg.start)}){sentence}".strip())
+            md.append(f"({format_time_datetime(seg.start)}){sentence}".strip())
             previous_spk = spk
         else:
-            md.append(f"({format_time(seg.start)}){sentence}".strip())
+            md.append(f"({format_time_datetime(seg.start)}){sentence}".strip())
     return md
 
 
@@ -196,47 +195,21 @@ def resampling(file_name, sample_rate=16000):
     save(file_name, waveform, sample_rate)
 
 
-def digit_to_string(num: int) -> str:
-    if 0 <= num <= 9:
-        return f"0{num}"
+def format_time_datetime(seconds_float: float) -> str:
+    """Formats seconds into HH:MM:SS or MM:SS or SS format."""
+    delta = timedelta(seconds=seconds_float)
+    parts = str(delta).split(':')
+    if len(parts) == 3 and parts[0] == '0':
+        return f"{parts[1]}:{parts[2].split('.')[0].zfill(2)}"
+    elif len(parts) == 3:
+        return f"{parts[0]}:{parts[1].zfill(2)}:{parts[2].split('.')[0].zfill(2)}"
     else:
-        return f"{num}"
-
-
-def seconds_to_hours_minutes_seconds(num) -> int:
-    # Expects time in seconds float or string, e.g. time = '11.27', 63.9
-    seconds, minutes, hours = round(float(num)), 0, 0
-    if seconds >= 60:
-        minutes = seconds // 60
-        seconds -= minutes * 60
-    if minutes >= 60:
-        hours = minutes // 60
-        minutes -= hours * 60
-    return seconds, minutes, hours
-
-
-def format_time(num) -> str:
-    seconds, minutes, hours = seconds_to_hours_minutes_seconds(num)
-    try:
-        if minutes == 0 and hours == 0:
-            return digit_to_string(seconds)
-        elif hours == 0:
-            return f"{digit_to_string(minutes)}:{digit_to_string(seconds)}"
-        else:
-            return f"{digit_to_string(hours)}:{digit_to_string(minutes)}:{digit_to_string(seconds)}"
-    except Exception as e:
-        print(f"Time Formatting Error: {e}")
+        return f"{parts[1].split('.')[0].zfill(2)}" # Handles cases less than an hour
 
 
 def snip_audio(input_file, output_file, start_time, duration):
     """
     Snips a portion of an audio file using pyAV.
-
-    Args:
-        input_file (str): Path to the input audio file.
-        output_file (str): Path to save the snipped audio.
-        start_time (float): Start time of the snippet in seconds.
-        duration (float): Duration of the snippet in seconds.
     """
     try:
         input_container = open(input_file)
@@ -282,106 +255,3 @@ def snip_audio(input_file, output_file, start_time, duration):
             output_container.close()
     return output_file
 
-
-class ArgparseGenerator:
-    """
-    Generates argparse arguments from a function's signature and a configuration dictionary.
-    """
-
-    def __init__(self, target: Callable, config_default: Dict[str, Any]):
-        """
-        Initializes the ArgparseGenerator.
-
-        Args:
-            target (callable): The function whose signature should be used to generate arguments.
-            config_default (dict): A dictionary containing default values and optional "CHOICES_*"
-                                  for the function's parameters.
-        """
-        self.config_default = config_default
-        self.target = target
-        self.parser = argparse.ArgumentParser(
-            description=target.__doc__.split('\n')[0] if target.__doc__ else ""
-        )
-        self._add_arguments()  # Call this in the constructor
-
-    def _add_arguments(self):
-        """Adds arguments to the parser based on the target function's signature."""
-        sig = inspect.signature(self.target)
-
-        for name, param in sig.parameters.items():
-            arg_name = name
-            arg_type = param.annotation
-            default_value = self.config_default.get("default", {}).get(name)
-            choices = self.config_default.get("choices", {}).get(name)  # Get choices, if available
-
-            if name not in self.config_default.get("default"):  # Check if the parameter is required
-                self.parser.add_argument(
-                    arg_name,  # No leading dashes for required arguments
-                    type=arg_type,
-                    help=next(
-                        (line.split(':', 1)[1].strip()
-                         for line in self.target.__doc__.split('\n')
-                         if f'{name} (' in line),
-                        f'{name.replace("_", " ").capitalize()}.'  # Fallback
-                    )
-                )
-            else:
-                if arg_type == inspect._empty:
-                    arg_type = type(default_value) if default_value is not None else str
-
-                help_text = next(
-                    (line.split(':', 1)[1].strip()
-                     for line in self.target.__doc__.split('\n')
-                     if f'{name} (' in line),
-                    f'{name.replace("_", " ").capitalize()}. Default: {default_value}'  # Fallback
-                )
-                if choices:
-                    self.parser.add_argument(
-                        f"--{arg_name}",
-                        type=arg_type,
-                        choices=choices,
-                        default=default_value,
-                        help=help_text
-                    )
-                else:
-                    self.parser.add_argument(
-                        f"--{arg_name}",
-                        type=arg_type,
-                        default=default_value,
-                        help=help_text
-                    )
-
-    def parse_args(self) -> argparse.Namespace:
-        """
-        Parses the command-line arguments.
-
-        Returns:
-            argparse.Namespace: An argparse.Namespace object containing the parsed arguments.
-        """
-        print(self.parser.parse_args())
-        return self.parser.parse_args()
-
-    def print_help_md(self) -> str:
-        """
-        Prints the help message in Markdown format.
-
-        Returns:
-            str: The help message formatted as Markdown.
-        """
-        help_text = self.parser.format_help()
-        lines = help_text.splitlines()
-        markdown_output = "## " + lines[0] + "\n\n"  #  Title
-
-        if len(lines) > 2:
-            markdown_output += "### " + lines[2] + "\n\n" # Add a sub-title
-
-        for line in lines[3:]: #Skip the first few lines
-            if line.startswith(" "):
-                markdown_output +=  line + "\n"
-            elif line.strip() == "optional arguments:":
-                markdown_output += "\n**" + line.strip() + "**\n"
-            elif line.strip() == "positional arguments:":
-                markdown_output += "\n**" + line.strip() + "**\n"
-            else:
-                markdown_output += "\n**" + line.strip() + "**\n"
-        return markdown_output
