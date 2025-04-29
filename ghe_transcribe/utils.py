@@ -1,8 +1,10 @@
 # CREDIT: https://github.com/yinruiqing/pyannote-whisper
-
+import argparse
 import os
+import inspect
 from functools import wraps
 from time import time
+from typing import Dict, Any, Callable
 
 from av import open
 from pyannote.core import Segment
@@ -279,3 +281,107 @@ def snip_audio(input_file, output_file, start_time, duration):
         if output_container:
             output_container.close()
     return output_file
+
+
+class ArgparseGenerator:
+    """
+    Generates argparse arguments from a function's signature and a configuration dictionary.
+    """
+
+    def __init__(self, target: Callable, config_default: Dict[str, Any]):
+        """
+        Initializes the ArgparseGenerator.
+
+        Args:
+            target (callable): The function whose signature should be used to generate arguments.
+            config_default (dict): A dictionary containing default values and optional "CHOICES_*"
+                                  for the function's parameters.
+        """
+        self.config_default = config_default
+        self.target = target
+        self.parser = argparse.ArgumentParser(
+            description=target.__doc__.split('\n')[0] if target.__doc__ else ""
+        )
+        self._add_arguments()  # Call this in the constructor
+
+    def _add_arguments(self):
+        """Adds arguments to the parser based on the target function's signature."""
+        sig = inspect.signature(self.target)
+
+        for name, param in sig.parameters.items():
+            arg_name = name
+            arg_type = param.annotation
+            default_value = self.config_default.get("default", {}).get(name)
+            choices = self.config_default.get("choices", {}).get(name)  # Get choices, if available
+
+            if name not in self.config_default.get("default"):  # Check if the parameter is required
+                self.parser.add_argument(
+                    arg_name,  # No leading dashes for required arguments
+                    type=arg_type,
+                    help=next(
+                        (line.split(':', 1)[1].strip()
+                         for line in self.target.__doc__.split('\n')
+                         if f'{name} (' in line),
+                        f'{name.replace("_", " ").capitalize()}.'  # Fallback
+                    )
+                )
+            else:
+                if arg_type == inspect._empty:
+                    arg_type = type(default_value) if default_value is not None else str
+
+                help_text = next(
+                    (line.split(':', 1)[1].strip()
+                     for line in self.target.__doc__.split('\n')
+                     if f'{name} (' in line),
+                    f'{name.replace("_", " ").capitalize()}. Default: {default_value}'  # Fallback
+                )
+                if choices:
+                    self.parser.add_argument(
+                        f"--{arg_name}",
+                        type=arg_type,
+                        choices=choices,
+                        default=default_value,
+                        help=help_text
+                    )
+                else:
+                    self.parser.add_argument(
+                        f"--{arg_name}",
+                        type=arg_type,
+                        default=default_value,
+                        help=help_text
+                    )
+
+    def parse_args(self) -> argparse.Namespace:
+        """
+        Parses the command-line arguments.
+
+        Returns:
+            argparse.Namespace: An argparse.Namespace object containing the parsed arguments.
+        """
+        print(self.parser.parse_args())
+        return self.parser.parse_args()
+
+    def print_help_md(self) -> str:
+        """
+        Prints the help message in Markdown format.
+
+        Returns:
+            str: The help message formatted as Markdown.
+        """
+        help_text = self.parser.format_help()
+        lines = help_text.splitlines()
+        markdown_output = "## " + lines[0] + "\n\n"  #  Title
+
+        if len(lines) > 2:
+            markdown_output += "### " + lines[2] + "\n\n" # Add a sub-title
+
+        for line in lines[3:]: #Skip the first few lines
+            if line.startswith(" "):
+                markdown_output +=  line + "\n"
+            elif line.strip() == "optional arguments:":
+                markdown_output += "\n**" + line.strip() + "**\n"
+            elif line.strip() == "positional arguments:":
+                markdown_output += "\n**" + line.strip() + "**\n"
+            else:
+                markdown_output += "\n**" + line.strip() + "**\n"
+        return markdown_output

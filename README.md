@@ -130,7 +130,7 @@ To transcribe an audio file with speaker diarization:
 The `ghe_transcribe.core` module accepts the following command-line arguments for customization:
 
 ```
-usage: python -m ghe_transcribe.core [-h] [--device {cuda,mps,cpu}]
+usage: python -m ghe_transcribe.core [-h] [--snip SNIP] [--device {cuda,mps,cpu}]
                         [--whisper_model {tiny.en,tiny,base.en,base,small.en,small,medium.en,medium,large-v1,large-v2,large-v3,large,distil-large-v2,distil-medium.en,distil-small.en,distil-large-v3,large-v3-turbo,turbo}]
                         [--device_index DEVICE_INDEX]
                         [--compute_type {float32,float16,int8}]
