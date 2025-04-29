@@ -58,7 +58,9 @@ It's recommended to create a dedicated virtual environment to manage dependencie
 ```bash
 python3.11 -m venv venv3.11_ghe_transcribe --system-site-packages
 source venv3.11_ghe_transcribe/bin/activate
-pip3.11 install faster-whisper pyannote.audio huggingface-hub
+git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
+cd ghe_transcribe
+pip3.11 install -e .
 ipython kernel install --user --name=venv3.11_ghe_transcribe
 ```
 
@@ -88,7 +90,9 @@ brew install cmake python@3.11
 ```bash
 python3.11 -m venv venv3.11_ghe_transcribe --system-site-packages
 source venv3.11_ghe_transcribe/bin/activate
-pip3.11 install torch torchaudio av faster-whisper pyannote.audio huggingface-hub
+git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
+cd ghe_transcribe
+pip3.11 install -e .
 ipython kernel install --user --name=venv3.11_ghe_transcribe
 ```
 
@@ -96,124 +100,74 @@ ipython kernel install --user --name=venv3.11_ghe_transcribe
 
 ### Quick Start
 
-To transcribe an audio file with speaker diarization:
+To transcribe an audio file:
 
 1.  **Accept Hugging Face Model Licenses:**
     * Visit and accept the user conditions for [`pyannote/segmentation-3.0`](https://hf.co/pyannote/segmentation-3.0).
     * Visit and accept the user conditions for [`pyannote/speaker-diarization-3.1`](https://hf.co/pyannote/speaker-diarization-3.1).
-2.  **Clone the repository and enter:**
+2. **Generate a Hugging Face Access Token:**
+    * Create a new access token at [`hf.co/settings/tokens`](https://hf.co/settings/tokens) and save it for later use.
+3.  **Place your audio file:** Upload the audio file you want to transcribe, e.g.`testing_audio.mp3`. **(Recommended)** Drop the file into the `media` folder.
+4.  **Run the transcription script:** Execute the transcribe command in the terminal:
     ```bash
-    git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
-    cd ghe_transcribe
+    transcribe --huggingface-token YOUR_HUGGING_FACE_ACCESS_TOKEN $HOME/ghe_transcribe/media/testing_audio.mp3
     ```
-3.  **Place your audio file:** Upload the audio file you want to transcribe (e.g., `my_audio.mp3`) into the `media` folder.
-4.  **Edit `script.py` to include audio file:** To transcribe a different audio file, you will need to edit the `script.py` file and change the audio file path (currently "media/testing_audio_01.mp3") to the path of your desired audio file in the media folder (e.g., "media/my_audio.mp3"). You can also adjust the num_speakers argument in `script.py` and many more options.
-5.  **Run the transcription script:** Execute the main script. You will be prompted to log in to Hugging Face if you haven't already.
-    ```bash
-    python script.py
-    ```
-### (Recommended) Save your Hugging Face token
+    * **(!)** Replace YOUR_HUGGING_FACE_ACCESS_TOKEN with your actual Hugging Face access token. 
+    * **(!)** If you have not installed `ghe_transcribe` in your `$HOME` or you have uploaded your audio file in another directory, change `$HOME/ghe_transcribe/media/testing_audio.mp3` to the correct `path/to/your/audio/file.mp3`.
+### Python Usage
+**Example:**
+```python
+from ghe_transcribe.core import transcribe
 
-1.  **Generate a Hugging Face Access Token:**
-    * Create a new access token at [`hf.co/settings/tokens`](https://hf.co/settings/tokens).
-2.  **Configure Access Token:**
-    * You can edit `config.json` file in the root directory to save your access token for future use, avoiding repeated logins. The content of the file should be:
-        ```json
-        {
-            "HF_TOKEN": "YOUR_HUGGING_FACE_ACCESS_TOKEN"
-        }
-        ```
-    * Replace `"YOUR_HUGGING_FACE_ACCESS_TOKEN"` with the token you used during the login prompt.
-
-### Command-Line Options
-
-The `ghe_transcribe.core` module accepts the following command-line arguments for customization:
-
+huggingface_token = "YOUR_HUGGING_FACE_ACCESS_TOKEN"
+result = transcribe("media/testing_audio.mp3", 
+                    huggingface_token=huggingface_token, 
+                    num_speakers=2)
 ```
-usage: python -m ghe_transcribe.core [-h] [--device {cuda,mps,cpu}]
-                        [--whisper_model {tiny.en,tiny,base.en,base,small.en,small,medium.en,medium,large-v1,large-v2,large-v3,large,distil-large-v2,distil-medium.en,distil-small.en,distil-large-v3,large-v3-turbo,turbo}]
-                        [--device_index DEVICE_INDEX]
-                        [--compute_type {float32,float16,int8}]
-                        [--cpu_threads CPU_THREADS] [--beam_size BEAM_SIZE]
-                        [--temperature TEMPERATURE] [--word_timestamps]
-                        [--vad_filter]
-                        [--min_silence_duration_ms MIN_SILENCE_DURATION_MS]
-                        [--pyannote_model PYANNOTTE_MODEL]
-                        [--num_speakers NUM_SPEAKERS]
-                        [--min_speakers MIN_SPEAKERS]
-                        [--max_speakers MAX_SPEAKERS] [--save_output]
-                        [--info]
-                        audio_file
+
+### Options
 
 Transcribe and diarize an audio file.
 
-positional arguments:
-  audio_file            Path to the audio file.
+**Usage**:
 
-options:
-  -h, --help            show this help message and exit
-  --device {cuda,mps,cpu}
-                        Device to use (cuda, mps, or cpu). Defaults to auto-
-                        detection.
-  --whisper_model {tiny.en,tiny,base.en,base,small.en,small,medium.en,medium,large-v1,large-v2,large-v3,large,distil-large-v2,distil-medium.en,distil-small.en,distil-large-v3,large-v3-turbo,turbo}
-                        Faster Whisper model to use. Defaults to
-                        large-v3-turbo.
-  --device_index DEVICE_INDEX
-                        Index of the device to use. Defaults to 0.
-  --compute_type {float32,float16,int8}
-                        Compute type for Whisper model. Defaults to float32.
-  --cpu_threads CPU_THREADS
-                        Number of CPU threads to use for Whisper.
-  --beam_size BEAM_SIZE
-                        Beam size for Whisper decoding. Defaults to 5.
-  --temperature TEMPERATURE
-                        Temperature for Whisper sampling. Defaults to 0.0.
-  --word_timestamps     Enable word timestamps in Whisper output.
-  --vad_filter          Enable voice activity detection in Whisper.
-  --min_silence_duration_ms MIN_SILENCE_DURATION_MS
-                        Minimum silence duration for VAD (ms). Defaults to
-                        2000.
-  --pyannote_model PYANNOTTE_MODEL
-                        Pyannote speaker diarization model to use. Defaults
-                        to pyannote/speaker-diarization-3.1.
-  --num_speakers NUM_SPEAKERS
-                        Number of speakers for diarization (if known).
-  --min_speakers MIN_SPEAKERS
-                        Minimum number of speakers for diarization.
-  --max_speakers MAX_SPEAKERS
-                        Maximum number of speakers for diarization.
-  --save_output         Save output to .csv and .md files. (default: True)
-  --info                Print detected language information. (default: True)
+```console
+$ transcribe [OPTIONS] FILE
 ```
 
-  - `audio_file`: **Required.** The path to the audio file you wish to transcribe. Supported formats include `.mp3` and `.wav`.
-  - `--device` (`'cpu'`, `'cuda'`, `'mps'`, optional): Specifies the device for processing. If not provided, the script automatically detects and uses CUDA or MPS if available, otherwise defaults to CPU.
-  - `--whisper_model` (string, optional): Selects the Faster Whisper model size. Available options are: `tiny.en`, `tiny`, `base.en`, `base`, `small.en`, `small`, `medium.en`, `medium`, `large-v1`, `large-v2`, `large-v3`, `large`, `distil-large-v2`, `distil-medium.en`, `distil-small.en`, `distil-large-v3`, `large-v3-turbo`, `turbo`. Defaults to `large-v3-turbo`.
-  - `--device_index` (integer, optional): The index of the device to use if multiple GPUs are available. Defaults to `0`.
-  - `--compute_type` (`'float32'`, `'float16'`, `'int8'`, optional): Sets the computation precision for the Whisper model. Defaults to `float32`.
-  - `--cpu_threads` (integer, optional): Limits the number of CPU threads used by Faster Whisper.
-  - `--beam_size` (integer, optional): The beam size for the decoding process in Whisper. Defaults to `5`.
-  - `--temperature` (float, optional): The temperature parameter for Whisper sampling. Defaults to `0.0`.
-  - `--word_timestamps` (flag, optional): If set, the output will include timestamps for each word.
-  - `--vad_filter` (flag, optional): Enables Voice Activity Detection (VAD) to filter out silent parts of the audio before transcription.
-  - `--min_silence_duration_ms` (integer, optional): The minimum duration of silence (in milliseconds) to consider for VAD. Defaults to `2000`.
-  - `--pyannote_model` (string, optional): Specifies the Pyannote speaker diarization model to use. Defaults to `pyannote/speaker-diarization-3.1`.
-  - `--num_speakers` (integer, optional): If the number of speakers is known, you can specify it to guide the diarization process.
-  - `--min_speakers` (integer, optional): The minimum expected number of speakers.
-  - `--max_speakers` (integer, optional): The maximum expected number of speakers.
-  - `--save_output` (bool, optional): If set (default), the transcription with speaker labels will be saved to both `.csv` and `.md` files in the `output` directory.
-  - `--info` (bool, optional): When enabled (default), the script will print information about the detected language and its confidence score.
+**Arguments**:
 
-From terminal, run:
-  ```bash
-  python -m ghe_transcribe.core media/testing_audio_01.mp3 --num_speakers 2
-  ```
+* `FILE`: Path to the audio file.  [required]
+
+**Options**:
+
+* `--huggingface-token TEXT`: Hugging Face token for authentication.
+* `--trim FLOAT`: Trim the audio file from 0 to the specified number of seconds.
+* `--device [auto|cuda|mps|cpu]`: Device to use.  [default: auto]
+* `--cpu-threads INTEGER`: Number of CPU threads to use.
+* `--whisper-model [tiny.en|tiny|base.en|base|small.en|small|medium.en|medium|large-v1|large-v2|large-v3|large|distil-large-v2|distil-medium.en|distil-small.en|distil-large-v3|large-v3-turbo|turbo]`: Faster Whisper, model to use.  [default: large-v3-turbo]
+* `--device-index INTEGER`: Faster Whisper, index of the device to use.  [default: 0]
+* `--compute-type [float32|float16|int8]`: Faster Whisper, compute type.  [default: float32]
+* `--beam-size INTEGER`: Faster Whisper, beam size for decoding.  [default: 5]
+* `--temperature FLOAT`: Faster Whisper, sampling temperature.  [default: 0.0]
+* `--word-timestamps / --no-word-timestamps`: Faster Whisper, enable word timestamps in the output.
+* `--vad-filter / --no-vad-filter`: Faster Whisper, enable voice activity detection.  [default: no-vad-filter]
+* `--min-silence-duration-ms INTEGER`: Faster Whisper, minimum silence duration detected by VAD in milliseconds.  [default: 2000]
+* `--pyannote-model TEXT`: pyannote.audio, speaker diarization model to use.  [default: pyannote/speaker-diarization-3.1]
+* `--num-speakers INTEGER`: pyannote.audio, number of speakers.
+* `--min-speakers INTEGER`: pyannote.audio, minimum number of speakers.
+* `--max-speakers INTEGER`: pyannote.audio, maximum number of speakers.
+* `--save-output / --no-save-output`: Save output to .csv and .md files.  [default: save-output]
+* `--info / --no-info`: Print detected language information.  [default: info]
+* `--install-completion`: Install completion for the current shell.
+* `--show-completion`: Show completion for the current shell, to copy it or customize the installation.
+* `--help`: Show this message and exit.
 
 ## Performance
 
 ### Timing Tests
 
-The following table shows the execution time of `python -m ghe_transcribe.core` on the audio file [`media/testing_audio_01.wav`](https://github.com/Global-Health-Engineering/ghe_transcribe/blob/main/media/testing_audio_01.mp3) across different environments. These tests were conducted using the `timing` function defined in [`utils.py`](https://github.com/Global-Health-Engineering/ghe_transcribe/blob/main/utils.py).
+The following table shows the execution time of `transcribe media/testing_audio.mp3` across different environments. These tests were conducted using the `timing` function defined in `utils.py`.
 
 | Device                                      | Time (sec) |
 | :------------------------------------------ | :--------- |

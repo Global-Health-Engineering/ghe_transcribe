@@ -1,8 +1,7 @@
-# CREDIT: https://github.com/yinruiqing/pyannote-whisper
-
 import os
 from functools import wraps
 from time import time
+from datetime import timedelta
 
 from av import open
 from pyannote.core import Segment
@@ -16,10 +15,12 @@ def timing(func):
         ts = time()
         result = func(*args, **kw)
         te = time()
-        print(f"func:{func.__name__!r} args:[{args!r}, {kw!r}] took: {te - ts:2.4f} sec")
+        print(f"func:{func.__name__!r} took: {te - ts:2.4f} sec")
         return result
 
     return wrap
+
+# CREDIT: https://github.com/yinruiqing/pyannote-whisper
 
 
 def get_text_with_timestamp(transcribe_res):
@@ -112,10 +113,10 @@ def to_md(result):
     for seg, spk, sentence in result:
         if spk != previous_spk:
             md.append(f"\n{spk}")
-            md.append(f"({format_time(seg.start)}){sentence}".strip())
+            md.append(f"({format_time_datetime(seg.start)}){sentence}".strip())
             previous_spk = spk
         else:
-            md.append(f"({format_time(seg.start)}){sentence}".strip())
+            md.append(f"({format_time_datetime(seg.start)}){sentence}".strip())
     return md
 
 
@@ -194,47 +195,21 @@ def resampling(file_name, sample_rate=16000):
     save(file_name, waveform, sample_rate)
 
 
-def digit_to_string(num: int) -> str:
-    if 0 <= num <= 9:
-        return f"0{num}"
+def format_time_datetime(seconds_float: float) -> str:
+    """Formats seconds into HH:MM:SS or MM:SS or SS format."""
+    delta = timedelta(seconds=seconds_float)
+    parts = str(delta).split(':')
+    if len(parts) == 3 and parts[0] == '0':
+        return f"{parts[1]}:{parts[2].split('.')[0].zfill(2)}"
+    elif len(parts) == 3:
+        return f"{parts[0]}:{parts[1].zfill(2)}:{parts[2].split('.')[0].zfill(2)}"
     else:
-        return f"{num}"
-
-
-def seconds_to_hours_minutes_seconds(num) -> int:
-    # Expects time in seconds float or string, e.g. time = '11.27', 63.9
-    seconds, minutes, hours = round(float(num)), 0, 0
-    if seconds >= 60:
-        minutes = seconds // 60
-        seconds -= minutes * 60
-    if minutes >= 60:
-        hours = minutes // 60
-        minutes -= hours * 60
-    return seconds, minutes, hours
-
-
-def format_time(num) -> str:
-    seconds, minutes, hours = seconds_to_hours_minutes_seconds(num)
-    try:
-        if minutes == 0 and hours == 0:
-            return digit_to_string(seconds)
-        elif hours == 0:
-            return f"{digit_to_string(minutes)}:{digit_to_string(seconds)}"
-        else:
-            return f"{digit_to_string(hours)}:{digit_to_string(minutes)}:{digit_to_string(seconds)}"
-    except Exception as e:
-        print(f"Time Formatting Error: {e}")
+        return f"{parts[1].split('.')[0].zfill(2)}" # Handles cases less than an hour
 
 
 def snip_audio(input_file, output_file, start_time, duration):
     """
     Snips a portion of an audio file using pyAV.
-
-    Args:
-        input_file (str): Path to the input audio file.
-        output_file (str): Path to save the snipped audio.
-        start_time (float): Start time of the snippet in seconds.
-        duration (float): Duration of the snippet in seconds.
     """
     try:
         input_container = open(input_file)
@@ -279,3 +254,4 @@ def snip_audio(input_file, output_file, start_time, duration):
         if output_container:
             output_container.close()
     return output_file
+
