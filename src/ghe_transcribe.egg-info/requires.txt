@@ -1,7 +1,0 @@
-torch
-torchaudio
-typer
-av
-faster-whisper
-pyannote.audio
-huggingface-hub

@@ -3,3 +3,4 @@ __pycache__
 .DS_Store
 config.json
 ruff.toml
+*.egg-info

@@ -1,2 +1,0 @@
-[console_scripts]
-transcribe = ghe_transcribe.core:app
