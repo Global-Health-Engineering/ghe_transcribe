@@ -58,7 +58,9 @@ It's recommended to create a dedicated virtual environment to manage dependencie
 ```bash
 python3.11 -m venv venv3.11_ghe_transcribe --system-site-packages
 source venv3.11_ghe_transcribe/bin/activate
-pip3.11 install typer av faster-whisper pyannote.audio huggingface-hub
+git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
+cd ghe_transcribe
+pip3.11 install -e .
 ipython kernel install --user --name=venv3.11_ghe_transcribe
 ```
 
@@ -88,7 +90,9 @@ brew install cmake python@3.11
 ```bash
 python3.11 -m venv venv3.11_ghe_transcribe --system-site-packages
 source venv3.11_ghe_transcribe/bin/activate
-pip3.11 install torch torchaudio typer av faster-whisper pyannote.audio huggingface-hub
+git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
+cd ghe_transcribe
+pip3.11 install -e .
 ipython kernel install --user --name=venv3.11_ghe_transcribe
 ```
 
@@ -103,17 +107,13 @@ To transcribe an audio file:
     * Visit and accept the user conditions for [`pyannote/speaker-diarization-3.1`](https://hf.co/pyannote/speaker-diarization-3.1).
 2. **Generate a Hugging Face Access Token:**
     * Create a new access token at [`hf.co/settings/tokens`](https://hf.co/settings/tokens) and save it for later use.
-3.  **Clone the repository and enter:** Run the following commands in your terminal:
+3.  **Place your audio file:** Upload the audio file you want to transcribe, e.g.`testing_audio.mp3`. **(Recommended)** Drop the file into the `media` folder.
+4.  **Run the transcription script:** Execute the transcribe command in the terminal:
     ```bash
-    git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
-    cd ghe_transcribe
+    transcribe --huggingface-token YOUR_HUGGING_FACE_ACCESS_TOKEN $HOME/ghe_transcribe/media/testing_audio.mp3
     ```
-4.  **Place your audio file:** Upload the audio file you want to transcribe, e.g.`testing_audio.mp3`. Drop the file into the `media` folder.
-5.  **Run the transcription script:** Execute the transcribe command in the terminal:
-    ```bash
-    transcribe --num_speakers 2 --huggingface-token YOUR_HUGGING_FACE_ACCESS_TOKEN media/testing_audio.mp3
-    ```
-    and replace YOUR_HUGGING_FACE_ACCESS_TOKEN with your actual Hugging Face access token.
+    * **(!)** Replace YOUR_HUGGING_FACE_ACCESS_TOKEN with your actual Hugging Face access token. 
+    * **(!)** If you have not installed `ghe_transcribe` in your `$HOME` or you have uploaded your audio file in another directory, change `$HOME/ghe_transcribe/media/testing_audio.mp3` to the correct `path/to/your/audio/file.mp3`.
 ### Python Usage
 **Example:**
 ```python
