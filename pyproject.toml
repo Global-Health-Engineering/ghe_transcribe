@@ -1,0 +1,15 @@
+[project]
+name = "ghe_transcribe"
+version = "0.1.0"
+dependencies = [
+    "torch",
+    "torchaudio",
+    "typer",
+    "av",
+    "faster-whisper",
+    "pyannote.audio",
+    "huggingface-hub",
+]
+
+[project.scripts]
+transcribe = "ghe_transcribe.core:app"

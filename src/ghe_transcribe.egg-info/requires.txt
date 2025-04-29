@@ -1,5 +1,6 @@
 torch
 torchaudio
+typer
 av
 faster-whisper
 pyannote.audio

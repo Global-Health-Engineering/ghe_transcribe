@@ -24,6 +24,7 @@ from ghe_transcribe.utils import (
 
 
 class DeviceChoice(str, Enum):
+    auto = "auto"
     cuda = "cuda"
     mps = "mps"
     cpu = "cpu"
@@ -56,10 +57,10 @@ class WhisperModelChoice(str, Enum):
 transcribe_config = {
     "huggingface_token": None,
     "trim": None,
-    "device": None,
-    "cpu_threads": 0,
+    "device": "auto",
+    "cpu_threads": None,
     "whisper_model": "large-v3-turbo",
-    "device_index": None,
+    "device_index": 0,
     "compute_type": "float32",
     "beam_size": 5,
     "temperature": 0.0,
@@ -76,8 +77,8 @@ transcribe_config = {
 
 app = Typer(help="Transcribe and diarize an audio file.")
 
-@timing
 @app.command()
+@timing
 def transcribe(
     file: str = Argument(..., help="Path to the audio file."),
     huggingface_token: Optional[str] = Option(transcribe_config.get("huggingface_token"), help="Hugging Face token for authentication."),
