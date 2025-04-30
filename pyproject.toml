@@ -19,9 +19,6 @@ dependencies = [
 [project.scripts]
 transcribe = "ghe_transcribe.core:app"
 
-[tool.setuptools.dynamic]
-version = { attr = "ghe_transcribe.__version__" }
-
 [tool.setuptools_scm]
 local_scheme = "node-and-date"
 write_to = "src/ghe_transcribe/_version.py"
