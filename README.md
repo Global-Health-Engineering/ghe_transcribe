@@ -216,7 +216,8 @@ Explore these related projects and libraries for more advanced functionalities o
 
 ## Contributing
 
-Contributions to `ghe_transcribe` are welcome! Please feel free to open an issue or submit a pull request with your contributions.
+Contributions to `ghe_transcribe` are welcome! Please follow the following guidelines:
+- Follow the commit message format (`<type>: <description>`), eg. `fix: typo in README.md`. Check out the [conventional commits guide](https://www.conventionalcommits.org/en/v1.0.0/) for more details.
 
 ## License
 
