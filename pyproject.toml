@@ -1,6 +1,10 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools_scm>=8.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "ghe_transcribe"
-version = "0.1.0"
+version = { dynamic = "version" }
 requires-python = ">=3.11.1,<3.13.1"
 dependencies = [
     "torch",
@@ -14,3 +18,10 @@ dependencies = [
 
 [project.scripts]
 transcribe = "ghe_transcribe.core:app"
+
+[tool.setuptools.dynamic]
+version = { attr = "ghe_transcribe.__version__" }
+
+[tool.setuptools_scm]
+write_to = "ghe_transcribe/_version.py"
+local_scheme = "no-local-version"
