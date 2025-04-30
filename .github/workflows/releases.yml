@@ -1,12 +1,12 @@
-name: Create Release
+name: Create Release on Main Push
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    branches:
+      - main
 
 permissions:
-  contents: write  # Required for the action to commit and tag
+  contents: write
 
 jobs:
   release:
@@ -29,31 +29,22 @@ jobs:
       - name: Build package
         run: python -m build --wheel --outdir dist
 
-      - name: Generate Changelog
+      - name: Generate Changelog and Create Release
         id: changelog
         uses: TriPSs/conventional-changelog-action@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          output-file: "false"
           tag-prefix: "v"
-
-      - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.changelog.outputs.tag }}
-          release_name: ${{ steps.changelog.outputs.tag }}
-          body: ${{ steps.changelog.outputs.clean_changelog }}
-          draft: false
-          prerelease: ${{ contains(github.ref_name, '-alpha') || contains(github.ref_name, '-beta') || contains(github.ref_name, '-rc') }}
+          release: true
+          output-file: "false"
+          skip-tag: false
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.changelog.outputs.upload_url }}
           asset_path: dist/*.whl
-          asset_name: ghe_transcribe-${{ github.ref_name }}.whl
+          asset_name: ghe_transcribe-${{ steps.changelog.outputs.tag }}.whl
           asset_content_type: application/zip
