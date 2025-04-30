@@ -1,3 +1,12 @@
+## [0.2.6](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.5...v0.2.6) (2025-04-30)
+
+
+### Bug Fixes
+
+* add debugging ([3b954df](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/3b954dfdc4eda8d341aea09300fc05046349a09a))
+
+
+
 ## [0.2.5](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.4...v0.2.5) (2025-04-30)
 
 
@@ -32,15 +41,6 @@
 ### Bug Fixes
 
 * follow docs for creating a release ([db612fb](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/db612fb55349c89ac29d004c00be299e7bc7005f))
-
-
-
-## [0.2.1](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.0...v0.2.1) (2025-04-30)
-
-
-### Bug Fixes
-
-* Error: Input required and not supplied: upload_url ([046fd87](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/046fd87eab9d99e1667404a8170bfb28c02b661a))
 
 
 
