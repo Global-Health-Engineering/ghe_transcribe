@@ -1,3 +1,12 @@
+## [0.2.1](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.0...v0.2.1) (2025-04-30)
+
+
+### Bug Fixes
+
+* Error: Input required and not supplied: upload_url ([046fd87](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/046fd87eab9d99e1667404a8170bfb28c02b661a))
+
+
+
 # [0.2.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.1.1...v0.2.0) (2025-04-30)
 
 
