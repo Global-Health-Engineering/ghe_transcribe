@@ -1,3 +1,12 @@
+## [0.2.7](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.6...v0.2.7) (2025-04-30)
+
+
+### Bug Fixes
+
+* passing wheel file to GITHUB_OUTPUT ([324e86b](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/324e86bc3979f29131169b2b1fab7bbf1123c48c))
+
+
+
 ## [0.2.6](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.5...v0.2.6) (2025-04-30)
 
 
@@ -32,15 +41,6 @@
 
 * asset_name wasn't matching ([19b72ad](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/19b72ad5ff61c107bbf2b18976cac5899da8e7ba))
 * asset_name wasn't matching ([9646f2a](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/9646f2afa49fa772008411fb3b2b5e3ee19f92ac))
-
-
-
-## [0.2.2](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.1...v0.2.2) (2025-04-30)
-
-
-### Bug Fixes
-
-* follow docs for creating a release ([db612fb](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/db612fb55349c89ac29d004c00be299e7bc7005f))
 
 
 
