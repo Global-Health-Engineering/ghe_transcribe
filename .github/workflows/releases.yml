@@ -29,27 +29,32 @@ jobs:
       - name: Build package
         run: python -m build --wheel --outdir dist
 
-      - name: Generate Changelog and Create Release
+      - name: Generate Changelog
         id: changelog
         uses: TriPSs/conventional-changelog-action@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tag-prefix: "v"
-          release: true
+          output-file: "CHANGELOG.md"
 
-      - name: Validate changelog outputs
-        if: ${{ steps.changelog.outputs.upload_url == null || steps.changelog.outputs.upload_url == '' }}
-        run: |
-          echo "Error: upload_url is not available. Please check the previous steps for errors."
-          exit 1
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          release_name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
+          draft: false
+          prerelease: false
 
       - name: Upload Release Asset
-        if: ${{ steps.changelog.outputs.upload_url != null && steps.changelog.outputs.upload_url != '' }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.changelog.outputs.upload_url }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: dist/*.whl
           asset_name: ghe_transcribe-${{ steps.changelog.outputs.tag }}.whl
           asset_content_type: application/zip
