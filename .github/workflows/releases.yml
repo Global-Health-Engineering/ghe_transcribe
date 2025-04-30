@@ -44,6 +44,7 @@ jobs:
           echo "CHANGELOG<<EOF" >> "$GITHUB_OUTPUT"
           echo "$CHANGELOG" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "changelog=$CHANGELOG" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
         id: create_release
@@ -63,6 +64,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/ghe_transcribe-*.whl
+          asset_path: dist/*.whl
           asset_name: ghe_transcribe-${{ github.ref_name }}.whl
           asset_content_type: application/zip
