@@ -30,7 +30,10 @@ jobs:
         run: rm -rf dist/*
 
       - name: Build package
-        run: python -m build --wheel --outdir dist
+        id: build_output
+        run: |
+          python -m build --wheel --outdir dist
+          echo "WHEEL_FILE=$(ls dist/*.whl)" >> $GITHUB_OUTPUT
 
       - name: Generate Changelog
         id: changelog
@@ -52,15 +55,12 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: List dist/ directory contents
-        run: ls -al dist/
-
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/*.whl
+          asset_path: ${{ steps.build_output.outputs.WHEEL_FILE }}
           asset_name: ghe_transcribe-${{ steps.changelog.outputs.tag }}.whl
           asset_content_type: application/zip
