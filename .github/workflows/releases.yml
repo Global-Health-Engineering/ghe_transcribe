@@ -36,8 +36,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tag-prefix: "v"
           release: true
-          output-file: "false"
-          skip-tag: false
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
