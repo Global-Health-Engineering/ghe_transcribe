@@ -23,5 +23,6 @@ transcribe = "ghe_transcribe.core:app"
 version = { attr = "ghe_transcribe.__version__" }
 
 [tool.setuptools_scm]
+local_scheme = "node-and-date"
 write_to = "src/ghe_transcribe/_version.py"
 local_scheme = "no-local-version"
