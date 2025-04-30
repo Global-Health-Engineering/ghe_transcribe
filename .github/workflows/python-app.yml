@@ -3,8 +3,16 @@ name: Python application
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'src/ghe_transcribe/**'
+      - '!src/ghe_transcribe/_version.py'
+      - 'tests/**'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - 'src/ghe_transcribe/**'
+      - '!src/ghe_transcribe/_version.py'
+      - 'tests/**'
 
 permissions:
   contents: read
@@ -28,7 +36,7 @@ jobs:
         # Only install in editable mode if not a tagged commit (release build)
         if [[ -z "${GITHUB_REF#refs/tags/}" ]]; then
           pip install -e .
-        else
+        else:
           pip install .
         fi
     - name: Test with pytest
