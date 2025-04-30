@@ -39,7 +39,7 @@ jobs:
         run: |
           TAG_NAME="${GITHUB_REF_NAME}"
           PREVIOUS_TAG=$(git describe --abbrev=0 --tags "$TAG_NAME^" || echo HEAD)
-          echo "PREVIOUS_TAG: $PREVIOUS_TAG"
+          echo "PREVIOUS_TAG=$PREVIOUS_TAG" >> "$GITHUB_OUTPUT"
           CHANGELOG=$(conventional-changelog -p angular -i CHANGELOG.md -s -r 0 --from "$PREVIOUS_TAG" --to "$TAG_NAME")
           echo "CHANGELOG<<EOF" >> "$GITHUB_OUTPUT"
           echo "$CHANGELOG" >> "$GITHUB_OUTPUT"
