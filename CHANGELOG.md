@@ -1,3 +1,12 @@
+## [0.2.4](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.3...v0.2.4) (2025-04-30)
+
+
+### Bug Fixes
+
+* added debugging ([c1d4125](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/c1d4125ac70aacd9c16402b4f6a66e4820a818c1))
+
+
+
 ## [0.2.3](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.2...v0.2.3) (2025-04-30)
 
 
@@ -40,7 +49,6 @@
 * deprecation warning resolve ([d140855](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/d140855625fead6a846626605a19f11a4a695b90))
 * drop ::set-output dependency ([79349a5](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/79349a5366d9172d68ef7ae4b418724b08dd91aa))
 * dynamic version is needed, but was incorrectly defined ([182a765](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/182a765604e8640cdd4b030cf5d92752db018982))
-* env variables capital ([52dac54](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/52dac5406ed68760dd105a999b790b25aee5ae7f))
 * Error: ENOENT: no such file or directory, stat 'dist/*.whl' ([33d520c](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/33d520c86f9da4c7e80313eb62a4f77d2d637887))
 * follow TriPSs guidelines ([6c8ec69](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/6c8ec696139880f8dcdec73d7e06b9fb18fd4686))
 * init was missing version import... ([3712100](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/3712100fdd4d15f634d2f2fe80c3fbc30bc363fb))
@@ -48,14 +56,8 @@
 * need to add a packages.json ([8f150b3](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/8f150b3e42651bdd01f119b727fc3f1bffbe1608))
 * only install in editable mode if not a tagged commit ([f4d0157](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/f4d0157e9d23b302726de62c56b5464b3a1c23f8))
 * remove dynamic version definition altogether ([14fc881](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/14fc8810944db999887fd2310615dfa93effedd8))
-* removed args print from timing decorator ([f6896af](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/f6896af09c0529baa4cb0b04b11dd7ec1e8e75a1))
-* specify device for testing on github servers ([b1fdf6d](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/b1fdf6df6a134f6433f1e9652ecee52f3262b49b))
-* testing was conflicting with Option class from Typer, passing all arguments now ([f6506f7](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/f6506f7b1fed4fd05d5662407614ddcec8f09ab6))
 * two local_scheme defined ([28e743e](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/28e743e304730956249e9449f74c863a96c28bf0))
-* typo ([ab24f60](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/ab24f60736ed210e7dcabb388a24a929dfc255c0))
-* update script.py and tests ([20981ae](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/20981aeafc926c62248b9b055b88f9d381eee17c))
 * Update setuptools_scm write_to path for src directory ([f8bb55b](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/f8bb55bd12cab68ace7100dae69c35c4833e2de5))
-* updated readme with pyproject installation pipeline ([b76b4b3](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/b76b4b3f0a98f934d3fb0d13dfb74c62fa67a0ca))
 
 
 ### Features
