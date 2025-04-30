@@ -1,3 +1,12 @@
+## [0.2.8](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.7...v0.2.8) (2025-04-30)
+
+
+### Bug Fixes
+
+* do not run tests unless core code is edited ([f7ddcce](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/f7ddcce98b964b83ac18c3a76654090252fe2bc7))
+
+
+
 ## [0.2.7](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.6...v0.2.7) (2025-04-30)
 
 
@@ -31,16 +40,6 @@
 ### Bug Fixes
 
 * added debugging ([c1d4125](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/c1d4125ac70aacd9c16402b4f6a66e4820a818c1))
-
-
-
-## [0.2.3](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.2...v0.2.3) (2025-04-30)
-
-
-### Bug Fixes
-
-* asset_name wasn't matching ([19b72ad](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/19b72ad5ff61c107bbf2b18976cac5899da8e7ba))
-* asset_name wasn't matching ([9646f2a](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/9646f2afa49fa772008411fb3b2b5e3ee19f92ac))
 
 
 
