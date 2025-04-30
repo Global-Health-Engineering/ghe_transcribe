@@ -10,7 +10,7 @@ def test_transcribe_snippet():
     result = transcribe(TEST_AUDIO_PATH, 
                         huggingface_token=huggingface_token, 
                         trim=5, 
-                        device="cpu", 
+                        device="auto", 
                         cpu_threads=None,
                         whisper_model="tiny.en",
                         device_index=0,
