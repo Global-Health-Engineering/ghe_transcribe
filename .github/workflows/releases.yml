@@ -1,9 +1,12 @@
-name: Create Release
+name: Create Release on Main Push
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    branches:
+      - main
+
+permissions:
+  contents: write
 
 jobs:
   release:
@@ -13,32 +16,51 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
         with:
-          node-version: 'lts/*'
+          python-version: '3.11'
 
-      - name: Install conventional-changelog-cli
-        run: npm install -g conventional-changelog-cli
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build setuptools wheel setuptools_scm
+
+      - name: Clean dist/ directory
+        run: rm -rf dist/*
+
+      - name: Build package
+        id: build_output
+        run: |
+          python -m build --wheel --outdir dist
+          echo "WHEEL_FILE=$(ls dist/*.whl)" >> $GITHUB_OUTPUT
 
       - name: Generate Changelog
         id: changelog
-        run: |
-          TAG_NAME="${GITHUB_REF_NAME}"
-          PREVIOUS_TAG=$(git describe --abbrev=0 --tags "$TAG_NAME^" || echo HEAD)
-          echo "PREVIOUS_TAG: $PREVIOUS_TAG"
-          CHANGELOG=$(conventional-changelog -p angular -i CHANGELOG.md -s -r 0 --from "$PREVIOUS_TAG" --to "$TAG_NAME")
-          echo "CHANGELOG<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$CHANGELOG" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
+        uses: TriPSs/conventional-changelog-action@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          tag-prefix: "v"
+          output-file: "CHANGELOG.md"
 
       - name: Create GitHub Release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
-          body: ${{ steps.changelog.outputs.CHANGELOG }}
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          release_name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
           draft: false
-          prerelease: ${{ contains(github.ref_name, '-alpha') || contains(github.ref_name, '-beta') || contains(github.ref_name, '-rc') }}
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.build_output.outputs.WHEEL_FILE }}
+          asset_name: ghe_transcribe-${{ steps.changelog.outputs.tag }}.whl
+          asset_content_type: application/zip
