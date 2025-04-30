@@ -9,7 +9,7 @@ huggingface_token = os.environ.get("HUGGINGFACE_TOKEN")
 
 def test_transcribe_snippet():
     """Tests the transcribe function with a snippet and speaker count."""
-    result = transcribe(TEST_AUDIO_PATH, huggingface_token=huggingface_token, trim=5, num_speakers=1, save_output=False, info=False)
+    result = transcribe(TEST_AUDIO_PATH, huggingface_token=huggingface_token, trim=5, device="cpu", num_speakers=1, save_output=False, info=False)
 
     # Add assertions to check the result
     assert isinstance(result, list), "Transcribe should return a list."
