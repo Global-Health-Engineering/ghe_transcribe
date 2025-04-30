@@ -9,41 +9,46 @@ This repository hosts `ghe_transcribe`, a powerful Python script designed to tra
 
 ## Table of Contents
 
-1.  [**Installation**](#installation)
-    * [Installation on Euler](#installation-on-euler)
-    * [Installation on MacOS](#installation-on-macos)
-2.  [**Usage**](#usage)
-    * [Quick Start](#quick-start)
-    * [Command-Line Options](#command-line-options)
-3.  [**Performance**](#performance)
-    * [Timing Tests](#timing-tests)
-4.  [**Related Tools and Resources**](#related-tools-and-resources)
-    * [Transcription](#transcription)
-    * [Diarization](#diarization)
-    * [Transcription + Diarization](#transcription--diarization)
-    * [Graphical User Interfaces (GUIs)](#graphical-user-interfaces-guis)
-    * [Transcription + Diarization + GUI](#transcription--diarization--gui)
+1.  [**Getting Started**](#getting-started)
+    * [Installation](#installation)
+        * [Euler Cluster](#euler-cluster)
+        * [macOS](#macos)
+    * [Basic Usage](#basic-usage)
+        * [Quick Start](#quick-start)
+        * [Python Integration](#python-integration)
+2.  [**Command-Line Interface**](#command-line-interface)
+    * [Options](#options)
+3.  [**Performance Benchmarks**](#performance-benchmarks)
+    * [Execution Time](#execution-time)
+4.  [**Related Projects**](#related-projects)
+    * [Transcription Libraries](#transcription-libraries)
+    * [Speaker Diarization Libraries](#speaker-diarization-libraries)
+    * [Combined Transcription and Diarization Tools](#combined-transcription-and-diarization-tools)
+    * [Graphical User Interfaces](#graphical-user-interfaces)
+    * [GUI Applications with Transcription and Diarization](#gui-applications-with-transcription-and-diarization)
 5.  [**Contributing**](#contributing)
 6.  [**License**](#license)
 
-## Installation
+## Getting Started
+
+### Installation
 
 Choose the installation method that suits your environment.
 
-### Installation on Euler
+#### Euler Cluster
 
 Follow these steps to set up `ghe_transcribe` on the Euler cluster at ETH Zurich.
 
-#### First login to Euler
+##### First login to Euler
 
-Refer to the official [Euler wiki on getting started](https://scicomp.ethz.ch/wiki/Getting_started_with_clusters) and the [GDC's documentation on accessing Euler](https://www.gdc-docs.ethz.ch/EulerManual/site/access/) if you are a first-time user.
+Refer to the official [Euler wiki on getting started](https://scicomp.ethz.ch/wiki/Getting_started_with_clusters) if you are a first-time user.
 
-#### Open a terminal in JupyterHub
+##### Open a terminal in JupyterHub
 
 1.  Navigate to [https://jupyter.euler.hpc.ethz.ch/](https://jupyter.euler.hpc.ethz.ch/) and log in with your ETHZ account.
 2.  Click on "Terminal" in the JupyterLab interface.
 
-#### Load necessary modules
+##### Load necessary modules
 
 Execute the following command to load the required software modules:
 
@@ -51,7 +56,7 @@ Execute the following command to load the required software modules:
 module load stack/2024-06 python_cuda/3.11.6
 ```
 
-#### Create a Python virtual environment and kernel
+##### Create a Python virtual environment and kernel
 
 It's recommended to create a dedicated virtual environment to manage dependencies:
 
@@ -64,7 +69,7 @@ pip3.11 install -e .
 ipython kernel install --user --name=venv3.11_ghe_transcribe
 ```
 
-#### Configure JupyterHub to use the environment
+##### Configure JupyterHub to use the environment
 
 To ensure your JupyterHub instances automatically use the created environment, edit the JupyterLab configuration file:
 
@@ -79,7 +84,7 @@ module load stack/2024-06 python_cuda/3.11.6
 source venv3.11_ghe_transcribe/bin/activate
 ```
 
-### Installation on MacOS
+#### macOS
 
 Use the following commands to install the necessary dependencies on macOS:
 
@@ -96,9 +101,9 @@ pip3.11 install -e .
 ipython kernel install --user --name=venv3.11_ghe_transcribe
 ```
 
-## Usage
+### Basic Usage
 
-### Quick Start
+#### Quick Start
 
 To transcribe an audio file:
 
@@ -114,7 +119,7 @@ To transcribe an audio file:
     ```
     * **(!)** Replace YOUR_HUGGING_FACE_ACCESS_TOKEN with your actual Hugging Face access token. 
     * **(!)** If you have not installed `ghe_transcribe` in your `$HOME` or you have uploaded your audio file in another directory, change `$HOME/ghe_transcribe/media/testing_audio.mp3` to the correct `path/to/your/audio/file.mp3`.
-### Python Usage
+#### Python Integration
 **Example:**
 ```python
 from ghe_transcribe.core import transcribe
@@ -124,6 +129,8 @@ result = transcribe("media/testing_audio.mp3",
                     huggingface_token=huggingface_token, 
                     num_speakers=2)
 ```
+
+## Command-Line Interface
 
 ### Options
 
@@ -163,9 +170,9 @@ $ transcribe [OPTIONS] FILE
 * `--show-completion`: Show completion for the current shell, to copy it or customize the installation.
 * `--help`: Show this message and exit.
 
-## Performance
+## Performance Benchmarks
 
-### Timing Tests
+### Execution Time
 
 The following table shows the execution time of `transcribe media/testing_audio.mp3` across different environments. These tests were conducted using the `timing` function defined in `utils.py`.
 
@@ -176,41 +183,40 @@ The following table shows the execution time of `transcribe media/testing_audio.
 | MacOS (Apple M2, 16GB RAM) - `mps`           | 41.2122    |
 | MacOS (Apple M2, 16GB RAM) - `cpu`           | 64.7549    |
 
-## Related Tools and Resources
+## Related Projects
 
 Explore these related projects and libraries for more advanced functionalities or alternative approaches.
 
-### Transcription
+### Transcription Libraries
 
   - **Whisper:** ([https://github.com/openai/whisper](https://github.com/openai/whisper)) - OpenAI's original speech-to-text model.
   - **faster-whisper:** ([https://github.com/SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper)) - The fast implementation used in `ghe_transcribe`, offering significant speed improvements. See [benchmarks](https://github.com/SYSTRAN/faster-whisper/issues/1030).
   - **Deepgram Benchmarks:** ([https://deepgram.com/learn/benchmarking-top-open-source-speech-models](https://deepgram.com/learn/benchmarking-top-open-source-speech-models)) - A comparison of various open-source speech models, including Whisper.
 
-### Diarization
+### Speaker Diarization Libraries
 
   - **pyannote.audio:** ([https://github.com/pyannote/pyannote-audio](https://github.com/pyannote/pyannote-audio)) - The speaker diarization toolkit by pyannoteAI ([https://www.pyannote.ai/](https://www.pyannote.ai/)), requiring a Hugging Face access token ([https://hf.co/settings/tokens](https://hf.co/settings/tokens)).
   - **NeMo:** ([https://github.com/NVIDIA/NeMo](https://github.com/NVIDIA/NeMo)) - NVIDIA's open-source framework for conversational AI, including diarization capabilities.
   - **Pyannote vs NeMo Comparison:** ([https://lajavaness.medium.com/comparing-state-of-the-art-speaker-diarization-frameworks-pyannote-vs-nemo-31a191c6300](https://lajavaness.medium.com/comparing-state-of-the-art-speaker-diarization-frameworks-pyannote-vs-nemo-31a191c6300)) - A blog post comparing the two frameworks.
 
-### Transcription + Diarization
+### Combined Transcription and Diarization Tools
 
   - **WhisperX:** ([https://github.com/m-bain/whisperX](https://github.com/m-bain/whisperX)) - Combines `faster-whisper` with `pyannote.audio` for transcription and diarization.
   - **whisper-diarization:** ([https://github.com/MahmoudAshraf97/whisper-diarization](https://github.com/MahmoudAshraf97/whisper-diarization)) - Integrates `faster-whisper` with `NeMo` for speaker diarization.
-  - **insanely-fast-whisper:** ([https://github.com/Vaibhavs10/insanely-fast-whisper](https://github.com/Vaibhavs10/insanely-fast-whisper)) - Another optimized Whisper implementation that can be combined with `pyannote.audio`.
+  - **insanely-fast-whisper:** ([https://github.com/Vaibhavs10/insanely-fast-whisper](https://github.com/Vaibhavs10/insanely-fast-whisper)) - Another optimized Whisper implementation combined with `pyannote.audio`.
 
-### Graphical User Interfaces (GUIs)
+### Graphical User Interfaces
 
   - **wscribe-editor:** ([https://github.com/geekodour/wscribe-editor](https://github.com/geekodour/wscribe-editor)) - An editor for transcriptions with word-level timestamps, supporting a specific JSON format (see [sample.json](https://github.com/geekodour/wscribe/blob/main/examples/output/sample.json)).
   - **QualCoder:** ([https://github.com/ccbogel/QualCoder](https://github.com/ccbogel/QualCoder)) - A general-purpose qualitative data analysis tool with some audio transcription features.
 
-### Transcription + Diarization + GUI
-
+### GUI Applications with Transcription and Diarization
   - **noScribe:** ([https://github.com/kaixxx/noScribe](https://github.com/kaixxx/noScribe)) - A GUI application leveraging `faster-whisper` and `pyannote.audio`.
   - **TranscriboZH:** ([https://github.com/machinelearningZH/audio-transcription](https://github.com/machinelearningZH/audio-transcription)) - Another GUI tool based on `WhisperX`.
 
 ## Contributing
 
-Contributions to `ghe_transcribe` are welcome! Please see the [Contributing Guidelines](https://github.com/Global-Health-Engineering/ghe_transcribe/blob/main/CONTRIBUTING.md) for more information on how to contribute.
+Contributions to `ghe_transcribe` are welcome! Please feel free to open an issue or submit a pull request with your contributions.
 
 ## License
 
