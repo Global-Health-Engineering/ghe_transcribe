@@ -37,7 +37,14 @@ jobs:
           tag-prefix: "v"
           release: true
 
+      - name: Validate changelog outputs
+        if: ${{ steps.changelog.outputs.upload_url == null || steps.changelog.outputs.upload_url == '' }}
+        run: |
+          echo "Error: upload_url is not available. Please check the previous steps for errors."
+          exit 1
+
       - name: Upload Release Asset
+        if: ${{ steps.changelog.outputs.upload_url != null && steps.changelog.outputs.upload_url != '' }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
