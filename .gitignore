@@ -4,3 +4,4 @@ __pycache__
 config.json
 ruff.toml
 *.egg-info
+launch.json
