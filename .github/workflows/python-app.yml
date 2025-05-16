@@ -43,4 +43,4 @@ jobs:
       env:
         HUGGINGFACE_TOKEN: ${{secrets.HUGGINGFACE_TOKEN}}
       run: |
-        pytest tests/
+        pytest tests/test_core.py

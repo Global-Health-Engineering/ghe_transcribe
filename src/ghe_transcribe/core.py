@@ -17,6 +17,7 @@ from ghe_transcribe.utils import (
     timing,
     to_csv,
     to_md,
+    to_srt,
     to_wav,
     to_whisper_format,
     snip_audio,
@@ -97,7 +98,7 @@ def transcribe(
     num_speakers: Optional[int] = Option(transcribe_config.get("num_speakers"), help="pyannote.audio, number of speakers."),
     min_speakers: Optional[int] = Option(transcribe_config.get("min_speakers"), help="pyannote.audio, minimum number of speakers."),
     max_speakers: Optional[int] = Option(transcribe_config.get("max_speakers"), help="pyannote.audio, maximum number of speakers."),
-    save_output: Optional[bool] = Option(transcribe_config.get("save_output"), help="Save output to .csv and .md files."),
+    save_output: Optional[bool] = Option(transcribe_config.get("save_output"), help="Save output to .csv and .srt files."),
     info: Optional[bool] = Option(transcribe_config.get("info"), help="Print detected language information."),
 ):
     """Transcribe and diarize an audio file."""
@@ -119,7 +120,7 @@ def transcribe(
     if trim is not None:
         file = snip_audio(
             file,
-            os.path.splitext(file)[0] + "_snippet" + os.path.splitext(file)[1],
+            os.path.splitext(file)[0] + f"_{int(trim)}_seconds" + os.path.splitext(file)[1],
             0.0,
             trim,
         )
@@ -219,12 +220,12 @@ def transcribe(
     if save_output:
         csv = to_csv(text)
         with open(output_file_name + ".csv", "w") as f:
-            f.write("\n".join(csv))
+            f.write(csv)
             print(f"Output saved to {output_file_name}.csv")
-        md = to_md(text)
-        with open(output_file_name + ".md", "w") as f:
-            f.write("\n".join(md))
-            print(f"Output saved to {output_file_name}.md")
+        srt = to_srt(text)
+        with open(output_file_name + ".srt", "w") as f:
+            f.write(srt)
+            print(f"Output saved to {output_file_name}.srt")
 
     if info:
         print(
