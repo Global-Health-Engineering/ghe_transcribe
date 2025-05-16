@@ -65,6 +65,7 @@ python3.11 -m venv venv3.11_ghe_transcribe --system-site-packages
 source venv3.11_ghe_transcribe/bin/activate
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
+pip3.11 install -r requirements.txt
 pip3.11 install -e .
 ipython kernel install --user --name=venv3.11_ghe_transcribe
 ```
@@ -97,6 +98,7 @@ python3.11 -m venv venv3.11_ghe_transcribe --system-site-packages
 source venv3.11_ghe_transcribe/bin/activate
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
+pip3.11 install -r requirements.txt
 pip3.11 install -e .
 ipython kernel install --user --name=venv3.11_ghe_transcribe
 ```
