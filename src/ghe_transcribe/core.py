@@ -1,10 +1,11 @@
 import os
 import json
+import yaml
 from typing import Optional
 from enum import Enum
+from tempfile import TemporaryDirectory
 
 from typer import Typer, Argument, Option
-from huggingface_hub import login
 from faster_whisper import WhisperModel
 from pyannote.audio import Pipeline
 from torch import device as to_torch_device
@@ -55,7 +56,6 @@ class WhisperModelChoice(str, Enum):
     turbo = "turbo"
 
 transcribe_config = {
-    "huggingface_token": None,
     "trim": None,
     "device": "auto",
     "cpu_threads": None,
@@ -81,7 +81,6 @@ app = Typer(help="Transcribe and diarize an audio file.")
 @timing
 def transcribe(
     file: str = Argument(..., help="Path to the audio file."),
-    huggingface_token: Optional[str] = Option(transcribe_config.get("huggingface_token"), help="Hugging Face token for authentication."),
     trim: Optional[float] = Option(transcribe_config.get("trim"), help="Trim the audio file from 0 to the specified number of seconds."),
     device: Optional[DeviceChoice] = Option(transcribe_config.get("device"), help="Device to use."),
     cpu_threads: Optional[int] = Option(transcribe_config.get("cpu_threads"), help="Number of CPU threads to use."),
@@ -101,17 +100,6 @@ def transcribe(
     info: Optional[bool] = Option(transcribe_config.get("info"), help="Print detected language information."),
 ):
     """Transcribe and diarize an audio file."""
-    try:
-        if huggingface_token:
-            login(token=huggingface_token)
-        else:
-            with open("config.json", "r") as f:
-                config = json.load(f)
-
-            login(token=config["huggingface_token"])
-    except Exception as e:
-        print(f"Error: {e} Please provide a valid token through the --huggingface_token argument or configure the hugginface_token in config.json.")
-        return None
 
     # Convert audio file to .wav
     file = to_wav(file)
@@ -204,9 +192,22 @@ def transcribe(
         pyannote_kwargs["max_speakers"] = max_speakers
 
     try:
-        diarization_result = Pipeline.from_pretrained(pyannote_model).to(torch_device)(
-            file, **pyannote_kwargs
-        )
+        root_path = os.path.abspath(os.path.dirname(__file__)).replace("/src/ghe_transcribe", "")
+
+        with open(os.path.join(root_path, 'pyannote', 'pyannote_config.yaml'), 'r') as yaml_file:
+            pyannote_config = yaml.safe_load(yaml_file)
+
+        pyannote_config['pipeline']['params']['embedding'] = os.path.join(root_path, *pyannote_config['pipeline']['params']['embedding'].split("/"))
+        pyannote_config['pipeline']['params']['segmentation'] = os.path.join(root_path, *pyannote_config['pipeline']['params']['segmentation'].split("/"))
+
+        tmpdir = TemporaryDirectory('noScribe_diarize')
+        with open(os.path.join(tmpdir.name, 'pyannote_config_macOS.yaml'), 'w') as yaml_file:
+            yaml.safe_dump(pyannote_config, yaml_file)
+
+        diarization_result = Pipeline.from_pretrained(os.path.join(tmpdir.name, 'pyannote_config_macOS.yaml')).to(torch_device)(
+           file, **pyannote_kwargs
+       )
+
     except Exception as e:
         print(f"Diarization Error: {e}")
 
