@@ -11,8 +11,8 @@ This repository hosts `ghe_transcribe`, a powerful Python script designed to tra
 
 1.  [**Getting Started**](#getting-started)
     * [Installation](#installation)
-        * [Euler Cluster](#euler-cluster)
         * [macOS](#macos)
+        * [Euler Cluster](#euler-cluster)
     * [Basic Usage](#basic-usage)
         * [Quick Start](#quick-start)
         * [Python Integration](#python-integration)
@@ -27,13 +27,27 @@ This repository hosts `ghe_transcribe`, a powerful Python script designed to tra
 
 Choose the installation method that suits your environment.
 
+#### macOS
+
+Run the following commands to install on macOS:
+
+```bash
+python -m venv venv_ghe_transcribe
+source venv_ghe_transcribe/bin/activate
+git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
+cd ghe_transcribe
+pip install -r requirements.txt
+pip install -e .
+```
+
 #### Euler Cluster
 
 Follow these steps to set up `ghe_transcribe` on the Euler cluster at ETH Zurich.
 
 ##### First login to Euler
 
-Refer to the official [Euler wiki on getting started](https://scicomp.ethz.ch/wiki/Getting_started_with_clusters) if you are a first-time user.
+> [!IMPORTANT]
+> Refer to the official [Euler wiki on getting started](https://scicomp.ethz.ch/wiki/Getting_started_with_clusters) if you are a first-time user.
 
 ##### Open a terminal in JupyterHub
 
@@ -68,19 +82,6 @@ To ensure your JupyterHub instances automatically use the created environment, e
 
 ```bash
 echo "module load stack/2024-06 python_cuda/3.11.6 && source venv_ghe_transcribe/bin/activate" >> .config/euler/jupyterhub/jupyterlabrc
-```
-
-#### macOS
-
-Use the following commands to install the necessary dependencies on macOS:
-
-```bash
-python -m venv venv_ghe_transcribe
-source venv_ghe_transcribe/bin/activate
-git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
-cd ghe_transcribe
-pip install -r requirements.txt
-pip install -e .
 ```
 
 ### Basic Usage
