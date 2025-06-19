@@ -1,0 +1,15 @@
+start,end,speaker,sentence
+0.00,10.00,SPEAKER_00, So hi; Jenna. We're here to record an audio that I will use for testing.
+10.00,18.00,SPEAKER_01, Hi; Nicole. Thanks so much for the order to invite me to help you on this project.
+18.00,23.00,SPEAKER_00, You're welcome. You were the first person that came to mind.
+23.00,31.00,SPEAKER_00, We're here to ask you a couple of questions until we reach minute one.
+31.00,34.00,SPEAKER_00, So what do you do in life; Jenna?
+34.00,36.00,SPEAKER_02, Good question. Good question.
+36.00,39.00,SPEAKER_02, So at the moment I do an internship; it's going great.
+39.00,43.00,SPEAKER_02, Everything I do is productive. We'll be published probably.
+43.00,46.00,SPEAKER_02, Amazing. Bye tomorrow.
+46.00,49.00,SPEAKER_02, Yeah; just doing the grind.
+49.00,53.00,SPEAKER_00, Just; yeah. Of course. Do you have plans for lunch?
+53.00,56.00,SPEAKER_02, Plans for lunch? Yes; actually I do. I'm meeting a friend.
+56.00,58.00,SPEAKER_02, If you want to; you're welcome to join.
+58.00,60.00,SPEAKER_00, Perfect. Thank you very much.
