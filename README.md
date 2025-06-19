@@ -12,13 +12,13 @@ This repository hosts `ghe_transcribe`, a powerful Python script designed to tra
 1.  [**Installation**](#installation)
       * [macOS](#macos)
       * [Euler Cluster](#euler-cluster)
-    [**Basic Usage**](#basic-usage)
+2.  [**Basic Usage**](#basic-usage)
       * [Quick Start](#quick-start)
       * [Python Integration](#python-integration)
-2.  [**Command-Line Interface**](#command-line-interface)
+3.  [**Command-Line Interface**](#command-line-interface)
     * [Options](#options)
-3.  [**Contributing**](#contributing)
-4.  [**License**](#license)
+4.  [**Contributing**](#contributing)
+5.  [**License**](#license)
 
 ## Installation
 
