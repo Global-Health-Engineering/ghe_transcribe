@@ -1,6 +1,6 @@
 # ghe_transcribe: A Tool to Transcribe Audio Files with Speaker Diarization
 
-[![Python Versions](https://img.shields.io/badge/Python-3.11%20%7C%203.12-blue)](https://www.python.org/downloads/)
+[![Python Versions](https://img.shields.io/badge/Python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)](https://www.python.org/downloads/)
 [![Python application](https://github.com/Global-Health-Engineering/ghe_transcribe/actions/workflows/python-app.yml/badge.svg?branch=main)](https://github.com/Global-Health-Engineering/ghe_transcribe/actions/workflows/python-app.yml)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg)](https://github.com/Global-Health-Engineering/ghe_transcribe/blob/main/CONTRIBUTING.md)
@@ -61,13 +61,13 @@ module load stack/2024-06 python_cuda/3.11.6
 It's recommended to create a dedicated virtual environment to manage dependencies:
 
 ```bash
-python3.11 -m venv venv3.11_ghe_transcribe --system-site-packages
-source venv3.11_ghe_transcribe/bin/activate
+python -m venv venv_ghe_transcribe --system-site-packages
+source venv_ghe_transcribe/bin/activate
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
-pip3.11 install -r requirements.txt
-pip3.11 install -e .
-ipython kernel install --user --name=venv3.11_ghe_transcribe
+pip install -r requirements.txt
+pip install -e .
+ipython kernel install --user --name=venv_ghe_transcribe
 ```
 
 ##### Configure JupyterHub to use the environment
@@ -75,14 +75,7 @@ ipython kernel install --user --name=venv3.11_ghe_transcribe
 To ensure your JupyterHub instances automatically use the created environment, edit the JupyterLab configuration file:
 
 ```bash
-nano .config/euler/jupyterhub/jupyterlabrc
-```
-
-Add the following lines to the file:
-
-```bash
-module load stack/2024-06 python_cuda/3.11.6
-source venv3.11_ghe_transcribe/bin/activate
+echo "module load stack/2024-06 python_cuda/3.11.6 && source venv_ghe_transcribe/bin/activate" >> .config/euler/jupyterhub/jupyterlabrc
 ```
 
 #### macOS
@@ -90,17 +83,12 @@ source venv3.11_ghe_transcribe/bin/activate
 Use the following commands to install the necessary dependencies on macOS:
 
 ```bash
-brew install cmake python@3.11
-```
-
-```bash
-python3.11 -m venv venv3.11_ghe_transcribe --system-site-packages
-source venv3.11_ghe_transcribe/bin/activate
+python -m venv venv_ghe_transcribe
+source venv_ghe_transcribe/bin/activate
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
-pip3.11 install -r requirements.txt
-pip3.11 install -e .
-ipython kernel install --user --name=venv3.11_ghe_transcribe
+pip install -r requirements.txt
+pip install -e .
 ```
 
 ### Basic Usage
@@ -109,27 +97,19 @@ ipython kernel install --user --name=venv3.11_ghe_transcribe
 
 To transcribe an audio file:
 
-1.  **Accept Hugging Face Model Licenses:**
-    * Visit and accept the user conditions for [`pyannote/segmentation-3.0`](https://hf.co/pyannote/segmentation-3.0).
-    * Visit and accept the user conditions for [`pyannote/speaker-diarization-3.1`](https://hf.co/pyannote/speaker-diarization-3.1).
-2. **Generate a Hugging Face Access Token:**
-    * Create a new access token at [`hf.co/settings/tokens`](https://hf.co/settings/tokens) and save it for later use.
-3.  **Place your audio file:** Upload the audio file you want to transcribe, e.g.`testing_audio.mp3`. **(Recommended)** Drop the file into the `media` folder.
-4.  **Run the transcription script:** Execute the transcribe command in the terminal:
+1.  **Place your audio file:** Upload the audio file you want to transcribe, e.g.`testing_audio.mp3`. **(Recommended)** Drop the file into the `media` folder.
+2.  **Run the transcription script:** Execute the transcribe command in the terminal:
     ```bash
-    transcribe --huggingface-token YOUR_HUGGING_FACE_ACCESS_TOKEN $HOME/ghe_transcribe/media/testing_audio.mp3
+    transcribe media/testing_audio.mp3
     ```
-    * **(!)** Replace YOUR_HUGGING_FACE_ACCESS_TOKEN with your actual Hugging Face access token. 
-    * **(!)** If you have not installed `ghe_transcribe` in your `$HOME` or you have uploaded your audio file in another directory, change `$HOME/ghe_transcribe/media/testing_audio.mp3` to the correct `path/to/your/audio/file.mp3`.
+    * **(!)** Make sure you are in the correct directory, `ghe_transcribe`. Otherwise change path to the correct `path/to/your/audio/file.mp3`.
+
 #### Python Integration
 **Example:**
 ```python
 from ghe_transcribe.core import transcribe
 
-huggingface_token = "YOUR_HUGGING_FACE_ACCESS_TOKEN"
-result = transcribe("media/testing_audio.mp3", 
-                    huggingface_token=huggingface_token, 
-                    num_speakers=2)
+result = transcribe("media/testing_audio.mp3")
 ```
 
 ## Command-Line Interface
