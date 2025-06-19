@@ -1,3 +1,12 @@
+## [0.3.2](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.3.1...v0.3.2) (2025-06-19)
+
+
+### Bug Fixes
+
+* python3.9 missing requirements ([1ff44c2](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/1ff44c2bb3a9e29fb123dd7d417cb7042c23aed9))
+
+
+
 ## [0.3.1](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.3.0...v0.3.1) (2025-06-19)
 
 
@@ -35,15 +44,6 @@
 ### Bug Fixes
 
 * passing wheel file to GITHUB_OUTPUT ([324e86b](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/324e86bc3979f29131169b2b1fab7bbf1123c48c))
-
-
-
-## [0.2.6](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.5...v0.2.6) (2025-04-30)
-
-
-### Bug Fixes
-
-* add debugging ([3b954df](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/3b954dfdc4eda8d341aea09300fc05046349a09a))
 
 
 
