@@ -1,4 +1,5 @@
 import os
+import glob
 
 from ghe_transcribe.core import transcribe
 
@@ -7,7 +8,7 @@ huggingface_token = os.environ.get("HUGGINGFACE_TOKEN")
 
 def test_transcribe_snippet():
     """Tests the transcribe function with a snippet and speaker count."""
-    result = transcribe(TEST_AUDIO_PATH, 
+    text = transcribe(TEST_AUDIO_PATH, 
                         huggingface_token=huggingface_token, 
                         trim=5, 
                         device="auto", 
@@ -27,13 +28,15 @@ def test_transcribe_snippet():
                         save_output=False, 
                         info=False)
 
-    # Add assertions to check the result
-    assert isinstance(result, list), "Transcribe should return a list."
-    assert len(result) > 0, "The result should not be empty."
+    # Add assertions to check the text
+    assert isinstance(text, list), "Transcribe should return a list."
+    assert len(text) > 0, "The text should not be empty."
 
-# Clean up dummy files after testing (optional)
 def teardown_module():
-    if os.path.exists(os.path.splitext(TEST_AUDIO_PATH)[0]+".wav"):
-        os.remove(os.path.splitext(TEST_AUDIO_PATH)[0]+".wav")
-    if os.path.exists(os.path.splitext(TEST_AUDIO_PATH)[0] + "_snippet.wav"):
-        os.remove(os.path.splitext(TEST_AUDIO_PATH)[0] + "_snippet.wav")
+    """Cleans up any .wav files created in the current directory."""
+    for filename in glob.glob("media/*.wav"):
+        try:
+            os.remove(filename)
+            print(f"Removed: {filename}")
+        except OSError as e:
+            print(f"Error removing {filename}: {e}")
