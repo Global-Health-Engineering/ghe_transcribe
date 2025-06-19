@@ -9,25 +9,22 @@ This repository hosts `ghe_transcribe`, a powerful Python script designed to tra
 
 ## Table of Contents
 
-1.  [**Getting Started**](#getting-started)
-    * [Installation](#installation)
-        * [macOS](#macos)
-        * [Euler Cluster](#euler-cluster)
-    * [Basic Usage](#basic-usage)
-        * [Quick Start](#quick-start)
-        * [Python Integration](#python-integration)
+1.  [**Installation**](#installation)
+      * [macOS](#macos)
+      * [Euler Cluster](#euler-cluster)
+    [**Basic Usage**](#basic-usage)
+      * [Quick Start](#quick-start)
+      * [Python Integration](#python-integration)
 2.  [**Command-Line Interface**](#command-line-interface)
     * [Options](#options)
 3.  [**Contributing**](#contributing)
 4.  [**License**](#license)
 
-## Getting Started
-
-### Installation
+## Installation
 
 Choose the installation method that suits your environment.
 
-#### macOS
+### macOS
 
 Run the following commands to install on macOS:
 
@@ -40,21 +37,21 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-#### Euler Cluster
+### Euler Cluster
 
 Follow these steps to set up `ghe_transcribe` on the Euler cluster at ETH Zurich.
 
-##### First login to Euler
+#### First login to Euler
 
 > [!IMPORTANT]
 > Refer to the official [Euler wiki on getting started](https://scicomp.ethz.ch/wiki/Getting_started_with_clusters) if you are a first-time user.
 
-##### Open a terminal in JupyterHub
+#### Open a terminal in JupyterHub
 
 1.  Navigate to [https://jupyter.euler.hpc.ethz.ch/](https://jupyter.euler.hpc.ethz.ch/) and log in with your ETHZ account.
 2.  Click on "Terminal" in the JupyterLab interface.
 
-##### Load necessary modules
+#### Load necessary modules
 
 Execute the following command to load the required software modules:
 
@@ -62,7 +59,7 @@ Execute the following command to load the required software modules:
 module load stack/2024-06 python_cuda/3.11.6
 ```
 
-##### Create a Python virtual environment and kernel
+#### Create a Python virtual environment and kernel
 
 It's recommended to create a dedicated virtual environment to manage dependencies:
 
@@ -76,7 +73,7 @@ pip install -e .
 ipython kernel install --user --name=venv_ghe_transcribe
 ```
 
-##### Configure JupyterHub to use the environment
+#### Configure JupyterHub to use the environment
 
 To ensure your JupyterHub instances automatically use the created environment, edit the JupyterLab configuration file:
 
@@ -84,9 +81,9 @@ To ensure your JupyterHub instances automatically use the created environment, e
 echo "module load stack/2024-06 python_cuda/3.11.6 && source venv_ghe_transcribe/bin/activate" >> .config/euler/jupyterhub/jupyterlabrc
 ```
 
-### Basic Usage
+## Basic Usage
 
-#### Quick Start
+### Quick Start
 
 To transcribe an audio file:
 
@@ -100,7 +97,7 @@ To transcribe an audio file:
 > [!IMPORTANT]
 > Make sure you are in the correct directory, `ghe_transcribe`. Otherwise change path to the correct `path/to/your/audio/file.mp3`.
 
-#### Python Integration
+### Python Integration
 **Example:**
 ```python
 from ghe_transcribe.core import transcribe
