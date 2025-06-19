@@ -1,18 +1,13 @@
 import os
-import pwd
 import glob
-import json
 
 from ghe_transcribe.core import transcribe
 
 TEST_AUDIO_PATH = "media/testing_audio.mp3"
-with open(pwd.getpwuid(os.getuid()).pw_dir+"/config.json", 'r') as file:
-    huggingface_token = json.load(file).get("HF_TOKEN")
 
 def test_transcribe_snippet():
     """Tests the transcribe function with a snippet and speaker count."""
     text = transcribe(TEST_AUDIO_PATH, 
-                        huggingface_token=huggingface_token, 
                         trim=20, 
                         device="auto", 
                         cpu_threads=None,

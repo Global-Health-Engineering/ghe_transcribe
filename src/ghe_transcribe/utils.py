@@ -3,7 +3,7 @@ from functools import wraps
 from time import time
 from datetime import timedelta
 
-from av import open
+import av
 from pyannote.core import Segment
 from torchaudio import load, save
 from torchaudio.transforms import Resample
@@ -181,9 +181,9 @@ def to_wav_pyav(in_path: str, out_path: str = None, sample_rate: int = 16000) ->
     """Arbitrary media files to wav"""
     if out_path is None:
         out_path = os.path.splitext(in_path)[0] + ".wav"
-    with open(in_path) as in_container:
+    with av.open(in_path) as in_container:
         in_stream = in_container.streams.audio[0]
-        with open(out_path, "w", "wav") as out_container:
+        with av.open(out_path, "w", "wav") as out_container:
             out_stream = out_container.add_stream(
                 "pcm_s16le", rate=sample_rate, layout="mono"
             )
@@ -224,7 +224,7 @@ def snip_audio(input_file, output_file, start_time, duration):
     Snips a portion of an audio file using pyAV.
     """
     try:
-        input_container = open(input_file)
+        input_container = av.open(input_file)
         audio_stream = None
         for stream in input_container.streams:
             if stream.type == 'audio':
@@ -235,7 +235,7 @@ def snip_audio(input_file, output_file, start_time, duration):
             print(f"Error: No audio stream found in {input_file}")
             return
 
-        output_container = open(output_file, 'w', format=input_container.format.name)
+        output_container = av.open(output_file, 'w', format=input_container.format.name)
         output_stream = output_container.add_stream("pcm_s16le", rate=stream.rate)
 
 

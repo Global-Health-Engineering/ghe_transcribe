@@ -4,4 +4,5 @@ __pycache__
 config.json
 ruff.toml
 *.egg-info
+.vscode/
 launch.json
