@@ -18,16 +18,8 @@ This repository hosts `ghe_transcribe`, a powerful Python script designed to tra
         * [Python Integration](#python-integration)
 2.  [**Command-Line Interface**](#command-line-interface)
     * [Options](#options)
-3.  [**Performance Benchmarks**](#performance-benchmarks)
-    * [Execution Time](#execution-time)
-4.  [**Related Projects**](#related-projects)
-    * [Transcription Libraries](#transcription-libraries)
-    * [Speaker Diarization Libraries](#speaker-diarization-libraries)
-    * [Combined Transcription and Diarization Tools](#combined-transcription-and-diarization-tools)
-    * [Graphical User Interfaces](#graphical-user-interfaces)
-    * [GUI Applications with Transcription and Diarization](#gui-applications-with-transcription-and-diarization)
-5.  [**Contributing**](#contributing)
-6.  [**License**](#license)
+3.  [**Contributing**](#contributing)
+4.  [**License**](#license)
 
 ## Getting Started
 
@@ -97,12 +89,15 @@ pip install -e .
 
 To transcribe an audio file:
 
-1.  **Place your audio file:** Upload the audio file you want to transcribe, e.g.`testing_audio.mp3`. **(Recommended)** Drop the file into the `media` folder.
+1.  **Place your audio file:** Upload the audio file you want to transcribe, e.g.`testing_audio.mp3`. 
+> [!TIP]
+> Drop the file into the `media` folder.
 2.  **Run the transcription script:** Execute the transcribe command in the terminal:
     ```bash
     transcribe media/testing_audio.mp3
     ```
-    * **(!)** Make sure you are in the correct directory, `ghe_transcribe`. Otherwise change path to the correct `path/to/your/audio/file.mp3`.
+> [!IMPORTANT]
+> Make sure you are in the correct directory, `ghe_transcribe`. Otherwise change path to the correct `path/to/your/audio/file.mp3`.
 
 #### Python Integration
 **Example:**
@@ -152,54 +147,14 @@ $ transcribe [OPTIONS] FILE
 * `--show-completion`: Show completion for the current shell, to copy it or customize the installation.
 * `--help`: Show this message and exit.
 
-## Performance Benchmarks
-
-### Execution Time
-
-The following table shows the execution time of `transcribe media/testing_audio.mp3` across different environments. These tests were conducted using the `timing` function defined in `utils.py`.
-
-| Device                                      | Time (sec) |
-| :------------------------------------------ | :--------- |
-| Euler Cluster (16 CPU cores, 16GB RAM) - `cpu` | 67.4988    |
-| Euler Cluster (32 CPU cores, 16GB RAM) - `cpu` | 44.3622    |
-| MacOS (Apple M2, 16GB RAM) - `mps`           | 41.2122    |
-| MacOS (Apple M2, 16GB RAM) - `cpu`           | 64.7549    |
-
-## Related Projects
-
-Explore these related projects and libraries for more advanced functionalities or alternative approaches.
-
-### Transcription Libraries
-
-  - **Whisper:** ([https://github.com/openai/whisper](https://github.com/openai/whisper)) - OpenAI's original speech-to-text model.
-  - **faster-whisper:** ([https://github.com/SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper)) - The fast implementation used in `ghe_transcribe`, offering significant speed improvements. See [benchmarks](https://github.com/SYSTRAN/faster-whisper/issues/1030).
-  - **Deepgram Benchmarks:** ([https://deepgram.com/learn/benchmarking-top-open-source-speech-models](https://deepgram.com/learn/benchmarking-top-open-source-speech-models)) - A comparison of various open-source speech models, including Whisper.
-
-### Speaker Diarization Libraries
-
-  - **pyannote.audio:** ([https://github.com/pyannote/pyannote-audio](https://github.com/pyannote/pyannote-audio)) - The speaker diarization toolkit by pyannoteAI ([https://www.pyannote.ai/](https://www.pyannote.ai/)), requiring a Hugging Face access token ([https://hf.co/settings/tokens](https://hf.co/settings/tokens)).
-  - **NeMo:** ([https://github.com/NVIDIA/NeMo](https://github.com/NVIDIA/NeMo)) - NVIDIA's open-source framework for conversational AI, including diarization capabilities.
-  - **Pyannote vs NeMo Comparison:** ([https://lajavaness.medium.com/comparing-state-of-the-art-speaker-diarization-frameworks-pyannote-vs-nemo-31a191c6300](https://lajavaness.medium.com/comparing-state-of-the-art-speaker-diarization-frameworks-pyannote-vs-nemo-31a191c6300)) - A blog post comparing the two frameworks.
-
-### Combined Transcription and Diarization Tools
-
-  - **WhisperX:** ([https://github.com/m-bain/whisperX](https://github.com/m-bain/whisperX)) - Combines `faster-whisper` with `pyannote.audio` for transcription and diarization.
-  - **whisper-diarization:** ([https://github.com/MahmoudAshraf97/whisper-diarization](https://github.com/MahmoudAshraf97/whisper-diarization)) - Integrates `faster-whisper` with `NeMo` for speaker diarization.
-  - **insanely-fast-whisper:** ([https://github.com/Vaibhavs10/insanely-fast-whisper](https://github.com/Vaibhavs10/insanely-fast-whisper)) - Another optimized Whisper implementation combined with `pyannote.audio`.
-
-### Graphical User Interfaces
-
-  - **wscribe-editor:** ([https://github.com/geekodour/wscribe-editor](https://github.com/geekodour/wscribe-editor)) - An editor for transcriptions with word-level timestamps, supporting a specific JSON format (see [sample.json](https://github.com/geekodour/wscribe/blob/main/examples/output/sample.json)).
-  - **QualCoder:** ([https://github.com/ccbogel/QualCoder](https://github.com/ccbogel/QualCoder)) - A general-purpose qualitative data analysis tool with some audio transcription features.
-
-### GUI Applications with Transcription and Diarization
-  - **noScribe:** ([https://github.com/kaixxx/noScribe](https://github.com/kaixxx/noScribe)) - A GUI application leveraging `faster-whisper` and `pyannote.audio`.
-  - **TranscriboZH:** ([https://github.com/machinelearningZH/audio-transcription](https://github.com/machinelearningZH/audio-transcription)) - Another GUI tool based on `WhisperX`.
-
 ## Contributing
 
-Contributions to `ghe_transcribe` are welcome! Please follow the following guidelines:
-- Follow the commit message format (`<type>: <description>`), eg. `fix: typo in README.md`. Check out the [conventional commits guide](https://www.conventionalcommits.org/en/v1.0.0/) for more details.
+Contributions to `ghe_transcribe` are welcome! 
+
+> [!NOTE]
+> Please follow these guidelines:
+> ### [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+> Commits are structure like so, `<type>: <description>`. For example, `fix: typo in README.md`. 
 
 ## License
 
