@@ -3,7 +3,7 @@ from functools import wraps
 from time import time
 from datetime import timedelta
 
-from av import open
+import av
 from pyannote.core import Segment
 from torchaudio import load, save
 from torchaudio.transforms import Resample
@@ -84,21 +84,18 @@ def diarize_text(transcribe_res, diarization_result):
 
 def to_csv(result, semicolon=False):
     csv = []
-    start_line = (
-        "start;end;speaker;sentence" if semicolon else "start,end,speaker,sentence"
-    )
-    csv.append(start_line)
     if semicolon:
-        for seg, spk, sentence in result:
-            line = f"{seg.start:.2f};{seg.end:.2f};{spk};{sentence}"
-            csv.append(line.strip())
+        sep = ";"
     else:
-        # Convert all ',' in sentence to ';'
-        for seg, spk, sentence in result:
+        sep = ","
+    start_line = "start"+sep+"end"+sep+"speaker"+sep+"sentence"
+    csv.append(start_line)
+    for seg, spk, sentence in result:
+        if not semicolon: 
             sentence = sentence.replace(",", ";")
-            line = f"{seg.start:.2f},{seg.end:.2f},{spk},{sentence}"
-            csv.append(line.strip())
-    return csv
+        line = f"{format_time_to_srt(seg.start)}{sep}{format_time_to_srt(seg.end)}{sep}{spk}{sep}{sentence}"
+        csv.append(line.strip())
+    return "\n".join(csv)
 
 
 def spk_to_id(spk):
@@ -113,17 +110,44 @@ def to_md(result):
     for seg, spk, sentence in result:
         if spk != previous_spk:
             md.append(f"\n{spk}")
-            md.append(f"({format_time_datetime(seg.start)}){sentence}".strip())
+            md.append(f"({format_time_to_iso8601(seg.start)}){sentence}".strip())
             previous_spk = spk
         else:
-            md.append(f"({format_time_datetime(seg.start)}){sentence}".strip())
-    return md
+            md.append(f"({format_time_to_iso8601(seg.start)}){sentence}".strip())
+    return "\n".join(md)
 
 
-def md_to_csv(md_file):
-    # to be implemented
-    csv = []
-    return csv
+def to_srt(result):
+    srt = []
+    counter = 1
+    for seg, spk, sentence in result:
+        start_time = format_time_to_srt(seg.start)
+        end_time = format_time_to_srt(seg.end)
+        srt.append(str(counter))
+        srt.append(f"{start_time} --> {end_time}")
+        srt.append(f"{spk}:{sentence}")
+        srt.append("")  # Add an empty line to separate subtitles
+        counter += 1
+    return "\n".join(srt)
+
+
+def format_time_to_iso8601(seconds_float: float) -> str:
+    """Formats seconds into HH:MM:SS or MM:SS or SS format."""
+    delta = timedelta(seconds=seconds_float)
+    parts = str(delta).split(':')
+    if len(parts) == 3 and parts[0] == '0':
+        return f"{parts[1]}:{parts[2].split('.')[0].zfill(2)}"
+    elif len(parts) == 3:
+        return f"{parts[0]}:{parts[1].zfill(2)}:{parts[2].split('.')[0].zfill(2)}"
+    else:
+        return f"{parts[1].split('.')[0].zfill(2)}" # Handles cases less than an hour
+
+
+def format_time_to_srt(seconds):
+    milliseconds = int(round((seconds - int(seconds)) * 1000))
+    minutes, secs = divmod(int(seconds), 60)
+    hours, mins = divmod(minutes, 60)
+    return f"{hours:02d}:{mins:02d}:{secs:02d},{milliseconds:03d}"
 
 
 # Convert generated segments from faster_whisper to Whisper format
@@ -157,9 +181,9 @@ def to_wav_pyav(in_path: str, out_path: str = None, sample_rate: int = 16000) ->
     """Arbitrary media files to wav"""
     if out_path is None:
         out_path = os.path.splitext(in_path)[0] + ".wav"
-    with open(in_path) as in_container:
+    with av.open(in_path) as in_container:
         in_stream = in_container.streams.audio[0]
-        with open(out_path, "w", "wav") as out_container:
+        with av.open(out_path, "w", "wav") as out_container:
             out_stream = out_container.add_stream(
                 "pcm_s16le", rate=sample_rate, layout="mono"
             )
@@ -195,24 +219,12 @@ def resampling(file_name, sample_rate=16000):
     save(file_name, waveform, sample_rate)
 
 
-def format_time_datetime(seconds_float: float) -> str:
-    """Formats seconds into HH:MM:SS or MM:SS or SS format."""
-    delta = timedelta(seconds=seconds_float)
-    parts = str(delta).split(':')
-    if len(parts) == 3 and parts[0] == '0':
-        return f"{parts[1]}:{parts[2].split('.')[0].zfill(2)}"
-    elif len(parts) == 3:
-        return f"{parts[0]}:{parts[1].zfill(2)}:{parts[2].split('.')[0].zfill(2)}"
-    else:
-        return f"{parts[1].split('.')[0].zfill(2)}" # Handles cases less than an hour
-
-
 def snip_audio(input_file, output_file, start_time, duration):
     """
     Snips a portion of an audio file using pyAV.
     """
     try:
-        input_container = open(input_file)
+        input_container = av.open(input_file)
         audio_stream = None
         for stream in input_container.streams:
             if stream.type == 'audio':
@@ -223,7 +235,7 @@ def snip_audio(input_file, output_file, start_time, duration):
             print(f"Error: No audio stream found in {input_file}")
             return
 
-        output_container = open(output_file, 'w', format=input_container.format.name)
+        output_container = av.open(output_file, 'w', format=input_container.format.name)
         output_stream = output_container.add_stream("pcm_s16le", rate=stream.rate)
 
 

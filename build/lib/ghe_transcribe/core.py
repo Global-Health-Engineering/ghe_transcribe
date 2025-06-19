@@ -1,7 +1,9 @@
 import os
 import json
+import yaml
 from typing import Optional
 from enum import Enum
+from tempfile import TemporaryDirectory
 
 from typer import Typer, Argument, Option
 from huggingface_hub import login
@@ -17,6 +19,7 @@ from ghe_transcribe.utils import (
     timing,
     to_csv,
     to_md,
+    to_srt,
     to_wav,
     to_whisper_format,
     snip_audio,
@@ -55,7 +58,6 @@ class WhisperModelChoice(str, Enum):
     turbo = "turbo"
 
 transcribe_config = {
-    "huggingface_token": None,
     "trim": None,
     "device": "auto",
     "cpu_threads": None,
@@ -81,8 +83,8 @@ app = Typer(help="Transcribe and diarize an audio file.")
 @timing
 def transcribe(
     file: str = Argument(..., help="Path to the audio file."),
-    huggingface_token: Optional[str] = Option(transcribe_config.get("huggingface_token"), help="Hugging Face token for authentication."),
     trim: Optional[float] = Option(transcribe_config.get("trim"), help="Trim the audio file from 0 to the specified number of seconds."),
+    huggingface_token: Optional[str] = Option(transcribe_config.get("huggingface_token"), help="Hugging Face token for authentication."),
     device: Optional[DeviceChoice] = Option(transcribe_config.get("device"), help="Device to use."),
     cpu_threads: Optional[int] = Option(transcribe_config.get("cpu_threads"), help="Number of CPU threads to use."),
     whisper_model: Optional[WhisperModelChoice] = Option(transcribe_config.get("whisper_model"), help="Faster Whisper, model to use."),
@@ -97,21 +99,19 @@ def transcribe(
     num_speakers: Optional[int] = Option(transcribe_config.get("num_speakers"), help="pyannote.audio, number of speakers."),
     min_speakers: Optional[int] = Option(transcribe_config.get("min_speakers"), help="pyannote.audio, minimum number of speakers."),
     max_speakers: Optional[int] = Option(transcribe_config.get("max_speakers"), help="pyannote.audio, maximum number of speakers."),
-    save_output: Optional[bool] = Option(transcribe_config.get("save_output"), help="Save output to .csv and .md files."),
+    save_output: Optional[bool] = Option(transcribe_config.get("save_output"), help="Save output to .csv and .srt files."),
     info: Optional[bool] = Option(transcribe_config.get("info"), help="Print detected language information."),
 ):
     """Transcribe and diarize an audio file."""
     try:
         if huggingface_token:
             login(token=huggingface_token)
-        else:
-            with open("config.json", "r") as f:
-                config = json.load(f)
-
-            login(token=config["huggingface_token"])
     except Exception as e:
         print(f"Error: {e} Please provide a valid token through the --huggingface_token argument or configure the hugginface_token in config.json.")
         return None
+
+    # Relative path helper
+    root_path = os.path.abspath(os.path.dirname(__file__)).replace("/src/ghe_transcribe", "")
 
     # Convert audio file to .wav
     file = to_wav(file)
@@ -119,7 +119,7 @@ def transcribe(
     if trim is not None:
         file = snip_audio(
             file,
-            os.path.splitext(file)[0] + "_snippet" + os.path.splitext(file)[1],
+            os.path.splitext(file)[0] + f"_{int(trim)}_seconds" + os.path.splitext(file)[1],
             0.0,
             trim,
         )
@@ -204,9 +204,24 @@ def transcribe(
         pyannote_kwargs["max_speakers"] = max_speakers
 
     try:
-        diarization_result = Pipeline.from_pretrained(pyannote_model).to(torch_device)(
-            file, **pyannote_kwargs
-        )
+        if huggingface_token:
+            pyannote_config_name = 'pyannote_config_huggingface.yaml'
+        else:
+            pyannote_config_name = 'pyannote_config.yaml'
+        with open(os.path.join(root_path, 'pyannote', pyannote_config_name), 'r') as yaml_file:
+            pyannote_config = yaml.safe_load(yaml_file)
+
+        pyannote_config['pipeline']['params']['embedding'] = os.path.join(root_path, *pyannote_config['pipeline']['params']['embedding'].split("/"))
+        pyannote_config['pipeline']['params']['segmentation'] = os.path.join(root_path, *pyannote_config['pipeline']['params']['segmentation'].split("/"))
+
+        tmpdir = TemporaryDirectory('ghe_transcribe_temp')
+        with open(os.path.join(tmpdir.name, pyannote_config_name), 'w') as yaml_file:
+            yaml.safe_dump(pyannote_config, yaml_file)
+
+        diarization_result = Pipeline.from_pretrained(os.path.join(tmpdir.name, pyannote_config_name)).to(torch_device)(
+           file, **pyannote_kwargs
+       )
+
     except Exception as e:
         print(f"Diarization Error: {e}")
 
@@ -219,12 +234,12 @@ def transcribe(
     if save_output:
         csv = to_csv(text)
         with open(output_file_name + ".csv", "w") as f:
-            f.write("\n".join(csv))
+            f.write(csv)
             print(f"Output saved to {output_file_name}.csv")
-        md = to_md(text)
-        with open(output_file_name + ".md", "w") as f:
-            f.write("\n".join(md))
-            print(f"Output saved to {output_file_name}.md")
+        srt = to_srt(text)
+        with open(output_file_name + ".srt", "w") as f:
+            f.write(srt)
+            print(f"Output saved to {output_file_name}.srt")
 
     if info:
         print(
