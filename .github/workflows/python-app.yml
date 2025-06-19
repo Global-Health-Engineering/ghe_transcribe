@@ -8,11 +8,6 @@ on:
       - '!src/ghe_transcribe/_version.py'
       - 'tests/**'
   pull_request:
-    branches: [ "main" ]
-    paths:
-      - 'src/ghe_transcribe/**'
-      - '!src/ghe_transcribe/_version.py'
-      - 'tests/**'
 
 permissions:
   contents: read
