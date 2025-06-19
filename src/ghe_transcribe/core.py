@@ -104,7 +104,7 @@ def transcribe(
 ):
     """Transcribe and diarize an audio file."""
     try:
-        if huggingface_token:
+        if str(huggingface_token).startswith("hf_"):
             login(token=huggingface_token)
     except Exception as e:
         print(f"Error: {e} Please provide a valid token through the --huggingface_token argument or configure the hugginface_token in config.json.")
@@ -204,7 +204,7 @@ def transcribe(
         pyannote_kwargs["max_speakers"] = max_speakers
 
     try:
-        if huggingface_token:
+        if str(huggingface_token).startswith("hf_"):
             pyannote_config_name = 'pyannote_config_huggingface.yaml'
         else:
             pyannote_config_name = 'pyannote_config.yaml'

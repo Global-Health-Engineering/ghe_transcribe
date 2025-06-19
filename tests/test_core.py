@@ -4,12 +4,11 @@ import glob
 from ghe_transcribe.core import transcribe
 
 TEST_AUDIO_PATH = "media/testing_audio.mp3"
-huggingface_token = os.environ.get("HUGGINGFACE_TOKEN")
+# huggingface_token = os.environ.get("HUGGINGFACE_TOKEN")
 
 def test_transcribe_snippet():
     """Tests the transcribe function with a snippet and speaker count."""
     text = transcribe(TEST_AUDIO_PATH, 
-                        huggingface_token=huggingface_token, 
                         trim=5, 
                         device="auto", 
                         cpu_threads=None,
@@ -21,7 +20,6 @@ def test_transcribe_snippet():
                         word_timestamps=None,
                         vad_filter=False,
                         min_silence_duration_ms=2000,
-                        pyannote_model="pyannote/speaker-diarization-3.1",
                         num_speakers=1,
                         min_speakers=None,
                         max_speakers=None,
