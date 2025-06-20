@@ -6,3 +6,4 @@ ruff.toml
 *.egg-info
 .vscode/
 launch.json
+.pytest_cache/

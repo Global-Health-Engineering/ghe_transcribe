@@ -122,7 +122,6 @@ $ transcribe [OPTIONS] FILE
 
 **Options**:
 
-* `--huggingface-token TEXT`: Hugging Face token for authentication.
 * `--trim FLOAT`: Trim the audio file from 0 to the specified number of seconds.
 * `--device [auto|cuda|mps|cpu]`: Device to use.  [default: auto]
 * `--cpu-threads INTEGER`: Number of CPU threads to use.
@@ -134,7 +133,6 @@ $ transcribe [OPTIONS] FILE
 * `--word-timestamps / --no-word-timestamps`: Faster Whisper, enable word timestamps in the output.
 * `--vad-filter / --no-vad-filter`: Faster Whisper, enable voice activity detection.  [default: no-vad-filter]
 * `--min-silence-duration-ms INTEGER`: Faster Whisper, minimum silence duration detected by VAD in milliseconds.  [default: 2000]
-* `--pyannote-model TEXT`: pyannote.audio, speaker diarization model to use.  [default: pyannote/speaker-diarization-3.1]
 * `--num-speakers INTEGER`: pyannote.audio, number of speakers.
 * `--min-speakers INTEGER`: pyannote.audio, minimum number of speakers.
 * `--max-speakers INTEGER`: pyannote.audio, maximum number of speakers.

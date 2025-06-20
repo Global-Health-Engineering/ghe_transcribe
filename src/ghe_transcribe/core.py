@@ -1,12 +1,10 @@
 import os
-import json
 import yaml
 from typing import Optional
 from enum import Enum
 from tempfile import TemporaryDirectory
 
 from typer import Typer, Argument, Option
-from huggingface_hub import login
 from faster_whisper import WhisperModel
 from pyannote.audio import Pipeline
 from torch import device as to_torch_device
@@ -18,7 +16,6 @@ from ghe_transcribe.utils import (
     diarize_text,
     timing,
     to_csv,
-    to_md,
     to_srt,
     to_wav,
     to_whisper_format,
@@ -69,7 +66,6 @@ transcribe_config = {
     "word_timestamps": None,
     "vad_filter": False,
     "min_silence_duration_ms": 2000,
-    "pyannote_model": "pyannote/speaker-diarization-3.1",
     "num_speakers": None,
     "min_speakers": None,
     "max_speakers": None,
@@ -84,7 +80,6 @@ app = Typer(help="Transcribe and diarize an audio file.")
 def transcribe(
     file: str = Argument(..., help="Path to the audio file."),
     trim: Optional[float] = Option(transcribe_config.get("trim"), help="Trim the audio file from 0 to the specified number of seconds."),
-    huggingface_token: Optional[str] = Option(transcribe_config.get("huggingface_token"), help="Hugging Face token for authentication."),
     device: Optional[DeviceChoice] = Option(transcribe_config.get("device"), help="Device to use."),
     cpu_threads: Optional[int] = Option(transcribe_config.get("cpu_threads"), help="Number of CPU threads to use."),
     whisper_model: Optional[WhisperModelChoice] = Option(transcribe_config.get("whisper_model"), help="Faster Whisper, model to use."),
@@ -95,7 +90,6 @@ def transcribe(
     word_timestamps: Optional[bool] = Option(transcribe_config.get("word_timestamps"), help="Faster Whisper, enable word timestamps in the output."),
     vad_filter: Optional[bool] = Option(transcribe_config.get("vad_filter"), help="Faster Whisper, enable voice activity detection."),
     min_silence_duration_ms: Optional[int] = Option(transcribe_config.get("min_silence_duration_ms"), help="Faster Whisper, minimum silence duration detected by VAD in milliseconds."),
-    pyannote_model: Optional[str] = Option(transcribe_config.get("pyannote_model"), help="pyannote.audio, speaker diarization model to use."),
     num_speakers: Optional[int] = Option(transcribe_config.get("num_speakers"), help="pyannote.audio, number of speakers."),
     min_speakers: Optional[int] = Option(transcribe_config.get("min_speakers"), help="pyannote.audio, minimum number of speakers."),
     max_speakers: Optional[int] = Option(transcribe_config.get("max_speakers"), help="pyannote.audio, maximum number of speakers."),
@@ -103,12 +97,6 @@ def transcribe(
     info: Optional[bool] = Option(transcribe_config.get("info"), help="Print detected language information."),
 ):
     """Transcribe and diarize an audio file."""
-    try:
-        if str(huggingface_token).startswith("hf_"):
-            login(token=huggingface_token)
-    except Exception as e:
-        print(f"Error: {e} Please provide a valid token through the --huggingface_token argument or configure the hugginface_token in config.json.")
-        return None
 
     # Relative path helper
     root_path = os.path.abspath(os.path.dirname(__file__)).replace("/src/ghe_transcribe", "")
@@ -204,10 +192,8 @@ def transcribe(
         pyannote_kwargs["max_speakers"] = max_speakers
 
     try:
-        if str(huggingface_token).startswith("hf_"):
-            pyannote_config_name = 'pyannote_config_huggingface.yaml'
-        else:
-            pyannote_config_name = 'pyannote_config.yaml'
+        pyannote_config_name = 'pyannote_config.yaml'
+        
         with open(os.path.join(root_path, 'pyannote', pyannote_config_name), 'r') as yaml_file:
             pyannote_config = yaml.safe_load(yaml_file)
 
