@@ -23,7 +23,7 @@ def test_transcribe_snippet():
                         num_speakers=1,
                         min_speakers=None,
                         max_speakers=None,
-                        save_output=True, 
+                        save_output=False, 
                         info=False)
 
     # Add assertions to check the text
