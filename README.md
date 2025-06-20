@@ -68,7 +68,6 @@ python -m venv venv_ghe_transcribe --system-site-packages
 source venv_ghe_transcribe/bin/activate
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
-pip install -r requirements.txt
 pip install -e .
 ipython kernel install --user --name=venv_ghe_transcribe
 ```
@@ -78,7 +77,7 @@ ipython kernel install --user --name=venv_ghe_transcribe
 To ensure your JupyterHub instances automatically use the created environment, edit the JupyterLab configuration file:
 
 ```bash
-echo "module load stack/2024-06 python_cuda/3.11.6 && source venv_ghe_transcribe/bin/activate" >> .config/euler/jupyterhub/jupyterlabrc
+echo "module load stack/2024-06 python_cuda/3.11.6 && source venv_ghe_transcribe/bin/activate" >> ~/.config/euler/jupyterhub/jupyterlabrc
 ```
 
 ## Basic Usage
@@ -87,22 +86,22 @@ echo "module load stack/2024-06 python_cuda/3.11.6 && source venv_ghe_transcribe
 
 To transcribe an audio file:
 
-1.  **Place your audio file:** Upload the audio file you want to transcribe, e.g.`testing_audio.mp3`. 
+1.  **Place your audio file:** Upload the audio file you want to transcribe. 
 > [!TIP]
 > Drop the file into the `media` folder.
-2.  **Run the transcription script:** Execute the transcribe command in the terminal:
+2.  **Run the transcription script:** Execute the `transcribe` command in the terminal:
     ```bash
-    transcribe media/testing_audio.mp3
+    transcribe media/YOUR_AUDIO_FILE.mp3
     ```
 > [!IMPORTANT]
-> Make sure you are in the correct directory, `ghe_transcribe`. Otherwise change path to the correct `path/to/your/audio/file.mp3`.
+> This will work only if you are in the `ghe_transcribe` directory. Otherwise, change path to the correct `path/to/YOUR_AUDIO_FILE.mp3`.
 
 ### Python Integration
 **Example:**
 ```python
 from ghe_transcribe.core import transcribe
 
-result = transcribe("media/testing_audio.mp3")
+result = transcribe("media/YOUR_AUDIO_FILE.mp3")
 ```
 
 ## Command-Line Interface

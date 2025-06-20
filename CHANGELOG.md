@@ -1,3 +1,21 @@
+## [0.3.3](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.3.2...v0.3.3) (2025-06-20)
+
+
+### Bug Fixes
+
+* bump release ([381b1d2](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/381b1d2c7dff371352f7869eb38da478731f5e8f))
+
+
+
+## [0.3.2](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.3.1...v0.3.2) (2025-06-19)
+
+
+### Bug Fixes
+
+* python3.9 missing requirements ([1ff44c2](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/1ff44c2bb3a9e29fb123dd7d417cb7042c23aed9))
+
+
+
 ## [0.3.1](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.3.0...v0.3.1) (2025-06-19)
 
 
@@ -26,24 +44,6 @@
 ### Bug Fixes
 
 * do not run tests unless core code is edited ([f7ddcce](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/f7ddcce98b964b83ac18c3a76654090252fe2bc7))
-
-
-
-## [0.2.7](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.6...v0.2.7) (2025-04-30)
-
-
-### Bug Fixes
-
-* passing wheel file to GITHUB_OUTPUT ([324e86b](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/324e86bc3979f29131169b2b1fab7bbf1123c48c))
-
-
-
-## [0.2.6](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.5...v0.2.6) (2025-04-30)
-
-
-### Bug Fixes
-
-* add debugging ([3b954df](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/3b954dfdc4eda8d341aea09300fc05046349a09a))
 
 
 
