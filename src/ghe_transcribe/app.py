@@ -1,18 +1,22 @@
-import ipywidgets as widgets
-from IPython.display import display, clear_output
+import logging
 import os
+
+import ipywidgets as widgets
+from IPython.display import clear_output, display
 
 # Import the core transcription function and config from your package
 from ghe_transcribe.core import (
-    transcribe,
-    transcribe_config, # Default configuration
-    DeviceChoice,      # Enum for device choices
-    ComputeTypeChoice, # Enum for compute type choices
-    WhisperModelChoice # Enum for Whisper model choices
+    ComputeTypeChoice,  # Enum for compute type choices
+    DeviceChoice,  # Enum for device choices
+    WhisperModelChoice,  # Enum for Whisper model choices
+    transcribe_core,
+    transcribe_config,  # Default configuration
 )
 
 # To get the parent directory:
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+
+logger = logging.getLogger(__name__)
 
 # Output directory for transcribed files
 output_dir = os.path.join(root_path, "output")
@@ -163,7 +167,7 @@ class GheTranscribeApp:
         )
 
         self.advanced_widgets_box = widgets.VBox([
-            self.min_speakers_input, 
+            self.min_speakers_input,
             self.max_speakers_input,
             self.device_dropdown,
             self.cpu_threads_input,
@@ -222,9 +226,11 @@ class GheTranscribeApp:
         """Callback for the run button, initiating transcription."""
         with self.output_area:
             clear_output()
+            logger.info("Starting transcription...")
             print("Starting transcription...")
 
             if not self.audio_uploader.value:
+                logger.warning("No audio file uploaded")
                 print("Please upload an audio file first.")
                 return
 
@@ -241,6 +247,7 @@ class GheTranscribeApp:
                 audio_file_path = os.path.join(media_dir, uploaded_file_name)
                 with open(audio_file_path, 'wb') as f:
                     f.write(uploaded_content_bytes)
+                logger.info(f"Uploaded audio saved to: {audio_file_path}")
                 print(f"Uploaded audio saved to: {audio_file_path}")
 
                 # Prepare arguments for transcribe
@@ -270,9 +277,10 @@ class GheTranscribeApp:
                     kwargs["max_speakers"] = self.max_speakers_input.value
 
                 # Call the ghe_transcribe function
-                transcribe(**kwargs)
+                transcribe_core(**kwargs)
 
             except Exception as e:
+                logger.error(f"An unexpected error occurred: {e}", exc_info=True)
                 print(f"An unexpected error occurred: {e}")
                 import traceback
                 traceback.print_exc() # Print full traceback for debugging
@@ -282,8 +290,27 @@ class GheTranscribeApp:
         display(self.basic_widgets_box, self.advanced_widgets_box, self.run_widgets_box)
 
 def execute():
-    app = GheTranscribeApp()
-    app.display_app()
+    """Execute the transcription app with auto-installation if needed."""
+    import sys
+    import subprocess
+    
+    try:
+        # Check if we can create the app (tests if dependencies are available)
+        app = GheTranscribeApp()
+        app.display_app()
+    except ImportError as e:
+        print(f"Missing dependencies: {e}")
+        print("Installing package in development mode...")
+        
+        try:
+            # Install the package in development mode
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", "."])
+            print("Installation successful! Please restart your kernel and run again.")
+            print("In Jupyter: Kernel → Restart Kernel, then re-run your cell.")
+        except subprocess.CalledProcessError as install_error:
+            print(f"Installation failed: {install_error}")
+            print("Please install manually: pip install -e \".[ui]\"")
+            raise
 
 if __name__ == "__main__":
     execute()
