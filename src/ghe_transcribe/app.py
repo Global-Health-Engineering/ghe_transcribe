@@ -161,7 +161,6 @@ class GheTranscribeApp:
             layout=self.common_widget_layout
         )
 
-
         self.advanced_widgets_box = widgets.VBox([
             self.device_dropdown,
             self.cpu_threads_input,
@@ -291,7 +290,6 @@ class GheTranscribeApp:
                     # The output_dir is defined at the top of app.py to provide a base path
                     # so the message should reflect that.
                     print(f"Output files (.csv, .srt) should be available in the '{output_dir}/output/' folder, named after your audio file.")
-
 
             except Exception as e:
                 print(f"An unexpected error occurred: {e}")
