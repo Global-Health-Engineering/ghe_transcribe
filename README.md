@@ -36,7 +36,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # Clone and install
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
-uv sync  # Install all dependencies from lock file
+uv sync --extra ui
 uv run ipython kernel install --user --name=venv_ghe_transcribe
 ```
 
@@ -80,21 +80,6 @@ module load stack/2024-06 python_cuda/3.11.6
 
 It's recommended to create a dedicated virtual environment to manage dependencies:
 
-#### Using uv (Recommended)
-
-```bash
-# Load modules and install uv
-module load stack/2024-06 python_cuda/3.11.6
-curl -LsSf https://astral.sh/uv/install.sh | sh
-source ~/.cargo/env  # Add uv to PATH
-
-# Clone and install
-git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
-cd ghe_transcribe
-uv sync --extra ui  # Install with UI support
-uv run ipython kernel install --user --name=venv_ghe_transcribe
-```
-
 #### Using pip (Alternative)
 
 ```bash
@@ -102,7 +87,7 @@ python -m venv venv_ghe_transcribe --system-site-packages
 source venv_ghe_transcribe/bin/activate
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
-pip install -e ".[ui]"  # Include UI support for Jupyter
+pip install -e ".[ui]"  # Include Jupyter UI support
 ipython kernel install --user --name=venv_ghe_transcribe
 ```
 
@@ -128,10 +113,7 @@ For the quickest start, use the user interface (UI) tool, `app.ipynb`.
 ### Python Integration
 
 ```python
-# Using uv
-# uv run python -c "from ghe_transcribe.core import transcribe; print(transcribe('media/YOUR_AUDIO_FILE.mp3'))"
-
-# Or in Python script/notebook
+# Python script/notebook
 from ghe_transcribe.core import transcribe
 
 result = transcribe("media/YOUR_AUDIO_FILE.mp3")
