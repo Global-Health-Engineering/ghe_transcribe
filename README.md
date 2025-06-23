@@ -85,7 +85,7 @@ It's recommended to create a dedicated virtual environment to manage dependencie
 ```bash
 # Install uv if not already available
 curl -LsSf https://astral.sh/uv/install.sh | sh
-source ~/.cargo/env
+export PATH="$HOME/.local/bin:$PATH"
 
 # Clone and install
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
@@ -111,7 +111,7 @@ To ensure your JupyterHub instances automatically use the created environment, e
 
 **For uv installation:**
 ```bash
-echo "module load stack/2024-06 python_cuda/3.11.6 && source ~/.cargo/env" >> ~/.config/euler/jupyterhub/jupyterlabrc
+echo "module load stack/2024-06 python_cuda/3.11.6 && export PATH=\"\$HOME/.local/bin:\$PATH\"" >> ~/.config/euler/jupyterhub/jupyterlabrc
 ```
 
 **For pip installation:**
