@@ -18,7 +18,7 @@ def test_transcribe_snippet():
     text = transcribe_core(
         TEST_AUDIO_PATH,
         trim=5,
-        device="auto",
+        device="cpu",  # Force CPU to avoid MPS memory issues in CI
         cpu_threads=None,
         whisper_model="tiny.en",
         device_index=0,
