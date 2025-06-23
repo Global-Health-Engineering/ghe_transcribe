@@ -290,8 +290,27 @@ class GheTranscribeApp:
         display(self.basic_widgets_box, self.advanced_widgets_box, self.run_widgets_box)
 
 def execute():
-    app = GheTranscribeApp()
-    app.display_app()
+    """Execute the transcription app with auto-installation if needed."""
+    import sys
+    import subprocess
+    
+    try:
+        # Check if we can create the app (tests if dependencies are available)
+        app = GheTranscribeApp()
+        app.display_app()
+    except ImportError as e:
+        print(f"Missing dependencies: {e}")
+        print("Installing package in development mode...")
+        
+        try:
+            # Install the package in development mode
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", "."])
+            print("Installation successful! Please restart your kernel and run again.")
+            print("In Jupyter: Kernel → Restart Kernel, then re-run your cell.")
+        except subprocess.CalledProcessError as install_error:
+            print(f"Installation failed: {install_error}")
+            print("Please install manually: pip install -e \".[ui]\"")
+            raise
 
 if __name__ == "__main__":
     execute()

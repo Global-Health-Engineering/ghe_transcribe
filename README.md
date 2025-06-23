@@ -8,15 +8,17 @@ A tool to transcribe audio files with speaker diarization using **Faster Whisper
 ## Quick Start
 
 ```bash
-# Clone and install
+# Clone the repository
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
-pip install -e ".[ui]"
 
-# For Jupyter notebook interface
+# Jupyter interface (auto-installs if needed)
 python -c "from ghe_transcribe.app import execute; execute()"
+```
 
-# For command line
+```bash
+# Command line interface
+pip install -e ".[ui]"
 transcribe media/your_audio.mp3
 ```
 
@@ -42,6 +44,7 @@ pip install -e ".[dev]"
 
 ### Jupyter Interface (Recommended)
 ```python
+# Auto-installs dependencies if missing
 from ghe_transcribe.app import execute
 execute()
 ```
