@@ -1,3 +1,12 @@
+## [0.5.1](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.5.0...v0.5.1) (2025-06-23)
+
+
+### Bug Fixes
+
+* need fix for version control ([20cafbd](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/20cafbd019a80f947ebae005da6a1a9040d6d37e))
+
+
+
 # [0.5.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.4.0...v0.5.0) (2025-06-23)
 
 
@@ -51,17 +60,6 @@
 ### Bug Fixes
 
 * python3.9 missing requirements ([1ff44c2](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/1ff44c2bb3a9e29fb123dd7d417cb7042c23aed9))
-
-
-
-## [0.3.1](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.3.0...v0.3.1) (2025-06-19)
-
-
-### Bug Fixes
-
-* added dependencies installation ([0bd6205](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/0bd62053e462c7fe85e06f57f0f2adcb28edc399))
-* fixed typer interaction with if statement ([4b00bc4](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/4b00bc4573785fdb8c0dc9074335b0a22a85d43c))
-* typo ([995de43](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/995de4304088c98a6d04742b28c6a8c32a6a88d6))
 
 
 
