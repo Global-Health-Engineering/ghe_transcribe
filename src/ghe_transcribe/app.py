@@ -73,15 +73,9 @@ class GheTranscribeApp:
             description="Num. Speakers:",
             layout=self.common_widget_layout
         )
-        self.min_speakers_input = widgets.IntText(
-            value=transcribe_config.get("min_speakers") or 1,
-            description="Min Speakers:",
-            layout=self.common_widget_layout
-        )
-        self.max_speakers_input = widgets.IntText(
-            value=transcribe_config.get("max_speakers") or 10,
-            description="Max Speakers:",
-            layout=self.common_widget_layout
+
+        self.whisper_model_dropdown = self._create_dropdown_from_enum(
+            WhisperModelChoice, "Whisper Model:", transcribe_config.get("whisper_model")
         )
 
         self.advanced_options_checkbox = widgets.Checkbox(
@@ -94,10 +88,10 @@ class GheTranscribeApp:
         self.basic_widgets_box = widgets.VBox([
             self.audio_uploader,
             self.trim_input,
-            widgets.HBox([self.num_speakers_dropdown]),
-            widgets.HBox([self.min_speakers_input, self.max_speakers_input]),
+            self.num_speakers_dropdown,
+            self.whisper_model_dropdown,
             self.advanced_options_checkbox
-        ], layout=widgets.Layout(width='80%', margin='0 auto', border='1px solid #ccc', padding='15px'))
+        ], layout=widgets.Layout(width='50%', margin='0 auto', border='1px solid #ccc', padding='15px'))
 
         # Advanced Options (Faster Whisper & VAD parameters)
         self.device_dropdown = self._create_dropdown_from_enum(
@@ -108,8 +102,15 @@ class GheTranscribeApp:
             description="CPU Threads:",
             layout=self.common_widget_layout
         )
-        self.whisper_model_dropdown = self._create_dropdown_from_enum(
-            WhisperModelChoice, "Whisper Model:", transcribe_config.get("whisper_model")
+        self.min_speakers_input = widgets.IntText(
+            value=transcribe_config.get("min_speakers") or 1,
+            description="Min Speakers:",
+            layout=self.common_widget_layout
+        )
+        self.max_speakers_input = widgets.IntText(
+            value=transcribe_config.get("max_speakers") or 10,
+            description="Max Speakers:",
+            layout=self.common_widget_layout
         )
         self.device_index_input = widgets.IntText(
             value=transcribe_config.get("device_index") or 0,
@@ -162,9 +163,10 @@ class GheTranscribeApp:
         )
 
         self.advanced_widgets_box = widgets.VBox([
+            self.min_speakers_input, 
+            self.max_speakers_input,
             self.device_dropdown,
             self.cpu_threads_input,
-            self.whisper_model_dropdown,
             self.device_index_input,
             self.compute_type_dropdown,
             self.beam_size_input,
@@ -174,7 +176,7 @@ class GheTranscribeApp:
             self.min_silence_duration_ms_input,
             self.save_output_checkbox,
             self.info_checkbox,
-        ], layout=widgets.Layout(width='80%', margin='0 auto', border='1px solid #ccc', padding='15px'))
+        ], layout=widgets.Layout(width='50%', margin='0 auto', border='1px solid #ccc', padding='15px'))
 
         # Run Button and Output Area
         self.run_button = widgets.Button(
@@ -199,10 +201,9 @@ class GheTranscribeApp:
             self.run_button,
             self.output_area,
         ], layout=widgets.Layout(
-            width='80%', # Ensure the parent VBox has a defined width
+            width='100%', # Ensure the parent VBox has a defined width
             margin='0 auto',
             border='1px solid #ccc',
-            padding='15px',
             display='flex',       # Essential for flexbox behavior
             flex_flow='column',   # Arrange children vertically
             align_items='stretch' # Crucial: makes children stretch to fill parent's width
@@ -269,27 +270,7 @@ class GheTranscribeApp:
                     kwargs["max_speakers"] = self.max_speakers_input.value
 
                 # Call the ghe_transcribe function
-                transcribed_text = transcribe(**kwargs)
-                print("\nGhe-transcribe execution completed successfully.")
-                print("\nTranscription Result:")
-                # Print a snippet of the result if it's a list/dict of segments
-                if transcribed_text:
-                    if isinstance(transcribed_text, list) and len(transcribed_text) > 0:
-                        for i, segment in enumerate(transcribed_text[:5]): # Print first 5 segments
-                            print(f"[{segment['start']:.2f} - {segment['end']:.2f}] {segment.get('speaker', 'Unknown')}: {segment['text']}")
-                        if len(transcribed_text) > 5:
-                            print("...")
-                    else:
-                        print(transcribed_text) # Fallback for other return types
-
-                if self.save_output_checkbox.value:
-                    # The `transcribe` function in core.py handles saving to output/
-                    # We just need to inform the user where to find them.
-                    base_name = os.path.splitext(os.path.basename(audio_file_path))[0]
-                    # The core.py saves to "output/<filename>.csv" and "output/<filename>.srt"
-                    # The output_dir is defined at the top of app.py to provide a base path
-                    # so the message should reflect that.
-                    print(f"Output files (.csv, .srt) should be available in the '{output_dir}/output/' folder, named after your audio file.")
+                transcribe(**kwargs)
 
             except Exception as e:
                 print(f"An unexpected error occurred: {e}")
