@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'src/ghe_transcribe/**'
+      - '!src/ghe_transcribe/_version.py'
+      - 'pyproject.toml'
+      - '.github/workflows/releases.yml'
 
 permissions:
   contents: write
