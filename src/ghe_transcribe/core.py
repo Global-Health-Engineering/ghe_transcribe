@@ -181,15 +181,21 @@ def transcribe(
     generated_segments = list(segments)
 
     # Speaker Diarization: pyannote.audio
-
+    
     # Create a dictionary of keyword arguments
     pyannote_kwargs = {}
-    if num_speakers is not None:
-        pyannote_kwargs["num_speakers"] = num_speakers
-    if min_speakers is not None:
-        pyannote_kwargs["min_speakers"] = min_speakers
-    if max_speakers is not None:
-        pyannote_kwargs["max_speakers"] = max_speakers
+
+    _num_speakers = num_speakers if isinstance(num_speakers, int) or num_speakers is None else None
+    _min_speakers = min_speakers if isinstance(min_speakers, int) or min_speakers is None else None
+    _max_speakers = max_speakers if isinstance(max_speakers, int) or max_speakers is None else None
+
+
+    if _num_speakers is not None:
+        pyannote_kwargs["num_speakers"] = _num_speakers
+    if _min_speakers is not None:
+        pyannote_kwargs["min_speakers"] = _min_speakers
+    if _max_speakers is not None:
+        pyannote_kwargs["max_speakers"] = _max_speakers
 
     try:
         pyannote_config_name = 'pyannote_config.yaml'

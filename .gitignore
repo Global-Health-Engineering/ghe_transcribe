@@ -7,3 +7,4 @@ ruff.toml
 .vscode/
 launch.json
 .pytest_cache/
+.aider*

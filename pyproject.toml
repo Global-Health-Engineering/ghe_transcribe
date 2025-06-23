@@ -12,7 +12,7 @@ dependencies = [
     "av",
     "faster-whisper",
     "pyannote.audio",
-    "huggingface-hub",
+    "ipywidgets",
 ]
 scripts = {transcribe = "ghe_transcribe.core:app"}
 
