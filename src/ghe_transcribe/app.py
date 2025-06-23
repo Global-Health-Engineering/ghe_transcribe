@@ -9,7 +9,7 @@ from ghe_transcribe.core import (
     ComputeTypeChoice,  # Enum for compute type choices
     DeviceChoice,  # Enum for device choices
     WhisperModelChoice,  # Enum for Whisper model choices
-    transcribe,
+    transcribe_core,
     transcribe_config,  # Default configuration
 )
 
@@ -277,7 +277,7 @@ class GheTranscribeApp:
                     kwargs["max_speakers"] = self.max_speakers_input.value
 
                 # Call the ghe_transcribe function
-                transcribe(**kwargs)
+                transcribe_core(**kwargs)
 
             except Exception as e:
                 logger.error(f"An unexpected error occurred: {e}", exc_info=True)
