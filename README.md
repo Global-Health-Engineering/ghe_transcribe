@@ -80,6 +80,20 @@ module load stack/2024-06 python_cuda/3.11.6
 
 It's recommended to create a dedicated virtual environment to manage dependencies:
 
+#### Using uv (Recommended)
+
+```bash
+# Install uv if not already available
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source ~/.cargo/env
+
+# Clone and install
+git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
+cd ghe_transcribe
+uv sync --extra ui
+uv run ipython kernel install --user --name=venv_ghe_transcribe
+```
+
 #### Using pip (Alternative)
 
 ```bash
@@ -95,6 +109,12 @@ ipython kernel install --user --name=venv_ghe_transcribe
 
 To ensure your JupyterHub instances automatically use the created environment, edit the JupyterLab configuration file:
 
+**For uv installation:**
+```bash
+echo "module load stack/2024-06 python_cuda/3.11.6 && source ~/.cargo/env" >> ~/.config/euler/jupyterhub/jupyterlabrc
+```
+
+**For pip installation:**
 ```bash
 echo "module load stack/2024-06 python_cuda/3.11.6 && source venv_ghe_transcribe/bin/activate" >> ~/.config/euler/jupyterhub/jupyterlabrc
 ```
