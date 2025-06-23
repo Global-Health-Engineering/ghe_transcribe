@@ -3,7 +3,7 @@ import os
 
 import pytest
 
-from ghe_transcribe.core import transcribe
+from ghe_transcribe.core import transcribe_core
 from ghe_transcribe.exceptions import AudioConversionError, ModelInitializationError
 
 TEST_AUDIO_PATH = "media/testing_audio.mp3"
@@ -14,7 +14,7 @@ def test_transcribe_snippet():
     # Skip if test audio file doesn't exist
     if not os.path.exists(TEST_AUDIO_PATH):
         pytest.skip(f"Test audio file {TEST_AUDIO_PATH} not found")
-    text = transcribe(TEST_AUDIO_PATH,
+    text = transcribe_core(TEST_AUDIO_PATH,
                         trim=5,
                         device="auto",
                         cpu_threads=None,
@@ -39,7 +39,7 @@ def test_transcribe_snippet():
 def test_transcribe_invalid_file():
     """Test transcription with invalid file."""
     with pytest.raises(AudioConversionError):
-        transcribe("non_existent_file.mp3",
+        transcribe_core("non_existent_file.mp3",
                    whisper_model="tiny.en",
                    save_output=False,
                    info=False)
@@ -51,7 +51,7 @@ def test_transcribe_invalid_device():
         pytest.skip(f"Test audio file {TEST_AUDIO_PATH} not found")
 
     with pytest.raises(ModelInitializationError):
-        transcribe(TEST_AUDIO_PATH,
+        transcribe_core(TEST_AUDIO_PATH,
                    device="invalid_device",
                    whisper_model="tiny.en",
                    save_output=False,
