@@ -22,11 +22,13 @@ transcribe media/your_audio.mp3
 ## Installation
 
 ### Basic Installation
+Command line interface support,
 ```bash
 pip install -e .
 ```
 
-### With Jupyter UI Support
+### With UI
+Jupyter notebooks support,
 ```bash
 pip install -e ".[ui]"
 ipython kernel install --user --name=ghe_transcribe
