@@ -13,7 +13,7 @@ This repository hosts `ghe_transcribe`, a powerful Python script designed to tra
       * [macOS](#macos)
       * [Euler Cluster](#euler-cluster)
 2.  [**Usage**](#usage)
-      * [Quick Start](#quick-start)
+      * [Quickstart](#quickstart)
       * [Python Integration](#python-integration)
       * [Command-Line Interface (CLI)](#command-line-interface-cli)
 4.  [**Contributing**](#contributing)
@@ -84,7 +84,7 @@ echo "module load stack/2024-06 python_cuda/3.11.6 && source venv_ghe_transcribe
 
 To transcribe an audio file:
 
-### Quick Start
+### Quickstart
 For the quickest start, use the user interface (UI) tool, `app.ipynb`.
 
 1. Open `app.ipynb`
