@@ -181,7 +181,8 @@ def transcribe(
     generated_segments = list(segments)
 
     # Speaker Diarization: pyannote.audio
-
+    diarization_result = None # Initialize to None
+    
     # Create a dictionary of keyword arguments
     pyannote_kwargs = {}
     if num_speakers is not None:
