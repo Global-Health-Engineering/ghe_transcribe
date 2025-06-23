@@ -44,6 +44,7 @@ dependencies = [
 ui = [
     "ipywidgets>=8.0.0",
     "IPython>=8.0.0",
+    "ipykernel>=6.0.0",
 ]
 dev = [
     "pytest>=7.0.0",
