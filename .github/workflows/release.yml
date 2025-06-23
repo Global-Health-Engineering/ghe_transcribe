@@ -42,7 +42,7 @@ jobs:
 
       - name: Build package
         run: |
-          uv tool run build --wheel --outdir dist/
+          uv tool run --from build pyproject-build --wheel --outdir dist/
           echo "WHEEL_FILE=$(ls dist/*.whl)" >> $GITHUB_ENV
 
       - name: Generate changelog and create release
