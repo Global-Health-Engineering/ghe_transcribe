@@ -1,6 +1,7 @@
 import ipywidgets as widgets
 from IPython.display import display, clear_output
 import os
+import logging
 
 # Import the core transcription function and config from your package
 from ghe_transcribe.core import (
@@ -13,6 +14,8 @@ from ghe_transcribe.core import (
 
 # To get the parent directory:
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+
+logger = logging.getLogger(__name__)
 
 # Output directory for transcribed files
 output_dir = os.path.join(root_path, "output")
@@ -222,9 +225,11 @@ class GheTranscribeApp:
         """Callback for the run button, initiating transcription."""
         with self.output_area:
             clear_output()
+            logger.info("Starting transcription...")
             print("Starting transcription...")
 
             if not self.audio_uploader.value:
+                logger.warning("No audio file uploaded")
                 print("Please upload an audio file first.")
                 return
 
@@ -241,6 +246,7 @@ class GheTranscribeApp:
                 audio_file_path = os.path.join(media_dir, uploaded_file_name)
                 with open(audio_file_path, 'wb') as f:
                     f.write(uploaded_content_bytes)
+                logger.info(f"Uploaded audio saved to: {audio_file_path}")
                 print(f"Uploaded audio saved to: {audio_file_path}")
 
                 # Prepare arguments for transcribe
@@ -273,6 +279,7 @@ class GheTranscribeApp:
                 transcribe(**kwargs)
 
             except Exception as e:
+                logger.error(f"An unexpected error occurred: {e}", exc_info=True)
                 print(f"An unexpected error occurred: {e}")
                 import traceback
                 traceback.print_exc() # Print full traceback for debugging

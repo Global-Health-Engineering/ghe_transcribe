@@ -1,13 +1,18 @@
 import os
 import glob
+import pytest
 
 from ghe_transcribe.core import transcribe
+from ghe_transcribe.exceptions import ModelInitializationError, AudioConversionError
 
 TEST_AUDIO_PATH = "media/testing_audio.mp3"
 # huggingface_token = os.environ.get("HUGGINGFACE_TOKEN")
 
 def test_transcribe_snippet():
     """Tests the transcribe function with a snippet and speaker count."""
+    # Skip if test audio file doesn't exist
+    if not os.path.exists(TEST_AUDIO_PATH):
+        pytest.skip(f"Test audio file {TEST_AUDIO_PATH} not found")
     text = transcribe(TEST_AUDIO_PATH, 
                         trim=5, 
                         device="auto", 
@@ -30,11 +35,32 @@ def test_transcribe_snippet():
     assert isinstance(text, list), "Transcribe should return a list."
     assert len(text) > 0, "The text should not be empty."
 
+def test_transcribe_invalid_file():
+    """Test transcription with invalid file."""
+    with pytest.raises(AudioConversionError):
+        transcribe("non_existent_file.mp3", 
+                   whisper_model="tiny.en",
+                   save_output=False,
+                   info=False)
+
+
+def test_transcribe_invalid_device():
+    """Test transcription with invalid device."""
+    if not os.path.exists(TEST_AUDIO_PATH):
+        pytest.skip(f"Test audio file {TEST_AUDIO_PATH} not found")
+        
+    with pytest.raises(ModelInitializationError):
+        transcribe(TEST_AUDIO_PATH,
+                   device="invalid_device",
+                   whisper_model="tiny.en",
+                   save_output=False,
+                   info=False)
+
+
 def teardown_module():
     """Cleans up any .wav files created in the current directory."""
     for filename in glob.glob("media/*.wav"):
         try:
             os.remove(filename)
-            print(f"Removed: {filename}")
-        except OSError as e:
-            print(f"Error removing {filename}: {e}")
+        except OSError:
+            pass

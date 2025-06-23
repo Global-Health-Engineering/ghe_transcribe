@@ -1,5 +1,6 @@
 import os
 import yaml
+import logging
 from typing import Optional
 from enum import Enum
 from tempfile import TemporaryDirectory
@@ -12,6 +13,10 @@ from torch import set_num_threads
 from torch.backends.mps import is_available as mps_is_available
 from torch.cuda import is_available as cuda_is_available
 
+from ghe_transcribe.exceptions import (
+    ModelInitializationError,
+    DiarizationError,
+)
 from ghe_transcribe.utils import (
     diarize_text,
     timing,
@@ -75,6 +80,13 @@ transcribe_config = {
 
 app = Typer(help="Transcribe and diarize an audio file.")
 
+# Set up simple logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
 @app.command()
 @timing
 def transcribe(
@@ -96,7 +108,7 @@ def transcribe(
     save_output: Optional[bool] = Option(transcribe_config.get("save_output"), help="Save output to .csv and .srt files."),
     info: Optional[bool] = Option(transcribe_config.get("info"), help="Print detected language information."),
 ):
-    """Transcribe and diarize an audio file."""
+    """Transcribe and diarize an audio file.\n    \n    Args:\n        file: Path to the audio file to transcribe\n        trim: Trim audio to specified seconds (from start)\n        device: Device to use for inference (auto, cuda, mps, cpu)\n        cpu_threads: Number of CPU threads for inference\n        whisper_model: Whisper model size to use\n        device_index: Device index for multi-GPU systems\n        compute_type: Computation precision (float32, float16, int8)\n        beam_size: Beam search width for decoding\n        temperature: Sampling temperature for generation\n        word_timestamps: Enable word-level timestamps\n        vad_filter: Enable voice activity detection filter\n        min_silence_duration_ms: Minimum silence duration for VAD\n        num_speakers: Exact number of speakers (overrides min/max)\n        min_speakers: Minimum number of speakers for diarization\n        max_speakers: Maximum number of speakers for diarization\n        save_output: Save transcription to CSV and SRT files\n        info: Print detected language information\n        \n    Returns:\n        List of tuples containing (segment, speaker, text)\n        \n    Raises:\n        ModelInitializationError: If model initialization fails\n        DiarizationError: If speaker diarization fails\n        AudioConversionError: If audio conversion fails\n    """
 
     # Relative path helper
     root_path = os.path.abspath(os.path.dirname(__file__)).replace("/src/ghe_transcribe", "")
@@ -117,12 +129,12 @@ def transcribe(
         device = (
             "cuda" if cuda_is_available() else "mps" if mps_is_available() else "cpu"
         )
-        print(f"Using device: {device}")
+        logger.info(f"Using device: {device}")
     try:
         torch_device = to_torch_device(device)
     except Exception as e:
-        print(f"Device Error: {e}")
-        return
+        logger.error(f"Device Error: {e}")
+        raise ModelInitializationError(f"Failed to initialize device {device}: {e}")
 
     # Automatic Speech Recognition (ASR): faster-whisper
     # https://github.com/SYSTRAN/faster-whisper/blob/1383fd4d3725bdf59c95d8834c629f45c6974981/faster_whisper/transcribe.py#L586
@@ -160,7 +172,8 @@ def transcribe(
                     **whisper_model_kwargs,
                 )
     except Exception as e:
-        print(f"WhisperModel Device Error: {e}")
+        logger.error(f"WhisperModel Device Error: {e}")
+        raise ModelInitializationError(f"Failed to initialize Whisper model: {e}")
 
     # https://github.com/SYSTRAN/faster-whisper/blob/1383fd4d3725bdf59c95d8834c629f45c6974981/faster_whisper/transcribe.py#L255
 
@@ -215,7 +228,8 @@ def transcribe(
        )
 
     except Exception as e:
-        print(f"Diarization Error: {e}")
+        logger.error(f"Diarization Error: {e}")
+        raise DiarizationError(f"Failed to perform speaker diarization: {e}")
 
     # Text alignment
     text = diarize_text(to_whisper_format(generated_segments), diarization_result)
@@ -227,14 +241,14 @@ def transcribe(
         csv = to_csv(text)
         with open(output_file_name + ".csv", "w") as f:
             f.write(csv)
-            print(f"Output saved to {output_file_name}.csv")
+            logger.info(f"Output saved to {output_file_name}.csv")
         srt = to_srt(text)
         with open(output_file_name + ".srt", "w") as f:
             f.write(srt)
-            print(f"Output saved to {output_file_name}.srt")
+            logger.info(f"Output saved to {output_file_name}.srt")
 
     if info:
-        print(
+        logger.info(
             f"Detected language {info.language} with probability {info.language_probability}"
         )
         return text
