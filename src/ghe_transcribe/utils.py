@@ -252,7 +252,9 @@ def to_wav(file_name):
             return out_path
         except Exception as e:
             logger.error(f"Error PyAV: {e}")
-            raise AudioConversionError(f"Failed to convert audio file to WAV: {e}") from e
+            raise AudioConversionError(
+                f"Failed to convert audio file to WAV: {e}"
+            ) from e
 
 
 def resampling(file_name, sample_rate=16000):

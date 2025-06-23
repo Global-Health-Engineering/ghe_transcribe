@@ -197,7 +197,9 @@ def transcribe_core(
         torch_device = to_torch_device(device)
     except Exception as e:
         logger.error(f"Device Error: {e}")
-        raise ModelInitializationError(f"Failed to initialize device {device}: {e}") from e
+        raise ModelInitializationError(
+            f"Failed to initialize device {device}: {e}"
+        ) from e
 
     # Automatic Speech Recognition (ASR): faster-whisper
     # https://github.com/SYSTRAN/faster-whisper/blob/1383fd4d3725bdf59c95d8834c629f45c6974981/faster_whisper/transcribe.py#L586
@@ -236,7 +238,9 @@ def transcribe_core(
                 )
     except Exception as e:
         logger.error(f"WhisperModel Device Error: {e}")
-        raise ModelInitializationError(f"Failed to initialize Whisper model: {e}") from e
+        raise ModelInitializationError(
+            f"Failed to initialize Whisper model: {e}"
+        ) from e
 
     # https://github.com/SYSTRAN/faster-whisper/blob/1383fd4d3725bdf59c95d8834c629f45c6974981/faster_whisper/transcribe.py#L255
 
