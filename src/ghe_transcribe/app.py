@@ -1,15 +1,16 @@
-import ipywidgets as widgets
-from IPython.display import display, clear_output
-import os
 import logging
+import os
+
+import ipywidgets as widgets
+from IPython.display import clear_output, display
 
 # Import the core transcription function and config from your package
 from ghe_transcribe.core import (
+    ComputeTypeChoice,  # Enum for compute type choices
+    DeviceChoice,  # Enum for device choices
+    WhisperModelChoice,  # Enum for Whisper model choices
     transcribe,
-    transcribe_config, # Default configuration
-    DeviceChoice,      # Enum for device choices
-    ComputeTypeChoice, # Enum for compute type choices
-    WhisperModelChoice # Enum for Whisper model choices
+    transcribe_config,  # Default configuration
 )
 
 # To get the parent directory:
@@ -166,7 +167,7 @@ class GheTranscribeApp:
         )
 
         self.advanced_widgets_box = widgets.VBox([
-            self.min_speakers_input, 
+            self.min_speakers_input,
             self.max_speakers_input,
             self.device_dropdown,
             self.cpu_threads_input,

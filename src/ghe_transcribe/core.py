@@ -1,31 +1,30 @@
-import os
-import yaml
 import logging
-from typing import Optional
+import os
 from enum import Enum
 from tempfile import TemporaryDirectory
 
-from typer import Typer, Argument, Option
+import yaml
 from faster_whisper import WhisperModel
-from pyannote.audio import Pipeline
 from torch import device as to_torch_device
 from torch import set_num_threads
 from torch.backends.mps import is_available as mps_is_available
 from torch.cuda import is_available as cuda_is_available
+from typer import Argument, Option, Typer
 
 from ghe_transcribe.exceptions import (
-    ModelInitializationError,
     DiarizationError,
+    ModelInitializationError,
 )
 from ghe_transcribe.utils import (
     diarize_text,
+    snip_audio,
     timing,
     to_csv,
     to_srt,
     to_wav,
     to_whisper_format,
-    snip_audio,
 )
+from pyannote.audio import Pipeline
 
 
 class DeviceChoice(str, Enum):
@@ -91,22 +90,22 @@ logger = logging.getLogger(__name__)
 @timing
 def transcribe(
     file: str = Argument(..., help="Path to the audio file."),
-    trim: Optional[float] = Option(transcribe_config.get("trim"), help="Trim the audio file from 0 to the specified number of seconds."),
-    device: Optional[DeviceChoice] = Option(transcribe_config.get("device"), help="Device to use."),
-    cpu_threads: Optional[int] = Option(transcribe_config.get("cpu_threads"), help="Number of CPU threads to use."),
-    whisper_model: Optional[WhisperModelChoice] = Option(transcribe_config.get("whisper_model"), help="Faster Whisper, model to use."),
-    device_index: Optional[int] = Option(transcribe_config.get("device_index"), help="Faster Whisper, index of the device to use."),
-    compute_type: Optional[ComputeTypeChoice] = Option(transcribe_config.get("compute_type"), help="Faster Whisper, compute type."),
-    beam_size: Optional[int] = Option(transcribe_config.get("beam_size"), help="Faster Whisper, beam size for decoding."),
-    temperature: Optional[float] = Option(transcribe_config.get("temperature"), help="Faster Whisper, sampling temperature."),
-    word_timestamps: Optional[bool] = Option(transcribe_config.get("word_timestamps"), help="Faster Whisper, enable word timestamps in the output."),
-    vad_filter: Optional[bool] = Option(transcribe_config.get("vad_filter"), help="Faster Whisper, enable voice activity detection."),
-    min_silence_duration_ms: Optional[int] = Option(transcribe_config.get("min_silence_duration_ms"), help="Faster Whisper, minimum silence duration detected by VAD in milliseconds."),
-    num_speakers: Optional[int] = Option(transcribe_config.get("num_speakers"), help="pyannote.audio, number of speakers."),
-    min_speakers: Optional[int] = Option(transcribe_config.get("min_speakers"), help="pyannote.audio, minimum number of speakers."),
-    max_speakers: Optional[int] = Option(transcribe_config.get("max_speakers"), help="pyannote.audio, maximum number of speakers."),
-    save_output: Optional[bool] = Option(transcribe_config.get("save_output"), help="Save output to .csv and .srt files."),
-    info: Optional[bool] = Option(transcribe_config.get("info"), help="Print detected language information."),
+    trim: float | None = Option(transcribe_config.get("trim"), help="Trim the audio file from 0 to the specified number of seconds."),
+    device: DeviceChoice | None = Option(transcribe_config.get("device"), help="Device to use."),
+    cpu_threads: int | None = Option(transcribe_config.get("cpu_threads"), help="Number of CPU threads to use."),
+    whisper_model: WhisperModelChoice | None = Option(transcribe_config.get("whisper_model"), help="Faster Whisper, model to use."),
+    device_index: int | None = Option(transcribe_config.get("device_index"), help="Faster Whisper, index of the device to use."),
+    compute_type: ComputeTypeChoice | None = Option(transcribe_config.get("compute_type"), help="Faster Whisper, compute type."),
+    beam_size: int | None = Option(transcribe_config.get("beam_size"), help="Faster Whisper, beam size for decoding."),
+    temperature: float | None = Option(transcribe_config.get("temperature"), help="Faster Whisper, sampling temperature."),
+    word_timestamps: bool | None = Option(transcribe_config.get("word_timestamps"), help="Faster Whisper, enable word timestamps in the output."),
+    vad_filter: bool | None = Option(transcribe_config.get("vad_filter"), help="Faster Whisper, enable voice activity detection."),
+    min_silence_duration_ms: int | None = Option(transcribe_config.get("min_silence_duration_ms"), help="Faster Whisper, minimum silence duration detected by VAD in milliseconds."),
+    num_speakers: int | None = Option(transcribe_config.get("num_speakers"), help="pyannote.audio, number of speakers."),
+    min_speakers: int | None = Option(transcribe_config.get("min_speakers"), help="pyannote.audio, minimum number of speakers."),
+    max_speakers: int | None = Option(transcribe_config.get("max_speakers"), help="pyannote.audio, maximum number of speakers."),
+    save_output: bool | None = Option(transcribe_config.get("save_output"), help="Save output to .csv and .srt files."),
+    info: bool | None = Option(transcribe_config.get("info"), help="Print detected language information."),
 ):
     """Transcribe and diarize an audio file.\n    \n    Args:\n        file: Path to the audio file to transcribe\n        trim: Trim audio to specified seconds (from start)\n        device: Device to use for inference (auto, cuda, mps, cpu)\n        cpu_threads: Number of CPU threads for inference\n        whisper_model: Whisper model size to use\n        device_index: Device index for multi-GPU systems\n        compute_type: Computation precision (float32, float16, int8)\n        beam_size: Beam search width for decoding\n        temperature: Sampling temperature for generation\n        word_timestamps: Enable word-level timestamps\n        vad_filter: Enable voice activity detection filter\n        min_silence_duration_ms: Minimum silence duration for VAD\n        num_speakers: Exact number of speakers (overrides min/max)\n        min_speakers: Minimum number of speakers for diarization\n        max_speakers: Maximum number of speakers for diarization\n        save_output: Save transcription to CSV and SRT files\n        info: Print detected language information\n        \n    Returns:\n        List of tuples containing (segment, speaker, text)\n        \n    Raises:\n        ModelInitializationError: If model initialization fails\n        DiarizationError: If speaker diarization fails\n        AudioConversionError: If audio conversion fails\n    """
 
@@ -194,7 +193,7 @@ def transcribe(
     generated_segments = list(segments)
 
     # Speaker Diarization: pyannote.audio
-    
+
     # Create a dictionary of keyword arguments
     pyannote_kwargs = {}
 
@@ -212,8 +211,8 @@ def transcribe(
 
     try:
         pyannote_config_name = 'pyannote_config.yaml'
-        
-        with open(os.path.join(root_path, 'pyannote', pyannote_config_name), 'r') as yaml_file:
+
+        with open(os.path.join(root_path, 'pyannote', pyannote_config_name)) as yaml_file:
             pyannote_config = yaml.safe_load(yaml_file)
 
         pyannote_config['pipeline']['params']['embedding'] = os.path.join(root_path, *pyannote_config['pipeline']['params']['embedding'].split("/"))

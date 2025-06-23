@@ -1,15 +1,15 @@
-import os
 import logging
+import os
+from datetime import timedelta
 from functools import wraps
 from time import time
-from datetime import timedelta
 
 import av
-from pyannote.core import Segment
 from torchaudio import load, save
 from torchaudio.transforms import Resample
 
 from ghe_transcribe.exceptions import AudioConversionError
+from pyannote.core import Segment
 
 logger = logging.getLogger(__name__)
 
@@ -115,7 +115,7 @@ def to_csv(result, semicolon=False):
     start_line = "start"+sep+"end"+sep+"speaker"+sep+"sentence"
     csv.append(start_line)
     for seg, spk, sentence in result:
-        if not semicolon: 
+        if not semicolon:
             sentence = sentence.replace(",", ";")
         line = f"{format_time_to_srt(seg.start)}{sep}{format_time_to_srt(seg.end)}{sep}{spk}{sep}{sentence}"
         csv.append(line.strip())
