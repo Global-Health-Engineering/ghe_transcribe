@@ -236,12 +236,10 @@ class GheTranscribeApp:
             ),
         )
 
-        # Output area with expandable styling
+        # Output area with fully expandable styling
         self.output_area = widgets.Output(
             layout=widgets.Layout(
                 width="100%",
-                max_height="400px",
-                overflow_y="auto",
                 border="1px solid #ddd",
                 padding="10px"
             )
