@@ -25,7 +25,7 @@ os.makedirs(output_dir, exist_ok=True)  # Ensure output directory exists
 
 class GheTranscribeApp:
     def __init__(self):
-        self.common_widget_layout = widgets.Layout(width="90%", margin="5px 0")
+        self.common_widget_layout = widgets.Layout(width="90%", margin="5px auto")
         self.common_widget_style = {"description_width": "150px"}
         self._setup_ui()
         self._set_initial_widget_states()
