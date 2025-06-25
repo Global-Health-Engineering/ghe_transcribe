@@ -66,7 +66,9 @@ transcribe --help  # See all options
 - **CLI tool** for batch processing
 
 ## Editors
-https://subtitle-editor.org/
+
+- **For SRT files** [subtitle-editor.org/](https://subtitle-editor.org/), runs locally on your browser
+- **For TXT files** note-taking apps, Word, MAXQDA, QualCoder, ...
 
 ## Contributing
 
