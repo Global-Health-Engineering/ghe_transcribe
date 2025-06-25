@@ -19,8 +19,8 @@ from ghe_transcribe.utils import (
     diarize_text,
     snip_audio,
     timing,
-    to_csv,
     to_srt,
+    to_txt,
     to_wav,
     to_whisper_format,
 )
@@ -108,7 +108,7 @@ def transcribe_core(
     save_output: bool | None = None,
     info: bool | None = None,
 ):
-    """Transcribe and diarize an audio file.\n    \n    Args:\n        file: Path to the audio file to transcribe\n        trim: Trim audio to specified seconds (from start)\n        device: Device to use for inference (auto, cuda, mps, cpu)\n        cpu_threads: Number of CPU threads for inference\n        whisper_model: Whisper model size to use\n        device_index: Device index for multi-GPU systems\n        compute_type: Computation precision (float32, float16, int8)\n        beam_size: Beam search width for decoding\n        temperature: Sampling temperature for generation\n        word_timestamps: Enable word-level timestamps\n        vad_filter: Enable voice activity detection filter\n        min_silence_duration_ms: Minimum silence duration for VAD\n        num_speakers: Exact number of speakers (overrides min/max)\n        min_speakers: Minimum number of speakers for diarization\n        max_speakers: Maximum number of speakers for diarization\n        save_output: Save transcription to CSV and SRT files\n        info: Print detected language information\n        \n    Returns:\n        List of tuples containing (segment, speaker, text)\n        \n    Raises:\n        ModelInitializationError: If model initialization fails\n        DiarizationError: If speaker diarization fails\n        AudioConversionError: If audio conversion fails\n"""
+    """Transcribe and diarize an audio file.\n    \n    Args:\n        file: Path to the audio file to transcribe\n        trim: Trim audio to specified seconds (from start)\n        device: Device to use for inference (auto, cuda, mps, cpu)\n        cpu_threads: Number of CPU threads for inference\n        whisper_model: Whisper model size to use\n        device_index: Device index for multi-GPU systems\n        compute_type: Computation precision (float32, float16, int8)\n        beam_size: Beam search width for decoding\n        temperature: Sampling temperature for generation\n        word_timestamps: Enable word-level timestamps\n        vad_filter: Enable voice activity detection filter\n        min_silence_duration_ms: Minimum silence duration for VAD\n        num_speakers: Exact number of speakers (overrides min/max)\n        min_speakers: Minimum number of speakers for diarization\n        max_speakers: Maximum number of speakers for diarization\n        save_output: Save transcription to TXT and SRT files\n        info: Print detected language information\n        \n    Returns:\n        List of tuples containing (segment, speaker, text)\n        \n    Raises:\n        ModelInitializationError: If model initialization fails\n        DiarizationError: If speaker diarization fails\n        AudioConversionError: If audio conversion fails\n"""
     # Apply defaults
     trim = trim if trim is not None else transcribe_config.get("trim")
     device = device if device is not None else transcribe_config.get("device")
@@ -318,10 +318,10 @@ def transcribe_core(
     output_file_name = "output/" + os.path.splitext(os.path.basename(file))[0]
 
     if save_output:
-        csv = to_csv(text)
-        with open(output_file_name + ".csv", "w") as f:
-            f.write(csv)
-            logger.info(f"Output saved to {output_file_name}.csv")
+        txt = to_txt(text)
+        with open(output_file_name + ".txt", "w") as f:
+            f.write(txt)
+            logger.info(f"Output saved to {output_file_name}.txt")
         srt = to_srt(text)
         with open(output_file_name + ".srt", "w") as f:
             f.write(srt)
@@ -393,7 +393,7 @@ def transcribe(
         help="pyannote.audio, maximum number of speakers.",
     ),
     save_output: bool | None = Option(
-        transcribe_config.get("save_output"), help="Save output to .csv and .srt files."
+        transcribe_config.get("save_output"), help="Save output to .txt and .srt files."
     ),
     info: bool | None = Option(
         transcribe_config.get("info"), help="Print detected language information."
