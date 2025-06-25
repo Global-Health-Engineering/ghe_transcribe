@@ -236,29 +236,25 @@ class GheTranscribeApp:
             ),
         )
 
-        # Output area with scrolling capabilities
+        # Output area with simple styling
         self.output_area = widgets.Output(
             layout=widgets.Layout(
                 width="100%",
-                max_height="400px",
-                overflow_x="auto",
-                overflow_y="auto",
                 border="1px solid #ddd",
                 padding="10px"
             )
         )
 
-        # Output container box with horizontal scrolling
+        # Output container box
         self.output_widgets_box = widgets.VBox(
             [
                 self.output_area,
             ],
             layout=widgets.Layout(
-                width="100%",
-                margin="10px 0",
+                width="90%",
+                margin="10px auto",
                 border="1px solid #ccc",
                 padding="15px",
-                overflow_x="auto",
                 display="flex",
                 flex_flow="column",
             ),
