@@ -245,14 +245,14 @@ class GheTranscribeApp:
             )
         )
 
-        # Output container box that can expand horizontally
+        # Output container box that can expand to full width
         self.output_widgets_box = widgets.VBox(
             [
                 self.output_area,
             ],
             layout=widgets.Layout(
-                width="90%",
-                margin="10px auto",
+                width="100%",
+                margin="10px 0",
                 border="1px solid #ccc",
                 padding="15px",
                 display="flex",
