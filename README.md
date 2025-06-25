@@ -34,10 +34,7 @@ pip install -e ".[ui]"
 ipython kernel install --user --name=ghe_transcribe
 ```
 
-### For Development
-```bash
-pip install -e ".[dev]"
-```
+For cluster environments or development setup, see the [detailed installation guide](docs/INSTALLATION.md).
 
 ## Usage
 
@@ -64,13 +61,12 @@ transcribe --help  # See all options
 
 - **Fast transcription** with optimized Whisper models
 - **Speaker diarization** to identify different speakers
-- **Multiple output formats** (CSV, SRT)
+- **Multiple output formats** (TXT, SRT)
 - **Jupyter interface** for interactive use
 - **CLI tool** for batch processing
 
-## Advanced Installation
-
-For cluster environments, different Python managers, or development setup, see our [detailed installation guide](docs/INSTALLATION.md).
+## Editors
+https://subtitle-editor.org/
 
 ## Contributing
 

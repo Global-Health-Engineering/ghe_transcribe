@@ -164,7 +164,7 @@ class GheTranscribeApp:
 
         self.save_output_checkbox = widgets.Checkbox(
             value=transcribe_config.get("save_output") or True,
-            description="Save Output (.csv, .srt)",
+            description="Save Output (.txt, .srt)",
             indent=False,
             layout=self.common_widget_layout,
         )
