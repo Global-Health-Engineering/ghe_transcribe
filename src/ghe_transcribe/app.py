@@ -236,16 +236,16 @@ class GheTranscribeApp:
             ),
         )
 
-        # Output area with fully expandable styling
+        # Output area with auto-sizing and scrolling
         self.output_area = widgets.Output(
             layout=widgets.Layout(
-                width="100%",
+                width="auto",
                 border="1px solid #ddd",
                 padding="10px"
             )
         )
 
-        # Output container box that can expand to full width
+        # Output container box with horizontal scrolling
         self.output_widgets_box = widgets.VBox(
             [
                 self.output_area,
@@ -255,6 +255,7 @@ class GheTranscribeApp:
                 margin="10px 0",
                 border="1px solid #ccc",
                 padding="15px",
+                overflow_x="auto",
                 display="flex",
                 flex_flow="column",
             ),
