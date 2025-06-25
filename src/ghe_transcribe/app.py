@@ -220,16 +220,21 @@ class GheTranscribeApp:
             button_style="primary",
         )
 
-        # Note about output
-        self.output_note = widgets.HTML(
-            value="<i>Output will appear below after clicking Run Transcription</i>",
-            layout=widgets.Layout(margin="5px auto"),
+        # Output area with better styling
+        self.output_area = widgets.Output(
+            layout=widgets.Layout(
+                width="100%",
+                max_height="400px",
+                overflow_y="auto",
+                border="1px solid #ddd",
+                padding="10px"
+            )
         )
 
         self.run_widgets_box = widgets.VBox(
             [
                 self.run_button,
-                self.output_note,
+                self.output_area,
             ],
             layout=widgets.Layout(
                 width="50%",
@@ -255,69 +260,70 @@ class GheTranscribeApp:
 
     def _on_run_button_click(self, b):
         """Callback for the run button, initiating transcription."""
-        # Clear any previous output in the cell
-        clear_output(wait=True)
-        logger.info("Starting transcription...")
-        print("Starting transcription...")
+        # Use output widget for controlled display
+        with self.output_area:
+            clear_output(wait=True)
+            logger.info("Starting transcription...")
+            print("Starting transcription...")
 
-        if not self.audio_uploader.value:
-            logger.warning("No audio file uploaded")
-            print("Please upload an audio file first.")
-            return
+            if not self.audio_uploader.value:
+                logger.warning("No audio file uploaded")
+                print("Please upload an audio file first.")
+                return
 
-        try:
-            # Handle uploaded file
-            file_metadata = self.audio_uploader.value[0]
-            uploaded_file_name = file_metadata["name"]
-            uploaded_content_bytes = file_metadata["content"].tobytes()
+            try:
+                # Handle uploaded file
+                file_metadata = self.audio_uploader.value[0]
+                uploaded_file_name = file_metadata["name"]
+                uploaded_content_bytes = file_metadata["content"].tobytes()
 
-            # Ensure 'media' directory exists within the root_path
-            media_dir = os.path.join(root_path, "media")
-            os.makedirs(media_dir, exist_ok=True)
+                # Ensure 'media' directory exists within the root_path
+                media_dir = os.path.join(root_path, "media")
+                os.makedirs(media_dir, exist_ok=True)
 
-            audio_file_path = os.path.join(media_dir, uploaded_file_name)
-            with open(audio_file_path, "wb") as f:
-                f.write(uploaded_content_bytes)
-            logger.info(f"Uploaded audio saved to: {audio_file_path}")
-            print(f"Uploaded audio saved to: {audio_file_path}")
+                audio_file_path = os.path.join(media_dir, uploaded_file_name)
+                with open(audio_file_path, "wb") as f:
+                    f.write(uploaded_content_bytes)
+                logger.info(f"Uploaded audio saved to: {audio_file_path}")
+                print(f"Uploaded audio saved to: {audio_file_path}")
 
-            # Prepare arguments for transcribe
-            kwargs = {
-                "file": audio_file_path,
-                "trim": self.trim_input.value if self.trim_input.value > 0 else None,
-                "device": self.device_dropdown.value,
-                "cpu_threads": self.cpu_threads_input.value
-                if self.cpu_threads_input.value > 0
-                else None,
-                "whisper_model": self.whisper_model_dropdown.value,
-                "device_index": self.device_index_input.value,
-                "compute_type": self.compute_type_dropdown.value,
-                "beam_size": self.beam_size_input.value,
-                "temperature": self.temperature_input.value,
-                "word_timestamps": self.word_timestamps_checkbox.value,
-                "vad_filter": self.vad_filter_checkbox.value,
-                "min_silence_duration_ms": self.min_silence_duration_ms_input.value,
-                "save_output": self.save_output_checkbox.value,
-                "info": self.info_checkbox.value,
-            }
+                # Prepare arguments for transcribe
+                kwargs = {
+                    "file": audio_file_path,
+                    "trim": self.trim_input.value if self.trim_input.value > 0 else None,
+                    "device": self.device_dropdown.value,
+                    "cpu_threads": self.cpu_threads_input.value
+                    if self.cpu_threads_input.value > 0
+                    else None,
+                    "whisper_model": self.whisper_model_dropdown.value,
+                    "device_index": self.device_index_input.value,
+                    "compute_type": self.compute_type_dropdown.value,
+                    "beam_size": self.beam_size_input.value,
+                    "temperature": self.temperature_input.value,
+                    "word_timestamps": self.word_timestamps_checkbox.value,
+                    "vad_filter": self.vad_filter_checkbox.value,
+                    "min_silence_duration_ms": self.min_silence_duration_ms_input.value,
+                    "save_output": self.save_output_checkbox.value,
+                    "info": self.info_checkbox.value,
+                }
 
-            # Diarization specific arguments
-            if self.num_speakers_dropdown.value is not None:
-                kwargs["num_speakers"] = self.num_speakers_dropdown.value
-            else:
-                # If "Auto-detect" is selected for num_speakers, use min/max
-                kwargs["min_speakers"] = self.min_speakers_input.value
-                kwargs["max_speakers"] = self.max_speakers_input.value
+                # Diarization specific arguments
+                if self.num_speakers_dropdown.value is not None:
+                    kwargs["num_speakers"] = self.num_speakers_dropdown.value
+                else:
+                    # If "Auto-detect" is selected for num_speakers, use min/max
+                    kwargs["min_speakers"] = self.min_speakers_input.value
+                    kwargs["max_speakers"] = self.max_speakers_input.value
 
-            # Call the ghe_transcribe function
-            transcribe_core(**kwargs)
+                # Call the ghe_transcribe function
+                transcribe_core(**kwargs)
 
-        except Exception as e:
-            logger.error(f"An unexpected error occurred: {e}", exc_info=True)
-            print(f"An unexpected error occurred: {e}")
-            import traceback
+            except Exception as e:
+                logger.error(f"An unexpected error occurred: {e}", exc_info=True)
+                print(f"An unexpected error occurred: {e}")
+                import traceback
 
-            traceback.print_exc()  # Print full traceback for debugging
+                traceback.print_exc()  # Print full traceback for debugging
 
     def display_app(self):
         """Displays all the UI components."""
