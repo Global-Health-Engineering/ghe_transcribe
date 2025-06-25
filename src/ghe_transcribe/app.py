@@ -220,7 +220,23 @@ class GheTranscribeApp:
             button_style="primary",
         )
 
-        # Output area with better styling
+        # Run button box
+        self.run_widgets_box = widgets.VBox(
+            [
+                self.run_button,
+            ],
+            layout=widgets.Layout(
+                width="50%",
+                margin="0 auto",
+                border="1px solid #ccc",
+                padding="15px",
+                display="flex",
+                flex_flow="column",
+                align_items="center",
+            ),
+        )
+
+        # Output area with expandable styling
         self.output_area = widgets.Output(
             layout=widgets.Layout(
                 width="100%",
@@ -231,19 +247,18 @@ class GheTranscribeApp:
             )
         )
 
-        self.run_widgets_box = widgets.VBox(
+        # Output container box that can expand horizontally
+        self.output_widgets_box = widgets.VBox(
             [
-                self.run_button,
                 self.output_area,
             ],
             layout=widgets.Layout(
-                width="50%",
-                margin="0 auto",
+                width="90%",
+                margin="10px auto",
                 border="1px solid #ccc",
                 padding="15px",
                 display="flex",
                 flex_flow="column",
-                align_items="center",
             ),
         )
 
@@ -327,7 +342,7 @@ class GheTranscribeApp:
 
     def display_app(self):
         """Displays all the UI components."""
-        display(self.basic_widgets_box, self.advanced_widgets_box, self.run_widgets_box)
+        display(self.basic_widgets_box, self.advanced_widgets_box, self.run_widgets_box, self.output_widgets_box)
 
 
 def execute():
