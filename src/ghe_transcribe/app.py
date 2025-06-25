@@ -26,6 +26,7 @@ os.makedirs(output_dir, exist_ok=True)  # Ensure output directory exists
 class GheTranscribeApp:
     def __init__(self):
         self.common_widget_layout = widgets.Layout(width="90%", margin="5px 0")
+        self.common_widget_style = {"description_width": "150px"}
         self._setup_ui()
         self._set_initial_widget_states()
         self._observe_widget_changes()
@@ -50,6 +51,7 @@ class GheTranscribeApp:
             value=default_selected_value,
             description=description,
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
         )
 
     def _setup_ui(self):
@@ -60,12 +62,14 @@ class GheTranscribeApp:
             description="Upload Audio",
             accept=".wav,.mp3,.flac,.ogg",  # Specify accepted audio formats
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
         )
 
         self.trim_input = widgets.FloatText(
             value=transcribe_config.get("trim") or 0.0,  # Default to 0.0 if None
             description="Trim (s):",
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
             step=0.5,
         )
 
@@ -79,6 +83,7 @@ class GheTranscribeApp:
             value=transcribe_config.get("num_speakers"),
             description="Num. Speakers:",
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
         )
 
         self.whisper_model_dropdown = self._create_dropdown_from_enum(
@@ -90,6 +95,7 @@ class GheTranscribeApp:
             description="Advanced Options",
             indent=False,
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
         )
 
         self.basic_widgets_box = widgets.VBox(
@@ -114,21 +120,25 @@ class GheTranscribeApp:
             or 0,  # 0 can mean auto/system default
             description="CPU Threads:",
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
         )
         self.min_speakers_input = widgets.IntText(
             value=transcribe_config.get("min_speakers") or 1,
             description="Min Speakers:",
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
         )
         self.max_speakers_input = widgets.IntText(
             value=transcribe_config.get("max_speakers") or 10,
             description="Max Speakers:",
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
         )
         self.device_index_input = widgets.IntText(
             value=transcribe_config.get("device_index") or 0,
             description="Device Index:",
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
         )
         self.compute_type_dropdown = self._create_dropdown_from_enum(
             ComputeTypeChoice, "Compute Type:", transcribe_config.get("compute_type")
@@ -137,11 +147,13 @@ class GheTranscribeApp:
             value=transcribe_config.get("beam_size"),
             description="Beam Size:",
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
         )
         self.temperature_input = widgets.FloatText(
             value=transcribe_config.get("temperature"),
             description="Temperature:",
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
             step=0.1,
         )
         self.word_timestamps_checkbox = widgets.Checkbox(
@@ -149,17 +161,20 @@ class GheTranscribeApp:
             description="Word Timestamps",
             indent=False,
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
         )
         self.vad_filter_checkbox = widgets.Checkbox(
             value=transcribe_config.get("vad_filter") or False,
             description="VAD Filter",
             indent=False,
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
         )
         self.min_silence_duration_ms_input = widgets.IntText(
             value=transcribe_config.get("min_silence_duration_ms"),
             description="Min Silence (ms):",
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
         )
 
         self.save_output_checkbox = widgets.Checkbox(
@@ -167,12 +182,14 @@ class GheTranscribeApp:
             description="Save Output (.txt, .srt)",
             indent=False,
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
         )
         self.info_checkbox = widgets.Checkbox(
             value=transcribe_config.get("info") or True,
             description="Print Language Info",
             indent=False,
             layout=self.common_widget_layout,
+            style=self.common_widget_style,
         )
 
         self.advanced_widgets_box = widgets.VBox(
@@ -196,36 +213,32 @@ class GheTranscribeApp:
             ),
         )
 
-        # Run Button and Output Area
+        # Run Button
         self.run_button = widgets.Button(
-            description="Run Transcription", layout=self.common_widget_layout
+            description="Run Transcription",
+            layout=widgets.Layout(width="200px", margin="10px auto"),
+            button_style="primary",
         )
-        self.output_area = widgets.Output(
-            layout=widgets.Layout(
-                border="1px solid #ccc",
-                padding="15px",
-                width="auto",  # Let flexbox handle width initially
-                flex="1 1 auto",  # Allow output_area to grow/shrink based on content and parent constraints
-                # '1 1 auto' means grow (1), shrink (1), base size (auto)
-                overflow_x="scroll",  # This should now work as content will be constrained
-                overflow_y="auto",  # For vertical scrolling if output is long
-                # You might also want a min-width for the output area if the content is very narrow
-                # min_width='0px' # Ensures it can shrink if necessary, though auto handles this well
-            )
+
+        # Note about output
+        self.output_note = widgets.HTML(
+            value="<i>Output will appear below after clicking Run Transcription</i>",
+            layout=widgets.Layout(margin="5px auto"),
         )
 
         self.run_widgets_box = widgets.VBox(
             [
                 self.run_button,
-                self.output_area,
+                self.output_note,
             ],
             layout=widgets.Layout(
-                width="100%",  # Ensure the parent VBox has a defined width
+                width="50%",
                 margin="0 auto",
                 border="1px solid #ccc",
-                display="flex",  # Essential for flexbox behavior
-                flex_flow="column",  # Arrange children vertically
-                align_items="stretch",  # Crucial: makes children stretch to fill parent's width
+                padding="15px",
+                display="flex",
+                flex_flow="column",
+                align_items="center",
             ),
         )
 
@@ -242,71 +255,69 @@ class GheTranscribeApp:
 
     def _on_run_button_click(self, b):
         """Callback for the run button, initiating transcription."""
-        with self.output_area:
-            clear_output()
-            logger.info("Starting transcription...")
-            print("Starting transcription...")
+        # Clear any previous output in the cell
+        clear_output(wait=True)
+        logger.info("Starting transcription...")
+        print("Starting transcription...")
 
-            if not self.audio_uploader.value:
-                logger.warning("No audio file uploaded")
-                print("Please upload an audio file first.")
-                return
+        if not self.audio_uploader.value:
+            logger.warning("No audio file uploaded")
+            print("Please upload an audio file first.")
+            return
 
-            try:
-                # Handle uploaded file
-                file_metadata = self.audio_uploader.value[0]
-                uploaded_file_name = file_metadata["name"]
-                uploaded_content_bytes = file_metadata["content"].tobytes()
+        try:
+            # Handle uploaded file
+            file_metadata = self.audio_uploader.value[0]
+            uploaded_file_name = file_metadata["name"]
+            uploaded_content_bytes = file_metadata["content"].tobytes()
 
-                # Ensure 'media' directory exists within the root_path
-                media_dir = os.path.join(root_path, "media")
-                os.makedirs(media_dir, exist_ok=True)
+            # Ensure 'media' directory exists within the root_path
+            media_dir = os.path.join(root_path, "media")
+            os.makedirs(media_dir, exist_ok=True)
 
-                audio_file_path = os.path.join(media_dir, uploaded_file_name)
-                with open(audio_file_path, "wb") as f:
-                    f.write(uploaded_content_bytes)
-                logger.info(f"Uploaded audio saved to: {audio_file_path}")
-                print(f"Uploaded audio saved to: {audio_file_path}")
+            audio_file_path = os.path.join(media_dir, uploaded_file_name)
+            with open(audio_file_path, "wb") as f:
+                f.write(uploaded_content_bytes)
+            logger.info(f"Uploaded audio saved to: {audio_file_path}")
+            print(f"Uploaded audio saved to: {audio_file_path}")
 
-                # Prepare arguments for transcribe
-                kwargs = {
-                    "file": audio_file_path,
-                    "trim": self.trim_input.value
-                    if self.trim_input.value > 0
-                    else None,
-                    "device": self.device_dropdown.value,
-                    "cpu_threads": self.cpu_threads_input.value
-                    if self.cpu_threads_input.value > 0
-                    else None,
-                    "whisper_model": self.whisper_model_dropdown.value,
-                    "device_index": self.device_index_input.value,
-                    "compute_type": self.compute_type_dropdown.value,
-                    "beam_size": self.beam_size_input.value,
-                    "temperature": self.temperature_input.value,
-                    "word_timestamps": self.word_timestamps_checkbox.value,
-                    "vad_filter": self.vad_filter_checkbox.value,
-                    "min_silence_duration_ms": self.min_silence_duration_ms_input.value,
-                    "save_output": self.save_output_checkbox.value,
-                    "info": self.info_checkbox.value,
-                }
+            # Prepare arguments for transcribe
+            kwargs = {
+                "file": audio_file_path,
+                "trim": self.trim_input.value if self.trim_input.value > 0 else None,
+                "device": self.device_dropdown.value,
+                "cpu_threads": self.cpu_threads_input.value
+                if self.cpu_threads_input.value > 0
+                else None,
+                "whisper_model": self.whisper_model_dropdown.value,
+                "device_index": self.device_index_input.value,
+                "compute_type": self.compute_type_dropdown.value,
+                "beam_size": self.beam_size_input.value,
+                "temperature": self.temperature_input.value,
+                "word_timestamps": self.word_timestamps_checkbox.value,
+                "vad_filter": self.vad_filter_checkbox.value,
+                "min_silence_duration_ms": self.min_silence_duration_ms_input.value,
+                "save_output": self.save_output_checkbox.value,
+                "info": self.info_checkbox.value,
+            }
 
-                # Diarization specific arguments
-                if self.num_speakers_dropdown.value is not None:
-                    kwargs["num_speakers"] = self.num_speakers_dropdown.value
-                else:
-                    # If "Auto-detect" is selected for num_speakers, use min/max
-                    kwargs["min_speakers"] = self.min_speakers_input.value
-                    kwargs["max_speakers"] = self.max_speakers_input.value
+            # Diarization specific arguments
+            if self.num_speakers_dropdown.value is not None:
+                kwargs["num_speakers"] = self.num_speakers_dropdown.value
+            else:
+                # If "Auto-detect" is selected for num_speakers, use min/max
+                kwargs["min_speakers"] = self.min_speakers_input.value
+                kwargs["max_speakers"] = self.max_speakers_input.value
 
-                # Call the ghe_transcribe function
-                transcribe_core(**kwargs)
+            # Call the ghe_transcribe function
+            transcribe_core(**kwargs)
 
-            except Exception as e:
-                logger.error(f"An unexpected error occurred: {e}", exc_info=True)
-                print(f"An unexpected error occurred: {e}")
-                import traceback
+        except Exception as e:
+            logger.error(f"An unexpected error occurred: {e}", exc_info=True)
+            print(f"An unexpected error occurred: {e}")
+            import traceback
 
-                traceback.print_exc()  # Print full traceback for debugging
+            traceback.print_exc()  # Print full traceback for debugging
 
     def display_app(self):
         """Displays all the UI components."""
