@@ -236,10 +236,13 @@ class GheTranscribeApp:
             ),
         )
 
-        # Output area with auto-sizing and scrolling
+        # Output area with scrolling capabilities
         self.output_area = widgets.Output(
             layout=widgets.Layout(
-                width="auto",
+                width="100%",
+                max_height="400px",
+                overflow_x="auto",
+                overflow_y="auto",
                 border="1px solid #ddd",
                 padding="10px"
             )
