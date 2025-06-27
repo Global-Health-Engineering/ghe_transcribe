@@ -238,11 +238,7 @@ class GheTranscribeApp:
 
         # Output area with simple styling
         self.output_area = widgets.Output(
-            layout=widgets.Layout(
-                width="100%",
-                border="1px solid #ddd",
-                padding="10px"
-            )
+            layout=widgets.Layout(width="100%", border="1px solid #ddd", padding="10px")
         )
 
         # Output container box
@@ -303,7 +299,9 @@ class GheTranscribeApp:
                 # Prepare arguments for transcribe
                 kwargs = {
                     "file": audio_file_path,
-                    "trim": self.trim_input.value if self.trim_input.value > 0 else None,
+                    "trim": self.trim_input.value
+                    if self.trim_input.value > 0
+                    else None,
                     "device": self.device_dropdown.value,
                     "cpu_threads": self.cpu_threads_input.value
                     if self.cpu_threads_input.value > 0
@@ -340,7 +338,12 @@ class GheTranscribeApp:
 
     def display_app(self):
         """Displays all the UI components."""
-        display(self.basic_widgets_box, self.advanced_widgets_box, self.run_widgets_box, self.output_widgets_box)
+        display(
+            self.basic_widgets_box,
+            self.advanced_widgets_box,
+            self.run_widgets_box,
+            self.output_widgets_box,
+        )
 
 
 def execute():

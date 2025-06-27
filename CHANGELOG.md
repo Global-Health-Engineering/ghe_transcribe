@@ -1,3 +1,12 @@
+## [0.6.1](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.6.0...v0.6.1) (2025-06-27)
+
+
+### Bug Fixes
+
+* build error ([3813d2b](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/3813d2bb7a5e93d658ebc7b0824dbb0d760ec929))
+* optimize CI workflow to reduce GitHub Actions minutes on dev branch ([cadfaa6](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/cadfaa6fe92263511d9181809fd684af223783a6))
+* uv lock update, ci thinning in dev ([5b32010](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/5b32010d0bec4a2edf158ac8b6d4d15f817bf787))
+
 ## [0.6.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.5.2...v0.6.0) (2025-06-25)
 
 
@@ -108,11 +117,4 @@
 * added .srt as output type! ([1ae1d27](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/1ae1d27e0c3eafaf45db3af254c1a6dfd4d625e1))
 * locally source pyannote. ([b5a13b1](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/b5a13b1e215e673575a5b0f40a61a0ac8e742a4e))
 * locally sourcing pyannote, no huggingface required ([008c72b](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/008c72b3b256ed5e3309c7799ec797ffef833565))
-
-## [0.2.8](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.7...v0.2.8) (2025-04-30)
-
-
-### Bug Fixes
-
-* do not run tests unless core code is edited ([f7ddcce](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/f7ddcce98b964b83ac18c3a76654090252fe2bc7))
 
