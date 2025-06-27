@@ -8,3 +8,5 @@ ruff.toml
 launch.json
 .pytest_cache/
 .ruff*
+.claude
+.venv
