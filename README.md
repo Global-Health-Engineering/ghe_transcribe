@@ -5,33 +5,12 @@
 
 A tool to transcribe audio files with speaker diarization using **Faster Whisper** and **Pyannote**.
 
-## Quick Start
+## Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
 pip install -e .
-```
-
-```bash
-# Command line interface
-transcribe media/your_audio.mp3
-```
-
-## Installation
-
-### Basic Installation
-Command line interface support,
-```bash
-pip install -e .
-```
-
-### With UI
-Jupyter notebooks support,
-```bash
-pip install -e ".[ui]"
-ipython kernel install --user --name=ghe_transcribe
 ```
 
 For cluster environments or development setup, see the [detailed installation guide](docs/INSTALLATION.md).
@@ -39,6 +18,7 @@ For cluster environments or development setup, see the [detailed installation gu
 ## Usage
 
 ### Jupyter Interface (Recommended)
+Open `app.ipynb` and run the cell:
 ```python
 from ghe_transcribe.app import execute
 execute()
@@ -47,7 +27,6 @@ execute()
 ### Python API
 ```python
 from ghe_transcribe.core import transcribe_core
-
 result = transcribe_core("path/to/audio.mp3")
 ```
 
