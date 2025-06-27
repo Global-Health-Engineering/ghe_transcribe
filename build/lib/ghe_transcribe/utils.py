@@ -52,6 +52,9 @@ def add_speaker_info_to_text(timestamp_texts, ann):
 def merge_cache(text_cache):
     sentence = "".join([item[-1] for item in text_cache])
     spk = text_cache[0][1]
+    # Transform SPEAKER_XX to SXX
+    if isinstance(spk, str) and spk.startswith("SPEAKER_"):
+        spk = "S" + spk.split("_")[1]
     start = text_cache[0][0].start
     end = text_cache[-1][0].end
     return Segment(start, end), spk, sentence
@@ -99,6 +102,24 @@ def diarize_text(transcribe_res, diarization_result):
     return result
 
 
+def to_txt(result):
+    """Convert transcription results to TXT format.
+
+    Args:
+        result: List of (segment, speaker, text) tuples
+
+    Returns:
+        TXT formatted string with format: SXX: [HH:MM:SS] text
+    """
+    txt = []
+    for seg, spk, sentence in result:
+        # Format time as [HH:MM:SS]
+        time = format_time_to_srt(seg.start).split(",")[0]  # Remove milliseconds
+        line = f"{spk}: [{time}] {sentence}"
+        txt.append(line.strip())
+    return "\n".join(txt)
+
+
 def to_csv(result, semicolon=False):
     """Convert transcription results to CSV format.
 
@@ -122,12 +143,6 @@ def to_csv(result, semicolon=False):
         line = f"{format_time_to_srt(seg.start)}{sep}{format_time_to_srt(seg.end)}{sep}{spk}{sep}{sentence}"
         csv.append(line.strip())
     return "\n".join(csv)
-
-
-def spk_to_id(spk):
-    # in_spk = 'SPEAKER_00'
-    id = str(int(spk.split("_")[1]))
-    return id
 
 
 def to_md(result):
