@@ -693,6 +693,10 @@ source = { editable = "." }
 dependencies = [
     { name = "av" },
     { name = "faster-whisper" },
+    { name = "ipykernel" },
+    { name = "ipython", version = "8.37.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "ipython", version = "9.3.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "ipywidgets" },
     { name = "pyannote-audio" },
     { name = "pyyaml" },
     { name = "torch" },
@@ -703,10 +707,6 @@ dependencies = [
 [package.optional-dependencies]
 all = [
     { name = "black" },
-    { name = "ipykernel" },
-    { name = "ipython", version = "8.37.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "ipython", version = "9.3.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
-    { name = "ipywidgets" },
     { name = "mypy" },
     { name = "pytest" },
     { name = "ruff" },
@@ -717,22 +717,16 @@ dev = [
     { name = "pytest" },
     { name = "ruff" },
 ]
-ui = [
-    { name = "ipykernel" },
-    { name = "ipython", version = "8.37.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "ipython", version = "9.3.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
-    { name = "ipywidgets" },
-]
 
 [package.metadata]
 requires-dist = [
     { name = "av", specifier = ">=11.0.0" },
     { name = "black", marker = "extra == 'dev'", specifier = ">=23.0.0" },
     { name = "faster-whisper", specifier = ">=1.0.0" },
-    { name = "ghe-transcribe", extras = ["dev", "ui"], marker = "extra == 'all'" },
-    { name = "ipykernel", marker = "extra == 'ui'", specifier = ">=6.0.0" },
-    { name = "ipython", marker = "extra == 'ui'", specifier = ">=8.0.0" },
-    { name = "ipywidgets", marker = "extra == 'ui'", specifier = ">=8.0.0" },
+    { name = "ghe-transcribe", extras = ["dev"], marker = "extra == 'all'" },
+    { name = "ipykernel", specifier = ">=6.0.0" },
+    { name = "ipython", specifier = ">=8.0.0" },
+    { name = "ipywidgets", specifier = ">=8.0.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0.0" },
     { name = "pyannote-audio", specifier = ">=3.0.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0" },
@@ -742,7 +736,7 @@ requires-dist = [
     { name = "torchaudio", specifier = ">=2.0.0" },
     { name = "typer", specifier = ">=0.9.0" },
 ]
-provides-extras = ["ui", "dev", "all"]
+provides-extras = ["dev", "all"]
 
 [[package]]
 name = "greenlet"
