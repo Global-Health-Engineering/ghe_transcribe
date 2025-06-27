@@ -1,3 +1,29 @@
+## [0.6.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.5.2...v0.6.0) (2025-06-25)
+
+
+### Features
+
+* add comprehensive audio conversion tests for MP3 and M4A to WAV ([52bccf1](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/52bccf16cb631041693fd74f244c8ef637ab08c7))
+* allow output area to expand fully without height restrictions ([37ff11a](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/37ff11a91b03b564a5d7285f759e27366c59c886))
+* center all widgets with auto margins in common layout ([9991fd0](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/9991fd04060fd8c2d3adc7e09012c02fd279b1b4))
+* enable automatic width sizing with horizontal scrolling ([a81a47d](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/a81a47d6d70e24121270a441fca42c869a83e063))
+* improve Jupyter widget layout and output display ([d8e3909](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/d8e3909f332e2867f5151164fcb95ee5807f1b7f))
+* remove width restrictions from output container ([228515a](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/228515a395b943d07d098344d9536b432062df7c))
+* replace CSV output with TXT format and change speaker labels to SXX ([4c48f1e](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/4c48f1e0643744f094bced5127c0aabbb03c85ad))
+* separate output area into expandable horizontal box ([7acb764](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/7acb764da45f7e426ad0163b5523fd11b4748b7c))
+
+
+### Bug Fixes
+
+* remove publish to pypi ([d8edcd0](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/d8edcd0b99b11d05964ba90fc556127d62c07bd8))
+* restore horizontal and vertical scrolling to output area ([3331dd2](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/3331dd2c3704abe89964e2f6ab2877f5365a91fb))
+* restore output widget with improved styling for better UX ([9c59fa4](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/9c59fa4da50f6faa3378325d2696298b3d751ab0))
+
+
+### Reverts
+
+* simplify output area to 90% width without scrolling ([487d5b3](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/487d5b3063a8c0cf7b5d2d8f9b08e22b5994c3f3))
+
 ## [0.5.2](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.5.1...v0.5.2) (2025-06-23)
 
 
@@ -89,11 +115,4 @@
 ### Bug Fixes
 
 * do not run tests unless core code is edited ([f7ddcce](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/f7ddcce98b964b83ac18c3a76654090252fe2bc7))
-
-## [0.2.7](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.2.6...v0.2.7) (2025-04-30)
-
-
-### Bug Fixes
-
-* passing wheel file to GITHUB_OUTPUT ([324e86b](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/324e86bc3979f29131169b2b1fab7bbf1123c48c))
 
