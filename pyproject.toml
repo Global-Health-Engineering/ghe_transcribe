@@ -36,14 +36,12 @@ dependencies = [
     "faster-whisper>=1.0.0",
     "pyannote.audio>=3.0.0",
     "PyYAML>=6.0",
-]
-
-[project.optional-dependencies]
-ui = [
     "ipywidgets>=8.0.0",
     "IPython>=8.0.0",
     "ipykernel>=6.0.0",
 ]
+
+[project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
     "ruff>=0.1.0",
@@ -51,7 +49,7 @@ dev = [
     "mypy>=1.0.0",
 ]
 all = [
-    "ghe_transcribe[ui,dev]",
+    "ghe_transcribe[dev]",
 ]
 
 [project.scripts]
@@ -122,6 +120,8 @@ addopts = "-ra -q"
 testpaths = [
     "tests",
 ]
+
+# redundant pytest options
 python_files = [
     "test_*.py",
     "*_test.py",

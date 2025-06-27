@@ -12,7 +12,7 @@ python -m venv venv_ghe_transcribe
 source venv_ghe_transcribe/bin/activate
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
-pip install -e ".[ui]"
+pip install -e .
 ipython kernel install --user --name=venv_ghe_transcribe
 ```
 
@@ -24,7 +24,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # Clone and install
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
-uv sync --extra ui
+uv sync
 uv run ipython kernel install --user --name=venv_ghe_transcribe
 ```
 
@@ -47,7 +47,7 @@ source venv_ghe_transcribe/bin/activate
 # Install package
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
-pip install -e ".[ui]"
+pip install -e .
 
 # Install Jupyter kernel
 ipython kernel install --user --name=venv_ghe_transcribe
@@ -65,14 +65,13 @@ python3 -m venv venv_ghe_transcribe
 source venv_ghe_transcribe/bin/activate
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
-pip install -e ".[ui]"
+pip install -e .
 ```
 
 ## Package Extras
 
 The package includes several optional dependency groups:
 
-- **Core only**: `pip install -e .`
-- **UI support**: `pip install -e ".[ui]"` (includes Jupyter widgets)
+- **CLI and UI support**: `pip install -e .`
 - **Development**: `pip install -e ".[dev]"` (includes testing and linting tools)
 - **Everything**: `pip install -e ".[all]"`

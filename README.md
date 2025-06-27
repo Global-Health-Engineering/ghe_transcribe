@@ -11,7 +11,7 @@ A tool to transcribe audio files with speaker diarization using **Faster Whisper
 # Clone the repository
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
-pip install -e ".[ui]"
+pip install -e .
 ```
 
 ```bash
