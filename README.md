@@ -13,7 +13,7 @@ cd ghe_transcribe
 pip install -e .
 ```
 
-For cluster environments or development setup, see the [detailed installation guide](docs/INSTALLATION.md).
+For Euler cluster or development setup, see the [detailed installation guide](docs/INSTALLATION.md).
 
 ## Usage
 
