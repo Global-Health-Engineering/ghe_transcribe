@@ -30,6 +30,8 @@ uv run ipython kernel install --user --name=venv_ghe_transcribe
 
 ### Euler Cluster (ETH Zurich)
 
+If you have never accessed the Euler cluster, follow the [official guide](https://scicomp.ethz.ch/wiki/Accessing_the_clusters#SSH).
+
 #### Prerequisites
 1. Navigate to [https://jupyter.euler.hpc.ethz.ch/](https://jupyter.euler.hpc.ethz.ch/)
 2. Log in with your ETHZ account
