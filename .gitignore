@@ -10,3 +10,4 @@ launch.json
 .ruff*
 .claude
 .venv
+build/

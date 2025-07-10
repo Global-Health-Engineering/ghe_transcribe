@@ -60,7 +60,7 @@ class GheTranscribeApp:
         self.audio_uploader = widgets.FileUpload(
             multiple=False,
             description="Upload Audio",
-            accept=".wav,.mp3,.flac,.ogg",  # Specify accepted audio formats
+            # accept=".wav, .m4a, .mp3, .flac, .ogg",  # Specify accepted audio formats
             layout=self.common_widget_layout,
             style=self.common_widget_style,
         )
