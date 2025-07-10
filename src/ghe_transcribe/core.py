@@ -318,6 +318,8 @@ def transcribe_core(
     output_file_name = "output/" + os.path.splitext(os.path.basename(file))[0]
 
     if save_output:
+        # Ensure output directory exists
+        os.makedirs("output", exist_ok=True)
         txt = to_txt(text)
         with open(output_file_name + ".txt", "w") as f:
             f.write(txt)
