@@ -10,4 +10,6 @@ launch.json
 .ruff*
 .claude
 .venv
+venv
 build/
+_version.py
