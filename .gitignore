@@ -12,3 +12,4 @@ launch.json
 .venv
 venv
 build/
+_version.py
