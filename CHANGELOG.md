@@ -1,3 +1,18 @@
+## [0.8.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.7.0...v0.8.0) (2025-10-13)
+
+
+### Features
+
+* renkulab uses poetry, revert to requirements.txt and add -e . ([a338054](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/a33805481b55ed83cb6653653801271fa2f8b06c))
+
+
+### Bug Fixes
+
+* add jupyter-client as dependency ([a6716e7](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/a6716e7dbcc871df549b554512e157214327d5d2))
+* move ipykernel dependency to the top to avoid potential depenedency conflicts ([b3ee1db](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/b3ee1db9c53b368eb008f96232819fc65f43dc48))
+* remove requirements.txt ([c280ff0](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/c280ff059ce74be48be9625a7255cc2f2de1a22d))
+* run uv lock ([475b05f](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/475b05f1ecab452d229c045f0ab0a16a46012906))
+
 ## [0.7.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.6.1...v0.7.0) (2025-07-10)
 
 
@@ -111,13 +126,4 @@
 ### Bug Fixes
 
 * python3.9 missing requirements ([1ff44c2](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/1ff44c2bb3a9e29fb123dd7d417cb7042c23aed9))
-
-## [0.3.1](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.3.0...v0.3.1) (2025-06-19)
-
-
-### Bug Fixes
-
-* added dependencies installation ([0bd6205](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/0bd62053e462c7fe85e06f57f0f2adcb28edc399))
-* fixed typer interaction with if statement ([4b00bc4](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/4b00bc4573785fdb8c0dc9074335b0a22a85d43c))
-* typo ([995de43](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/995de4304088c98a6d04742b28c6a8c32a6a88d6))
 
