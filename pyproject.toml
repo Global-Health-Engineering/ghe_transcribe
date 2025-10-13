@@ -32,6 +32,7 @@ dynamic = ["version"]
 dependencies = [
     # Jupyter dependencies
     "ipykernel>=6.30.0",
+    "jupyter-client>=8.6.0",
     
     # UI dependencies
     "ipywidgets>=8.0.0",
