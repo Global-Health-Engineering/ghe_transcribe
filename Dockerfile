@@ -1,5 +1,5 @@
-# Use Jupyter's scipy-notebook as base (has jovyan user, JupyterHub, everything needed)
-FROM quay.io/jupyter/scipy-notebook:python-3.10
+# Use Jupyter's scipy-notebook with latest stable tag
+FROM quay.io/jupyter/scipy-notebook:2025-03-14
 
 # Switch to root for system packages
 USER root
@@ -9,7 +9,7 @@ RUN apt-get update && \
     apt-get install -y ffmpeg && \
     rm -rf /var/lib/apt/lists/*
 
-# Switch back to jovyan user (required by RenkuLab)
+# Switch back to jovyan user
 USER ${NB_USER}
 
 # Set working directory
@@ -24,5 +24,5 @@ RUN pip install --no-cache-dir -e /tmp/ghe_transcribe/
 # Expose Jupyter port
 EXPOSE 8888
 
-# CMD will be overridden by RenkuLab, but provide a default
+# Default command
 CMD ["start-notebook.py"]
