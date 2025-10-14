@@ -1,20 +1,28 @@
-# Generic Python base image - works anywhere
-FROM python:3.10-slim
+# Use Jupyter's scipy-notebook as base (has jovyan user, JupyterHub, everything needed)
+FROM quay.io/jupyter/scipy-notebook:python-3.10
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    ffmpeg \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+# Switch to root for system packages
+USER root
+
+# Install ffmpeg for audio processing
+RUN apt-get update && \
+    apt-get install -y ffmpeg && \
+    rm -rf /var/lib/apt/lists/*
+
+# Switch back to jovyan user (required by RenkuLab)
+USER ${NB_USER}
 
 # Set working directory
-WORKDIR /app
+WORKDIR ${HOME}
 
 # Copy project files
-COPY . .
+COPY --chown=${NB_UID}:${NB_GID} . /tmp/ghe_transcribe/
 
-# Install the package (this reads pyproject.toml and installs everything)
-RUN pip install --no-cache-dir -e .
+# Install the package
+RUN pip install --no-cache-dir -e /tmp/ghe_transcribe/
 
-# Default command
-CMD ["python"]
+# Expose Jupyter port
+EXPOSE 8888
+
+# CMD will be overridden by RenkuLab, but provide a default
+CMD ["start-notebook.py"]
