@@ -1,7 +1,12 @@
 import logging
-import os
 from enum import Enum
+from pathlib import Path
 from tempfile import TemporaryDirectory
+try:
+    from importlib.resources import files, as_file
+except ImportError:
+    # Fallback for Python < 3.9
+    from importlib_metadata import files, as_file
 
 import yaml
 from faster_whisper import WhisperModel
@@ -16,6 +21,7 @@ from ghe_transcribe.exceptions import (
     ModelInitializationError,
 )
 from ghe_transcribe.utils import (
+    OUTPUT_DIR,
     diarize_text,
     snip_audio,
     timing,
@@ -169,20 +175,15 @@ def transcribe_core(
     )
     info = info if info is not None else transcribe_config.get("info")
 
-    # Relative path helper
-    root_path = os.path.abspath(os.path.dirname(__file__)).replace(
-        "/src/ghe_transcribe", ""
-    )
-
     # Convert audio file to .wav
     file = to_wav(file)
 
     if trim is not None:
+        file_path = Path(file)
+        trimmed_name = f"{file_path.stem}_{int(trim)}_seconds{file_path.suffix}"
         file = snip_audio(
             file,
-            os.path.splitext(file)[0]
-            + f"_{int(trim)}_seconds"
-            + os.path.splitext(file)[1],
+            str(file_path.parent / trimmed_name),
             0.0,
             trim,
         )
@@ -287,25 +288,33 @@ def transcribe_core(
     try:
         pyannote_config_name = "pyannote_config.yaml"
 
-        with open(
-            os.path.join(root_path, "pyannote", pyannote_config_name)
-        ) as yaml_file:
+        # Access pyannote data within package structure (works anywhere)
+        pyannote_files = files("ghe_transcribe").joinpath("pyannote")
+        config_resource = pyannote_files.joinpath(pyannote_config_name)
+
+        with config_resource.open() as yaml_file:
             pyannote_config = yaml.safe_load(yaml_file)
 
-        pyannote_config["pipeline"]["params"]["embedding"] = os.path.join(
-            root_path, *pyannote_config["pipeline"]["params"]["embedding"].split("/")
-        )
-        pyannote_config["pipeline"]["params"]["segmentation"] = os.path.join(
-            root_path, *pyannote_config["pipeline"]["params"]["segmentation"].split("/")
-        )
+        # Update model paths to point to package resources
+        embedding_parts = pyannote_config["pipeline"]["params"]["embedding"].split("/")
+        segmentation_parts = pyannote_config["pipeline"]["params"]["segmentation"].split("/")
 
-        tmpdir = TemporaryDirectory("ghe_transcribe_temp")
-        with open(os.path.join(tmpdir.name, pyannote_config_name), "w") as yaml_file:
-            yaml.safe_dump(pyannote_config, yaml_file)
+        embedding_resource = pyannote_files.joinpath(*embedding_parts)
+        segmentation_resource = pyannote_files.joinpath(*segmentation_parts)
 
-        diarization_result = Pipeline.from_pretrained(
-            os.path.join(tmpdir.name, pyannote_config_name)
-        ).to(torch_device)(file, **pyannote_kwargs)
+        # Extract resources to temporary files for pyannote to use
+        with as_file(embedding_resource) as embedding_path, as_file(segmentation_resource) as segmentation_path:
+            pyannote_config["pipeline"]["params"]["embedding"] = str(embedding_path)
+            pyannote_config["pipeline"]["params"]["segmentation"] = str(segmentation_path)
+
+            tmpdir = TemporaryDirectory("ghe_transcribe_temp")
+            temp_config_path = Path(tmpdir.name) / pyannote_config_name
+            with open(temp_config_path, "w") as yaml_file:
+                yaml.safe_dump(pyannote_config, yaml_file)
+
+            diarization_result = Pipeline.from_pretrained(
+                str(temp_config_path)
+            ).to(torch_device)(file, **pyannote_kwargs)
 
     except Exception as e:
         logger.error(f"Diarization Error: {e}")
@@ -314,20 +323,20 @@ def transcribe_core(
     # Text alignment
     text = diarize_text(to_whisper_format(generated_segments), diarization_result)
 
-    # Extract audio_file name
-    output_file_name = "output/" + os.path.splitext(os.path.basename(file))[0]
+    # Extract audio_file name and create output paths
+    file_stem = Path(file).stem
 
     if save_output:
-        # Ensure output directory exists
-        os.makedirs("output", exist_ok=True)
+        txt_path = OUTPUT_DIR / f"{file_stem}.txt"
+        srt_path = OUTPUT_DIR / f"{file_stem}.srt"
+
         txt = to_txt(text)
-        with open(output_file_name + ".txt", "w") as f:
-            f.write(txt)
-            logger.info(f"Output saved to {output_file_name}.txt")
+        txt_path.write_text(txt)
+        logger.info(f"Output saved to {txt_path}")
+
         srt = to_srt(text)
-        with open(output_file_name + ".srt", "w") as f:
-            f.write(srt)
-            logger.info(f"Output saved to {output_file_name}.srt")
+        srt_path.write_text(srt)
+        logger.info(f"Output saved to {srt_path}")
 
     if info:
         logger.info(
