@@ -7,7 +7,6 @@ dependencies:
   - ffmpeg
   - jupyterlab>=4.3.5
   - ipykernel>=6.30.0
-  - jupyter-client>=8.6.0
   - ipywidgets>=8.0.0
   - ipython>=8.0.0
   - pytorch>=2.0.0
@@ -15,6 +14,7 @@ dependencies:
   - pyyaml>=6.0
   - pip
   - pip:
+      - jupyter-client>=8.6.0
       - typer>=0.9.0
       - av>=11.0.0
       - faster-whisper>=1.0.0
