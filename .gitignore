@@ -12,4 +12,15 @@ launch.json
 .venv
 venv
 build/
+dist/
 _version.py
+*.txt
+!testing_audio.txt
+*.srt
+!testing_audio.srt
+*.wav
+!testing_audio.wav
+*.mp3
+!testing_audio.mp3
+*.m4a
+!testing_audio.m4a
