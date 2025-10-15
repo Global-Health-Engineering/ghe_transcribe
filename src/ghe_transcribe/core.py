@@ -170,9 +170,6 @@ def transcribe_core(
     )
     info = info if info is not None else transcribe_config.get("info")
 
-    # Get package root for pyannote config
-    package_root = Path(__file__).parent.parent.parent
-
     # Convert audio file to .wav
     file = to_wav(file)
 
@@ -286,16 +283,24 @@ def transcribe_core(
     try:
         pyannote_config_name = "pyannote_config.yaml"
 
-        pyannote_config_path = package_root / "pyannote" / pyannote_config_name
-        with open(pyannote_config_path) as yaml_file:
+        # Use importlib.resources for robust package data access
+        try:
+            from importlib.resources import files
+        except ImportError:
+            # Fallback for Python < 3.9
+            from importlib_metadata import files
+
+        package_files = files("ghe_transcribe").parent
+        pyannote_config_path = package_files / "pyannote" / pyannote_config_name
+
+        with pyannote_config_path.open() as yaml_file:
             pyannote_config = yaml.safe_load(yaml_file)
 
-        # Update paths to absolute paths
         embedding_parts = pyannote_config["pipeline"]["params"]["embedding"].split("/")
         segmentation_parts = pyannote_config["pipeline"]["params"]["segmentation"].split("/")
 
-        pyannote_config["pipeline"]["params"]["embedding"] = str(package_root / Path(*embedding_parts))
-        pyannote_config["pipeline"]["params"]["segmentation"] = str(package_root / Path(*segmentation_parts))
+        pyannote_config["pipeline"]["params"]["embedding"] = str(package_files / Path(*embedding_parts))
+        pyannote_config["pipeline"]["params"]["segmentation"] = str(package_files / Path(*segmentation_parts))
 
         tmpdir = TemporaryDirectory("ghe_transcribe_temp")
         temp_config_path = Path(tmpdir.name) / pyannote_config_name

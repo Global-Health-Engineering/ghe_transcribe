@@ -1,5 +1,4 @@
 import logging
-import os
 from datetime import timedelta
 from functools import wraps
 from pathlib import Path
@@ -265,7 +264,8 @@ def to_whisper_format(generated_segments):
 def to_wav_pyav(in_path: str, out_path: str = None, sample_rate: int = 16000) -> str:
     """Arbitrary media files to wav"""
     if out_path is None:
-        out_path = os.path.splitext(in_path)[0] + ".wav"
+        in_path_obj = Path(in_path)
+        out_path = str(in_path_obj.with_suffix(".wav"))
     with av.open(in_path) as in_container:
         in_stream = in_container.streams.audio[0]
         with av.open(out_path, "w", "wav") as out_container:
