@@ -2,6 +2,7 @@ import logging
 import os
 from datetime import timedelta
 from functools import wraps
+from pathlib import Path
 from time import time
 
 import av
@@ -12,6 +13,41 @@ from ghe_transcribe.exceptions import AudioConversionError
 from pyannote.core import Segment
 
 logger = logging.getLogger(__name__)
+
+
+# Simple working directory-based path management
+WORKING_DIR = Path.cwd()
+MEDIA_DIR = WORKING_DIR / "media"
+OUTPUT_DIR = WORKING_DIR / "output"
+
+# Create directories at module level
+MEDIA_DIR.mkdir(exist_ok=True)
+OUTPUT_DIR.mkdir(exist_ok=True)
+
+
+def get_media_path(filename: str) -> Path:
+    """Get path for media file in media directory."""
+    return MEDIA_DIR / filename
+
+
+def get_output_path(filename: str) -> Path:
+    """Get path for output file in output directory."""
+    return OUTPUT_DIR / filename
+
+
+def save_uploaded_file(filename: str, content_bytes: bytes) -> Path:
+    """Save uploaded file content to media directory using pathlib.
+
+    Args:
+        filename: Name of the file
+        content_bytes: File content as bytes
+
+    Returns:
+        Path to saved file
+    """
+    file_path = get_media_path(filename)
+    file_path.write_bytes(content_bytes)
+    return file_path
 
 
 def timing(func):

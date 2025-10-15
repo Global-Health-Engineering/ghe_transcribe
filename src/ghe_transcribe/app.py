@@ -1,5 +1,4 @@
 import logging
-import os
 
 import ipywidgets as widgets
 from IPython.display import clear_output, display
@@ -12,15 +11,9 @@ from ghe_transcribe.core import (
     transcribe_config,  # Default configuration
     transcribe_core,
 )
-
-# To get the parent directory:
-root_path = os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from ghe_transcribe.utils import save_uploaded_file
 
 logger = logging.getLogger(__name__)
-
-# Output directory for transcribed files
-output_dir = os.path.join(root_path, "output")
-os.makedirs(output_dir, exist_ok=True)  # Ensure output directory exists
 
 
 class GheTranscribeApp:
@@ -286,13 +279,8 @@ class GheTranscribeApp:
                 uploaded_file_name = file_metadata["name"]
                 uploaded_content_bytes = file_metadata["content"].tobytes()
 
-                # Ensure 'media' directory exists within the root_path
-                media_dir = os.path.join(root_path, "media")
-                os.makedirs(media_dir, exist_ok=True)
-
-                audio_file_path = os.path.join(media_dir, uploaded_file_name)
-                with open(audio_file_path, "wb") as f:
-                    f.write(uploaded_content_bytes)
+                # Save uploaded file using modern path handling
+                audio_file_path = save_uploaded_file(uploaded_file_name, uploaded_content_bytes)
                 logger.info(f"Uploaded audio saved to: {audio_file_path}")
                 print(f"Uploaded audio saved to: {audio_file_path}")
 
@@ -327,7 +315,7 @@ class GheTranscribeApp:
                     kwargs["max_speakers"] = self.max_speakers_input.value
 
                 # Call the ghe_transcribe function
-                transcribe_core(**kwargs)
+                transcribe_core(str(audio_file_path), **{k: v for k, v in kwargs.items() if k != 'file'})
 
             except Exception as e:
                 logger.error(f"An unexpected error occurred: {e}", exc_info=True)

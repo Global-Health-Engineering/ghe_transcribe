@@ -33,11 +33,11 @@ dependencies = [
     # Jupyter dependencies
     "ipykernel>=6.30.0",
     "jupyter-client>=8.6.0",
-    
+
     # UI dependencies
     "ipywidgets>=8.0.0",
     "IPython>=8.0.0",
-    
+
     # Core dependencies
     "torch>=2.0.0",
     "torchaudio>=2.0.0",
