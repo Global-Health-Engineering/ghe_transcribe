@@ -72,6 +72,9 @@ transcribe = "ghe_transcribe.core:app"
 packages = ["ghe_transcribe"]
 package-dir = {"" = "src"}
 
+[tool.setuptools.package-data]
+ghe_transcribe = ["pyannote/*"]
+
 [tool.setuptools_scm]
 write_to = "src/ghe_transcribe/_version.py"
 version_scheme = "release-branch-semver"

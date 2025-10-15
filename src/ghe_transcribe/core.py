@@ -2,6 +2,11 @@ import logging
 from enum import Enum
 from pathlib import Path
 from tempfile import TemporaryDirectory
+try:
+    from importlib.resources import files, as_file
+except ImportError:
+    # Fallback for Python < 3.9
+    from importlib_metadata import files, as_file
 
 import yaml
 from faster_whisper import WhisperModel
@@ -283,33 +288,33 @@ def transcribe_core(
     try:
         pyannote_config_name = "pyannote_config.yaml"
 
-        # Use importlib.resources for robust package data access
-        try:
-            from importlib.resources import files
-        except ImportError:
-            # Fallback for Python < 3.9
-            from importlib_metadata import files
+        # Access pyannote data within package structure (works anywhere)
+        pyannote_files = files("ghe_transcribe").joinpath("pyannote")
+        config_resource = pyannote_files.joinpath(pyannote_config_name)
 
-        package_files = files("ghe_transcribe").parent
-        pyannote_config_path = package_files / "pyannote" / pyannote_config_name
-
-        with pyannote_config_path.open() as yaml_file:
+        with config_resource.open() as yaml_file:
             pyannote_config = yaml.safe_load(yaml_file)
 
+        # Update model paths to point to package resources
         embedding_parts = pyannote_config["pipeline"]["params"]["embedding"].split("/")
         segmentation_parts = pyannote_config["pipeline"]["params"]["segmentation"].split("/")
 
-        pyannote_config["pipeline"]["params"]["embedding"] = str(package_files / Path(*embedding_parts))
-        pyannote_config["pipeline"]["params"]["segmentation"] = str(package_files / Path(*segmentation_parts))
+        embedding_resource = pyannote_files.joinpath(*embedding_parts)
+        segmentation_resource = pyannote_files.joinpath(*segmentation_parts)
 
-        tmpdir = TemporaryDirectory("ghe_transcribe_temp")
-        temp_config_path = Path(tmpdir.name) / pyannote_config_name
-        with open(temp_config_path, "w") as yaml_file:
-            yaml.safe_dump(pyannote_config, yaml_file)
+        # Extract resources to temporary files for pyannote to use
+        with as_file(embedding_resource) as embedding_path, as_file(segmentation_resource) as segmentation_path:
+            pyannote_config["pipeline"]["params"]["embedding"] = str(embedding_path)
+            pyannote_config["pipeline"]["params"]["segmentation"] = str(segmentation_path)
 
-        diarization_result = Pipeline.from_pretrained(
-            str(temp_config_path)
-        ).to(torch_device)(file, **pyannote_kwargs)
+            tmpdir = TemporaryDirectory("ghe_transcribe_temp")
+            temp_config_path = Path(tmpdir.name) / pyannote_config_name
+            with open(temp_config_path, "w") as yaml_file:
+                yaml.safe_dump(pyannote_config, yaml_file)
+
+            diarization_result = Pipeline.from_pretrained(
+                str(temp_config_path)
+            ).to(torch_device)(file, **pyannote_kwargs)
 
     except Exception as e:
         logger.error(f"Diarization Error: {e}")
