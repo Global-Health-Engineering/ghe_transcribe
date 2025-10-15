@@ -286,7 +286,7 @@ class GheTranscribeApp:
 
                 # Prepare arguments for transcribe
                 kwargs = {
-                    "file": audio_file_path,
+                    "file": str(audio_file_path),
                     "trim": self.trim_input.value
                     if self.trim_input.value > 0
                     else None,
@@ -315,7 +315,7 @@ class GheTranscribeApp:
                     kwargs["max_speakers"] = self.max_speakers_input.value
 
                 # Call the ghe_transcribe function
-                transcribe_core(str(audio_file_path), **{k: v for k, v in kwargs.items() if k != 'file'})
+                transcribe_core(**kwargs)
 
             except Exception as e:
                 logger.error(f"An unexpected error occurred: {e}", exc_info=True)
