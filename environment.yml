@@ -11,5 +11,5 @@ dependencies:
   - ipython>=8.0.0
   - pip
   - pip:
-      - uv
+      - git+https://github.com/Global-Health-Engineering/ghe_transcribe.git
 prefix: "/opt/conda"
