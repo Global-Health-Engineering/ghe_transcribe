@@ -61,6 +61,8 @@ jobs:
         continue-on-error: true
 
       - name: Run tests
+        env:
+          HUGGINGFACE_TOKEN: ${{ secrets.HUGGINGFACE_TOKEN }}
         run: python -m pytest tests/ -v --tb=short --junitxml=pytest.xml
 
       - name: Upload test results
@@ -108,6 +110,8 @@ jobs:
         continue-on-error: true
 
       - name: Run tests
+        env:
+          HUGGINGFACE_TOKEN: ${{ secrets.HUGGINGFACE_TOKEN }}
         run: python -m pytest tests/ -v --tb=short --junitxml=pytest.xml
 
       - name: Upload test results
