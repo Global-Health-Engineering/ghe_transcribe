@@ -1,14 +1,13 @@
 import logging
+import os
 from enum import Enum
 from pathlib import Path
-from tempfile import TemporaryDirectory
-try:
-    from importlib.resources import files, as_file
-except ImportError:
-    # Fallback for Python < 3.9
-    from importlib_metadata import files, as_file
 
-import yaml
+# Set environment variables early to disable HF progress bars and telemetry
+os.environ["HF_HUB_DISABLE_PROGRESS_BARS"] = "1"
+os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
+# Disable pyannote telemetry to avoid PyTorch compatibility issues
+os.environ["PYANNOTE_DISABLE_TELEMETRY"] = "1"
 from faster_whisper import WhisperModel
 from torch import device as to_torch_device
 from torch import set_num_threads
@@ -23,6 +22,7 @@ from ghe_transcribe.exceptions import (
 from ghe_transcribe.utils import (
     OUTPUT_DIR,
     diarize_text,
+    log_hf_authentication_error,
     snip_audio,
     timing,
     to_srt,
@@ -31,6 +31,7 @@ from ghe_transcribe.utils import (
     to_whisper_format,
 )
 from pyannote.audio import Pipeline
+from huggingface_hub import login
 
 
 class DeviceChoice(str, Enum):
@@ -113,8 +114,9 @@ def transcribe_core(
     max_speakers: int | None = None,
     save_output: bool | None = None,
     info: bool | None = None,
+    hf_token: str | None = None,
 ):
-    """Transcribe and diarize an audio file.\n    \n    Args:\n        file: Path to the audio file to transcribe\n        trim: Trim audio to specified seconds (from start)\n        device: Device to use for inference (auto, cuda, mps, cpu)\n        cpu_threads: Number of CPU threads for inference\n        whisper_model: Whisper model size to use\n        device_index: Device index for multi-GPU systems\n        compute_type: Computation precision (float32, float16, int8)\n        beam_size: Beam search width for decoding\n        temperature: Sampling temperature for generation\n        word_timestamps: Enable word-level timestamps\n        vad_filter: Enable voice activity detection filter\n        min_silence_duration_ms: Minimum silence duration for VAD\n        num_speakers: Exact number of speakers (overrides min/max)\n        min_speakers: Minimum number of speakers for diarization\n        max_speakers: Maximum number of speakers for diarization\n        save_output: Save transcription to TXT and SRT files\n        info: Print detected language information\n        \n    Returns:\n        List of tuples containing (segment, speaker, text)\n        \n    Raises:\n        ModelInitializationError: If model initialization fails\n        DiarizationError: If speaker diarization fails\n        AudioConversionError: If audio conversion fails\n"""
+    """Transcribe and diarize an audio file.\n    \n    Args:\n        file: Path to the audio file to transcribe\n        trim: Trim audio to specified seconds (from start)\n        device: Device to use for inference (auto, cuda, mps, cpu)\n        cpu_threads: Number of CPU threads for inference\n        whisper_model: Whisper model size to use\n        device_index: Device index for multi-GPU systems\n        compute_type: Computation precision (float32, float16, int8)\n        beam_size: Beam search width for decoding\n        temperature: Sampling temperature for generation\n        word_timestamps: Enable word-level timestamps\n        vad_filter: Enable voice activity detection filter\n        min_silence_duration_ms: Minimum silence duration for VAD\n        num_speakers: Exact number of speakers (overrides min/max)\n        min_speakers: Minimum number of speakers for diarization\n        max_speakers: Maximum number of speakers for diarization\n        save_output: Save transcription to TXT and SRT files\n        info: Print detected language information\n        hf_token: Hugging Face token for accessing gated models\n        \n    Returns:\n        List of tuples containing (segment, speaker, text)\n        \n    Raises:\n        ModelInitializationError: If model initialization fails\n        DiarizationError: If speaker diarization fails\n        AudioConversionError: If audio conversion fails\n"""
     # Apply defaults
     trim = trim if trim is not None else transcribe_config.get("trim")
     device = device if device is not None else transcribe_config.get("device")
@@ -286,38 +288,31 @@ def transcribe_core(
         pyannote_kwargs["max_speakers"] = _max_speakers
 
     try:
-        pyannote_config_name = "pyannote_config.yaml"
+        # Use gated pyannote model from Hugging Face Hub
+        # Login with token if provided, or use existing authentication
+        if hf_token:
+            login(token=hf_token, add_to_git_credential=False)
 
-        # Access pyannote data within package structure (works anywhere)
-        pyannote_files = files("ghe_transcribe").joinpath("pyannote")
-        config_resource = pyannote_files.joinpath(pyannote_config_name)
+        # Environment variables already set at module level to disable progress bars
 
-        with config_resource.open() as yaml_file:
-            pyannote_config = yaml.safe_load(yaml_file)
+        logger.info(
+            "Loading speaker diarization model (this may take a moment on first run)..."
+        )
+        # Load the pipeline (pyannote 3.3.1 doesn't support token parameter)
+        pipeline = Pipeline.from_pretrained(
+            "pyannote/speaker-diarization-3.1"
+        ).to(torch_device)
 
-        # Update model paths to point to package resources
-        embedding_parts = pyannote_config["pipeline"]["params"]["embedding"].split("/")
-        segmentation_parts = pyannote_config["pipeline"]["params"]["segmentation"].split("/")
-
-        embedding_resource = pyannote_files.joinpath(*embedding_parts)
-        segmentation_resource = pyannote_files.joinpath(*segmentation_parts)
-
-        # Extract resources to temporary files for pyannote to use
-        with as_file(embedding_resource) as embedding_path, as_file(segmentation_resource) as segmentation_path:
-            pyannote_config["pipeline"]["params"]["embedding"] = str(embedding_path)
-            pyannote_config["pipeline"]["params"]["segmentation"] = str(segmentation_path)
-
-            tmpdir = TemporaryDirectory("ghe_transcribe_temp")
-            temp_config_path = Path(tmpdir.name) / pyannote_config_name
-            with open(temp_config_path, "w") as yaml_file:
-                yaml.safe_dump(pyannote_config, yaml_file)
-
-            diarization_result = Pipeline.from_pretrained(
-                str(temp_config_path)
-            ).to(torch_device)(file, **pyannote_kwargs)
+        # Apply diarization with proper file handling
+        diarization_result = pipeline({"audio": file}, **pyannote_kwargs)
+        logger.info("Speaker diarization model loaded successfully")
 
     except Exception as e:
         logger.error(f"Diarization Error: {e}")
+        if (
+            "401 Client Error" in str(e) or "403 Client Error" in str(e)
+        ) and "gated repo" in str(e):
+            log_hf_authentication_error(logger, str(e))
         raise DiarizationError(f"Failed to perform speaker diarization: {e}") from e
 
     # Text alignment
@@ -409,6 +404,9 @@ def transcribe(
     info: bool | None = Option(
         transcribe_config.get("info"), help="Print detected language information."
     ),
+    hf_token: str | None = Option(
+        None, help="Hugging Face token for accessing gated models."
+    ),
 ):
     """CLI wrapper for transcribe_core function."""
     return transcribe_core(
@@ -429,6 +427,7 @@ def transcribe(
         max_speakers=max_speakers,
         save_output=save_output,
         info=info,
+        hf_token=hf_token,
     )
 
 
