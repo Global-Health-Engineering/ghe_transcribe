@@ -15,6 +15,16 @@ pip install -e .
 
 For Euler cluster or development setup, see the [detailed installation guide](docs/INSTALLATION.md).
 
+## Hugging Face Authentication
+
+This tool uses gated models from Hugging Face that require authentication. You need to:
+
+1. **Accept User Conditions**: You must accept conditions for BOTH models:
+   - [https://hf.co/pyannote/speaker-diarization-3.1](https://hf.co/pyannote/speaker-diarization-3.1)
+   - [https://hf.co/pyannote/speaker-diarization-community-1](https://hf.co/pyannote/speaker-diarization-community-1)
+2. **Create Access Token**: Visit [https://hf.co/settings/tokens](https://hf.co/settings/tokens) to create a new access token with read permissions
+
+
 ## Usage
 
 ### Jupyter Interface (Recommended)
@@ -48,11 +58,6 @@ transcribe --help  # See all options
 
 - **For SRT files** [subtitle-editor.org/](https://subtitle-editor.org/), runs locally on your browser
 - **For TXT files** note-taking apps, Word, MAXQDA, QualCoder, ...
-
-## Dependencies
-```bash
-pip install ipykernel>=6.30.0 jupyter-client>=8.6.0 ipywidgets>=8.0.0 IPython>=8.0.0 torch>=2.0.0 torchaudio>=2.0.0 typer>=0.9.0 av>=11.0.0 faster-whisper>=1.0.0 pyannote.audio>=3.0.0 PyYAML>=6.0
-```
 
 ## Contributing
 
