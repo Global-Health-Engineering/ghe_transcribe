@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "ghe_transcribe"
 description = "A tool to transcribe audio files with speaker diarization using Faster Whisper and Pyannote"
 readme = "README.md"
-requires-python = ">=3.11,<=3.13"
+requires-python = ">=3.11,<3.14"
 license = "MIT"
 authors = [
     {name = "Nicolo' Massari", email = "nmassari@ethz.ch"},
