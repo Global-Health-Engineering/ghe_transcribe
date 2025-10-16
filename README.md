@@ -49,6 +49,11 @@ transcribe --help  # See all options
 - **For SRT files** [subtitle-editor.org/](https://subtitle-editor.org/), runs locally on your browser
 - **For TXT files** note-taking apps, Word, MAXQDA, QualCoder, ...
 
+## Dependencies
+```bash
+pip install ipykernel>=6.30.0 jupyter-client>=8.6.0 ipywidgets>=8.0.0 IPython>=8.0.0 torch>=2.0.0 torchaudio>=2.0.0 typer>=0.9.0 av>=11.0.0 faster-whisper>=1.0.0 pyannote.audio>=3.0.0 PyYAML>=6.0
+```
+
 ## Contributing
 
 We welcome contributions! Please use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/).
