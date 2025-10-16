@@ -1,0 +1,18 @@
+# Core dependencies
+torch==2.5.1
+torchaudio==2.5.1
+typer>=0.9.0
+av>=11.0.0
+faster-whisper>=1.0.0
+pyannote.audio==3.3.1
+matplotlib>=3.0.0
+PyYAML>=6.0
+numpy>=1.21.0,<2.0
+
+# Jupyter dependencies
+ipykernel>=6.30.0
+jupyter-client>=8.6.0
+
+# UI dependencies
+ipywidgets>=8.0.0
+IPython>=8.0.0
