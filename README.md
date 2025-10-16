@@ -15,6 +15,16 @@ pip install -e .
 
 For Euler cluster or development setup, see the [detailed installation guide](docs/INSTALLATION.md).
 
+## Hugging Face Authentication
+
+This tool uses gated models from Hugging Face that require authentication. You need to:
+
+1. **Accept User Conditions**: You must accept conditions for BOTH models:
+   - [https://hf.co/pyannote/speaker-diarization-3.1](https://hf.co/pyannote/speaker-diarization-3.1)
+   - [https://hf.co/pyannote/speaker-diarization-community-1](https://hf.co/pyannote/speaker-diarization-community-1)
+2. **Create Access Token**: Visit [https://hf.co/settings/tokens](https://hf.co/settings/tokens) to create a new access token with read permissions
+
+
 ## Usage
 
 ### Jupyter Interface (Recommended)

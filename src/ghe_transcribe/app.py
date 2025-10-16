@@ -1,6 +1,15 @@
 import logging
+import os
+from pathlib import Path
+
+# Set environment variables early to disable HF progress bars and telemetry
+os.environ["HF_HUB_DISABLE_PROGRESS_BARS"] = "1"
+os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
+# Disable pyannote telemetry to avoid PyTorch compatibility issues
+os.environ["PYANNOTE_DISABLE_TELEMETRY"] = "1"
 
 import ipywidgets as widgets
+from huggingface_hub import login, whoami
 from IPython.display import clear_output, display
 
 # Import the core transcription function and config from your package
@@ -11,15 +20,101 @@ from ghe_transcribe.core import (
     transcribe_config,  # Default configuration
     transcribe_core,
 )
-from ghe_transcribe.utils import save_uploaded_file
+from ghe_transcribe.utils import log_hf_authentication_error, save_uploaded_file
 
 logger = logging.getLogger(__name__)
+
+
+def setup_hf_authentication():
+    """
+    Set up Hugging Face authentication for accessing gated models.
+
+    Checks authentication in the following order:
+    1. If user is already logged in, use existing authentication
+    2. Try to read HF_TOKEN.txt from /secrets/HF_TOKEN.txt (Renkulab path)
+    3. Check for HF_TOKEN environment variable
+    4. Prompt user to login interactively
+
+    Returns:
+        str or None: The HF token if available, None otherwise
+    """
+    try:
+        # Check if already logged in
+        user_info = whoami()
+        if user_info is not None:
+            logger.info(f"Already logged in to Hugging Face as: {user_info['name']}")
+            return None  # Already authenticated, no token needed
+    except Exception:
+        # Not logged in, proceed with authentication
+        pass
+
+    # Try to read token from Renkulab secrets path
+    secrets_path = Path("/secrets/HF_TOKEN.txt")
+    if secrets_path.exists():
+        try:
+            hf_token = secrets_path.read_text().strip()
+            if hf_token:
+                logger.info(
+                    "Found HF token in /secrets/HF_TOKEN.txt, logging in silently..."
+                )
+                login(token=hf_token, add_to_git_credential=False)
+                logger.info(
+                    "Successfully logged in to Hugging Face using token from secrets"
+                )
+                return hf_token
+        except Exception as e:
+            logger.warning(f"Failed to read HF token from {secrets_path}: {e}")
+
+    # Try to get token from environment variable
+    hf_token = os.getenv("HF_TOKEN")
+    if hf_token:
+        try:
+            logger.info("Found HF_TOKEN environment variable, logging in silently...")
+            login(token=hf_token, add_to_git_credential=False)
+            logger.info(
+                "Successfully logged in to Hugging Face using environment variable"
+            )
+            return hf_token
+        except Exception as e:
+            logger.warning(f"Failed to login with environment variable token: {e}")
+
+    # If no token found, prompt user for token
+    logger.warning(
+        "No Hugging Face authentication found. Please provide your HF token to access gated models."
+    )
+    logger.info("Steps to get a token:")
+    logger.info("1. Accept user conditions for BOTH models:")
+    logger.info("   • https://hf.co/pyannote/speaker-diarization-3.1")
+    logger.info("   • https://hf.co/pyannote/speaker-diarization-community-1")
+    logger.info("2. Visit https://hf.co/settings/tokens and create an access token")
+
+    try:
+        import getpass
+
+        hf_token = getpass.getpass("Please paste your Hugging Face token: ").strip()
+
+        if not hf_token:
+            raise ValueError("No token provided")
+
+        logger.info("Logging in with provided token...")
+        login(token=hf_token, add_to_git_credential=False)
+        logger.info("Successfully logged in to Hugging Face!")
+        return hf_token
+
+    except Exception as e:
+        logger.error(f"Failed to login with provided token: {e}")
+        log_hf_authentication_error(logger)
+        raise
 
 
 class GheTranscribeApp:
     def __init__(self):
         self.common_widget_layout = widgets.Layout(width="90%", margin="5px auto")
         self.common_widget_style = {"description_width": "150px"}
+
+        # Set up Hugging Face authentication
+        self.hf_token = setup_hf_authentication()
+
         self._setup_ui()
         self._set_initial_widget_states()
         self._observe_widget_changes()
@@ -280,7 +375,9 @@ class GheTranscribeApp:
                 uploaded_content_bytes = file_metadata["content"].tobytes()
 
                 # Save uploaded file using modern path handling
-                audio_file_path = save_uploaded_file(uploaded_file_name, uploaded_content_bytes)
+                audio_file_path = save_uploaded_file(
+                    uploaded_file_name, uploaded_content_bytes
+                )
                 logger.info(f"Uploaded audio saved to: {audio_file_path}")
                 print(f"Uploaded audio saved to: {audio_file_path}")
 
@@ -304,6 +401,7 @@ class GheTranscribeApp:
                     "min_silence_duration_ms": self.min_silence_duration_ms_input.value,
                     "save_output": self.save_output_checkbox.value,
                     "info": self.info_checkbox.value,
+                    "hf_token": self.hf_token,
                 }
 
                 # Diarization specific arguments

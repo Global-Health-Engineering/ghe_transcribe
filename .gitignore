@@ -16,6 +16,7 @@ dist/
 _version.py
 *.txt
 !testing_audio.txt
+!requirements.txt
 *.srt
 !testing_audio.srt
 *.wav

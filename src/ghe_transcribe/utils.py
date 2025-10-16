@@ -24,6 +24,29 @@ MEDIA_DIR.mkdir(exist_ok=True)
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 
+def log_hf_authentication_error(logger_instance, error_message: str = None):
+    """
+    Log standardized Hugging Face authentication error messages.
+
+    Args:
+        logger_instance: The logger instance to use
+        error_message: Optional specific error message to include
+    """
+    if error_message:
+        logger_instance.error(f"Authentication Error: {error_message}")
+
+    logger_instance.error(
+        "This appears to be an authentication issue with gated models."
+    )
+    logger_instance.error("Please ensure you have:")
+    logger_instance.error("1. Accepted user conditions for BOTH models:")
+    logger_instance.error("   • https://hf.co/pyannote/speaker-diarization-3.1")
+    logger_instance.error("   • https://hf.co/pyannote/speaker-diarization-community-1")
+    logger_instance.error("2. Created a token at https://hf.co/settings/tokens")
+    logger_instance.error("3. Successfully logged in to Hugging Face")
+    logger_instance.error("4. Restarted the app after accepting conditions")
+
+
 def get_media_path(filename: str) -> Path:
     """Get path for media file in media directory."""
     return MEDIA_DIR / filename

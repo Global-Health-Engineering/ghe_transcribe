@@ -7,7 +7,7 @@ from ghe_transcribe.core import transcribe_core
 from ghe_transcribe.exceptions import AudioConversionError, ModelInitializationError
 
 TEST_AUDIO_PATH = "media/testing_audio.mp3"
-# huggingface_token = os.environ.get("HUGGINGFACE_TOKEN")
+huggingface_token = os.environ.get("HUGGINGFACE_TOKEN")
 
 
 def test_transcribe_snippet():
@@ -33,6 +33,7 @@ def test_transcribe_snippet():
         max_speakers=None,
         save_output=False,
         info=False,
+        hf_token=huggingface_token,
     )
 
     # Add assertions to check the text
@@ -48,6 +49,7 @@ def test_transcribe_invalid_file():
             whisper_model="tiny.en",
             save_output=False,
             info=False,
+            hf_token=huggingface_token,
         )
 
 
@@ -63,6 +65,7 @@ def test_transcribe_invalid_device():
             whisper_model="tiny.en",
             save_output=False,
             info=False,
+            hf_token=huggingface_token,
         )
 
 
