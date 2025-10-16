@@ -1,3 +1,34 @@
+## [0.9.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.8.0...v0.9.0) (2025-10-16)
+
+
+### Features
+
+* docker release ([1ccc262](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/1ccc2623d7c2164baae1866dbfdf332726f0138f))
+* make pyannote a package-data resource ([8eb5221](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/8eb52214b5e632512713e2e7fade0e4873022329))
+* use environment.yml for conda instead of requirements.txt ([31964b1](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/31964b154eedf6a5263dc7d75bf0bb7cffa5ba45))
+
+
+### Bug Fixes
+
+* add jupyterlab to docker installation ([a9ea51a](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/a9ea51a4d50167aaff33901871d3ebbee1c4e1fb))
+* allow python3.13 ([e256f44](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/e256f440be602e2259d4a87afa48379cd981767a))
+* allow python3.13 ([3eb43b5](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/3eb43b54505dd14a5846f7c3b6b3e79416f49af0))
+* bump buildpacks python version ([f27db76](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/f27db76c325df6389122bece939c7285c6040f0c))
+* install deps from uv.lock and use python3.10 ([8c420f1](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/8c420f1d00402064475b0cf2b499066974b486e2))
+* jupyter tag ([e65d220](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/e65d2209d273545f044ee113302ae1eceb830b4c))
+* move jupyter-client to pip ([2c0446a](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/2c0446ad6a775fdc5df67d8ffb6c3802ccb829d5))
+* pass secrets to workflow ([5bf8aea](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/5bf8aea7aff1f4f5d7a38aa9582147b06f2b8d66))
+* pin dependencies and install with pip install git+ ([f1b9306](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/f1b9306f367c9f79b761a776ef8682da894b8f7c))
+* python3.10 conflict and fixing deps ([b426a95](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/b426a954697763ca9f47ec7b44a9fb330741d97c))
+* remove docker build ([378ddc4](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/378ddc491eebb64604c575face8e7dfa031c3a1c))
+* remove uv and add hf_token ([55721d0](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/55721d08e6ada96301e91856819056f4027c1276))
+* repeating arg in kwarg ([1a5ae48](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/1a5ae48af18362c861eada453a7ad9fcbf05bb2e))
+* revert to working torch and pyannote versions ([104186a](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/104186a09828f95082f5ea08b0c4cacb5c187853))
+* simplify docker-build ([2f39d54](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/2f39d54b00d586887489981abec4b1d11f200ff5))
+* update environment.yml to python 3.11 ([8d57cd8](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/8d57cd885eacdc3003ce8a9d337bfc0fe7bdb7f8))
+* use importlib.resources for pyannote ([cf5b55b](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/cf5b55b7ba8d1cba71f23f3229356e426c3afcf5))
+* use working directory for media and output ([bb49be2](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/bb49be2a5dea37eaab67ca26a930abec1c4fb8e2))
+
 ## [0.8.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.7.0...v0.8.0) (2025-10-13)
 
 
@@ -119,11 +150,4 @@
 ### Bug Fixes
 
 * bump release ([381b1d2](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/381b1d2c7dff371352f7869eb38da478731f5e8f))
-
-## [0.3.2](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.3.1...v0.3.2) (2025-06-19)
-
-
-### Bug Fixes
-
-* python3.9 missing requirements ([1ff44c2](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/1ff44c2bb3a9e29fb123dd7d417cb7042c23aed9))
 
