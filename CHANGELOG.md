@@ -1,3 +1,15 @@
+## [1.0.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.9.0...v1.0.0) (2025-10-17)
+
+
+### Features
+
+* add multiple audio files handling ([a6dd3d6](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/a6dd3d6adb24f8b736b6f2d00d07d6276e57707b))
+
+
+### Bug Fixes
+
+* remove need for requirements.txt ([7696821](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/769682171ccd811f37bcd103e8312beb58c57dcc))
+
 ## [0.9.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.8.0...v0.9.0) (2025-10-16)
 
 
@@ -143,11 +155,4 @@
 ### Bug Fixes
 
 * remove unnecessary newlines in app.py ([3a7d4b8](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/3a7d4b89ad308c7289131bac0326a1726e029d3b))
-
-## [0.3.3](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.3.2...v0.3.3) (2025-06-20)
-
-
-### Bug Fixes
-
-* bump release ([381b1d2](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/381b1d2c7dff371352f7869eb38da478731f5e8f))
 
