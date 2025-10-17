@@ -22,7 +22,8 @@ _version.py
 *.wav
 *.mp3
 *.m4a
-!test0*
+!test01.*
+!test02.*
 
 # Deprecated
 requirements.txt

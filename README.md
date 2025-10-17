@@ -7,6 +7,23 @@ A tool to transcribe audio files with speaker diarization using **Faster Whisper
 
 ## Installation
 
+### System Dependencies
+
+This tool requires FFmpeg for audio processing:
+
+```bash
+# macOS
+brew install ffmpeg
+
+# Ubuntu/Debian
+sudo apt update && sudo apt install ffmpeg
+
+# Windows
+choco install ffmpeg
+```
+
+### Python Package
+
 ```bash
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
@@ -38,13 +55,19 @@ execute()
 ### Python API
 ```python
 from ghe_transcribe.core import transcribe
-result = transcribe("path/to/audio.mp3")
+result = transcribe("media/test01.mp3")
 ```
 
 ### Command Line
 ```bash
-transcribe path/to/audio.mp3
-transcribe --help  # See all options
+# Simplest call
+transcribe media/test01.mp3
+
+# Multiple files
+transcribe media/test01.mp3 media/test02.m4a --trim 5
+
+# See all options
+transcribe --help 
 ```
 
 ## Key Features
