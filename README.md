@@ -19,6 +19,7 @@ For Euler cluster or development setup, see the [detailed installation guide](do
 
 This tool uses gated models from Hugging Face that require authentication. You need to:
 
+1. **Join Hugging Face**: [huggingface.co/join](https://huggingface.co/join)
 1. **Accept User Conditions**: You must accept conditions for BOTH models:
    - [https://hf.co/pyannote/speaker-diarization-3.1](https://hf.co/pyannote/speaker-diarization-3.1)
    - [https://hf.co/pyannote/speaker-diarization-community-1](https://hf.co/pyannote/speaker-diarization-community-1)
