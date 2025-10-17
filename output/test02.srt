@@ -1,0 +1,27 @@
+1
+00:00:00,640 --> 00:00:08,960
+S00: So hi Fiona, we're here to record an audio that I will use for testing.
+
+2
+00:00:10,400 --> 00:00:17,600
+S01: Hi Nicolo, thanks so much for the honor to invite me to help you on this project.
+
+3
+00:00:18,240 --> 00:00:34,160
+S00: You're welcome, you were the first person that came to mind. So we're here to ask you a couple of questions until we reach minute one. So what do you do in life Fiona?
+
+4
+00:00:34,160 --> 00:00:44,400
+S02: Good question, good question. So at the moment I do an internship, it's going great, everything I do is productive, will be published probably by tomorrow.
+
+5
+00:00:46,400 --> 00:00:53,280
+S02: Yeah, just doing the grind, just yeah. Of course. Do you have plans for lunch?
+
+6
+00:00:53,280 --> 00:00:56,560
+S02: Plans for lunch? Yes, actually I do, I'm meeting a friend.
+
+7
+00:00:56,560 --> 00:01:02,400
+S02: If you want, you're welcome to join. Perfect, thank you very much.

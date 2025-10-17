@@ -37,8 +37,8 @@ execute()
 
 ### Python API
 ```python
-from ghe_transcribe.core import transcribe_core
-result = transcribe_core("path/to/audio.mp3")
+from ghe_transcribe.core import transcribe
+result = transcribe("path/to/audio.mp3")
 ```
 
 ### Command Line

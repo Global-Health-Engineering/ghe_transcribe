@@ -1,3 +1,4 @@
+# Artifacts
 __pycache__
 .ipynb_checkpoints/
 .DS_Store
@@ -14,13 +15,14 @@ venv
 build/
 dist/
 _version.py
+
+# Media and output
 *.txt
-!testing_audio.txt
 *.srt
-!testing_audio.srt
 *.wav
-!testing_audio.wav
 *.mp3
-!testing_audio.mp3
 *.m4a
-!testing_audio.m4a
+!test0*
+
+# Deprecated
+requirements.txt

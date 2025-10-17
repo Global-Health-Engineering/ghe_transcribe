@@ -5,11 +5,11 @@ from pathlib import Path
 from time import time
 
 import av
+from pyannote.core import Segment
 from torchaudio import load, save
 from torchaudio.transforms import Resample
 
 from ghe_transcribe.exceptions import AudioConversionError
-from pyannote.core import Segment
 
 logger = logging.getLogger(__name__)
 
