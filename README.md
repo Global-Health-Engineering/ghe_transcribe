@@ -2,8 +2,22 @@
 
 [![Python Versions](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Run on RenkuLab](https://img.shields.io/badge/Run%20on-RenkuLab-orange)](https://renkulab.io/p/nmassari/ghe-transcribe)
 
 A tool to transcribe audio files with speaker diarization using **Faster Whisper** and **Pyannote**.
+
+## Quick Start
+
+**Run online without installation**: [Launch on RenkuLab](https://renkulab.io/p/nmassari/ghe-transcribe)
+
+<details>
+<summary>Interface Preview</summary>
+
+The Jupyter-based interface provides an intuitive way to upload audio files, configure transcription settings, and download results in multiple formats.
+
+![GHE Transcribe App Interface](docs/screenshot_ghe_transcribe_app.png)
+
+</details>
 
 ## Installation
 
@@ -45,7 +59,13 @@ This tool uses gated models from Hugging Face that require authentication. You n
 
 ## Usage
 
-### Jupyter Interface (Recommended)
+### Live build on Renkulab
+1. Open [https://renkulab.io/p/nmassari/ghe-transcribe](https://renkulab.io/p/nmassari/ghe-transcribe)
+2. Click "Launch"
+3. Add your Hugging Face token when prompted (see [authentication section](#hugging-face-authentication))
+4. Open and run `app.ipynb`
+
+### Jupyter Interface (Local)
 Open `app.ipynb` and run the cell:
 ```python
 from ghe_transcribe.app import execute
