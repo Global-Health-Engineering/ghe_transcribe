@@ -1,3 +1,61 @@
+## [1.0.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.9.0...v1.0.0) (2025-10-17)
+
+
+### Features
+
+* add multiple audio files handling ([a6dd3d6](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/a6dd3d6adb24f8b736b6f2d00d07d6276e57707b))
+
+
+### Bug Fixes
+
+* remove need for requirements.txt ([7696821](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/769682171ccd811f37bcd103e8312beb58c57dcc))
+
+## [0.9.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.8.0...v0.9.0) (2025-10-16)
+
+
+### Features
+
+* docker release ([1ccc262](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/1ccc2623d7c2164baae1866dbfdf332726f0138f))
+* make pyannote a package-data resource ([8eb5221](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/8eb52214b5e632512713e2e7fade0e4873022329))
+* use environment.yml for conda instead of requirements.txt ([31964b1](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/31964b154eedf6a5263dc7d75bf0bb7cffa5ba45))
+
+
+### Bug Fixes
+
+* add jupyterlab to docker installation ([a9ea51a](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/a9ea51a4d50167aaff33901871d3ebbee1c4e1fb))
+* allow python3.13 ([e256f44](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/e256f440be602e2259d4a87afa48379cd981767a))
+* allow python3.13 ([3eb43b5](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/3eb43b54505dd14a5846f7c3b6b3e79416f49af0))
+* bump buildpacks python version ([f27db76](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/f27db76c325df6389122bece939c7285c6040f0c))
+* install deps from uv.lock and use python3.10 ([8c420f1](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/8c420f1d00402064475b0cf2b499066974b486e2))
+* jupyter tag ([e65d220](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/e65d2209d273545f044ee113302ae1eceb830b4c))
+* move jupyter-client to pip ([2c0446a](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/2c0446ad6a775fdc5df67d8ffb6c3802ccb829d5))
+* pass secrets to workflow ([5bf8aea](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/5bf8aea7aff1f4f5d7a38aa9582147b06f2b8d66))
+* pin dependencies and install with pip install git+ ([f1b9306](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/f1b9306f367c9f79b761a776ef8682da894b8f7c))
+* python3.10 conflict and fixing deps ([b426a95](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/b426a954697763ca9f47ec7b44a9fb330741d97c))
+* remove docker build ([378ddc4](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/378ddc491eebb64604c575face8e7dfa031c3a1c))
+* remove uv and add hf_token ([55721d0](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/55721d08e6ada96301e91856819056f4027c1276))
+* repeating arg in kwarg ([1a5ae48](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/1a5ae48af18362c861eada453a7ad9fcbf05bb2e))
+* revert to working torch and pyannote versions ([104186a](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/104186a09828f95082f5ea08b0c4cacb5c187853))
+* simplify docker-build ([2f39d54](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/2f39d54b00d586887489981abec4b1d11f200ff5))
+* update environment.yml to python 3.11 ([8d57cd8](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/8d57cd885eacdc3003ce8a9d337bfc0fe7bdb7f8))
+* use importlib.resources for pyannote ([cf5b55b](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/cf5b55b7ba8d1cba71f23f3229356e426c3afcf5))
+* use working directory for media and output ([bb49be2](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/bb49be2a5dea37eaab67ca26a930abec1c4fb8e2))
+
+## [0.8.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.7.0...v0.8.0) (2025-10-13)
+
+
+### Features
+
+* renkulab uses poetry, revert to requirements.txt and add -e . ([a338054](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/a33805481b55ed83cb6653653801271fa2f8b06c))
+
+
+### Bug Fixes
+
+* add jupyter-client as dependency ([a6716e7](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/a6716e7dbcc871df549b554512e157214327d5d2))
+* move ipykernel dependency to the top to avoid potential depenedency conflicts ([b3ee1db](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/b3ee1db9c53b368eb008f96232819fc65f43dc48))
+* remove requirements.txt ([c280ff0](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/c280ff059ce74be48be9625a7255cc2f2de1a22d))
+* run uv lock ([475b05f](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/475b05f1ecab452d229c045f0ab0a16a46012906))
+
 ## [0.7.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.6.1...v0.7.0) (2025-07-10)
 
 
@@ -97,27 +155,4 @@
 ### Bug Fixes
 
 * remove unnecessary newlines in app.py ([3a7d4b8](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/3a7d4b89ad308c7289131bac0326a1726e029d3b))
-
-## [0.3.3](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.3.2...v0.3.3) (2025-06-20)
-
-
-### Bug Fixes
-
-* bump release ([381b1d2](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/381b1d2c7dff371352f7869eb38da478731f5e8f))
-
-## [0.3.2](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.3.1...v0.3.2) (2025-06-19)
-
-
-### Bug Fixes
-
-* python3.9 missing requirements ([1ff44c2](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/1ff44c2bb3a9e29fb123dd7d417cb7042c23aed9))
-
-## [0.3.1](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.3.0...v0.3.1) (2025-06-19)
-
-
-### Bug Fixes
-
-* added dependencies installation ([0bd6205](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/0bd62053e462c7fe85e06f57f0f2adcb28edc399))
-* fixed typer interaction with if statement ([4b00bc4](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/4b00bc4573785fdb8c0dc9074335b0a22a85d43c))
-* typo ([995de43](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/995de4304088c98a6d04742b28c6a8c32a6a88d6))
 
