@@ -17,8 +17,8 @@ from ghe_transcribe.core import (
     ComputeTypeChoice,  # Enum for compute type choices
     DeviceChoice,  # Enum for device choices
     WhisperModelChoice,  # Enum for Whisper model choices
+    transcribe,
     transcribe_config,  # Default configuration
-    transcribe_core,
 )
 from ghe_transcribe.utils import log_hf_authentication_error, save_uploaded_file
 
@@ -146,7 +146,7 @@ class GheTranscribeApp:
         """Defines all the UI widgets and their initial layout."""
         # Basic Options
         self.audio_uploader = widgets.FileUpload(
-            multiple=False,
+            multiple=True,
             description="Upload Audio",
             # accept=".wav, .m4a, .mp3, .flac, .ogg",  # Specify accepted audio formats
             layout=self.common_widget_layout,
@@ -369,21 +369,26 @@ class GheTranscribeApp:
                 return
 
             try:
-                # Handle uploaded file
-                file_metadata = self.audio_uploader.value[0]
-                uploaded_file_name = file_metadata["name"]
-                uploaded_content_bytes = file_metadata["content"].tobytes()
+                # Handle uploaded files (single or multiple)
+                uploaded_files = []
+                for file_metadata in self.audio_uploader.value:
+                    uploaded_file_name = file_metadata["name"]
+                    uploaded_content_bytes = file_metadata["content"].tobytes()
 
-                # Save uploaded file using modern path handling
-                audio_file_path = save_uploaded_file(
-                    uploaded_file_name, uploaded_content_bytes
-                )
-                logger.info(f"Uploaded audio saved to: {audio_file_path}")
-                print(f"Uploaded audio saved to: {audio_file_path}")
+                    # Save uploaded file using modern path handling
+                    audio_file_path = save_uploaded_file(
+                        uploaded_file_name, uploaded_content_bytes
+                    )
+                    uploaded_files.append(str(audio_file_path))
+                    logger.info(f"Uploaded audio saved to: {audio_file_path}")
+                    print(f"Uploaded audio saved to: {audio_file_path}")
+
+                # Determine if single file or multiple files
+                files_input = uploaded_files[0] if len(uploaded_files) == 1 else uploaded_files
 
                 # Prepare arguments for transcribe
                 kwargs = {
-                    "file": str(audio_file_path),
+                    "files": files_input,
                     "trim": self.trim_input.value
                     if self.trim_input.value > 0
                     else None,
@@ -413,7 +418,7 @@ class GheTranscribeApp:
                     kwargs["max_speakers"] = self.max_speakers_input.value
 
                 # Call the ghe_transcribe function
-                transcribe_core(**kwargs)
+                transcribe(**kwargs)
 
             except Exception as e:
                 logger.error(f"An unexpected error occurred: {e}", exc_info=True)

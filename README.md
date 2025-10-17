@@ -7,6 +7,23 @@ A tool to transcribe audio files with speaker diarization using **Faster Whisper
 
 ## Installation
 
+### System Dependencies
+
+This tool requires FFmpeg for audio processing:
+
+```bash
+# macOS
+brew install ffmpeg
+
+# Ubuntu/Debian
+sudo apt update && sudo apt install ffmpeg
+
+# Windows
+choco install ffmpeg
+```
+
+### Python Package
+
 ```bash
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
@@ -19,6 +36,7 @@ For Euler cluster or development setup, see the [detailed installation guide](do
 
 This tool uses gated models from Hugging Face that require authentication. You need to:
 
+1. **Join Hugging Face**: [huggingface.co/join](https://huggingface.co/join)
 1. **Accept User Conditions**: You must accept conditions for BOTH models:
    - [https://hf.co/pyannote/speaker-diarization-3.1](https://hf.co/pyannote/speaker-diarization-3.1)
    - [https://hf.co/pyannote/speaker-diarization-community-1](https://hf.co/pyannote/speaker-diarization-community-1)
@@ -36,14 +54,20 @@ execute()
 
 ### Python API
 ```python
-from ghe_transcribe.core import transcribe_core
-result = transcribe_core("path/to/audio.mp3")
+from ghe_transcribe.core import transcribe
+result = transcribe("media/test01.mp3")
 ```
 
 ### Command Line
 ```bash
-transcribe path/to/audio.mp3
-transcribe --help  # See all options
+# Simplest call
+transcribe media/test01.mp3
+
+# Multiple files
+transcribe media/test01.mp3 media/test02.m4a --trim 5
+
+# See all options
+transcribe --help 
 ```
 
 ## Key Features

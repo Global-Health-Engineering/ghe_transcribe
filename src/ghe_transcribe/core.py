@@ -9,6 +9,8 @@ os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
 # Disable pyannote telemetry to avoid PyTorch compatibility issues
 os.environ["PYANNOTE_DISABLE_TELEMETRY"] = "1"
 from faster_whisper import WhisperModel
+from huggingface_hub import login
+from pyannote.audio import Pipeline
 from torch import device as to_torch_device
 from torch import set_num_threads
 from torch.backends.mps import is_available as mps_is_available
@@ -30,8 +32,6 @@ from ghe_transcribe.utils import (
     to_wav,
     to_whisper_format,
 )
-from pyannote.audio import Pipeline
-from huggingface_hub import login
 
 
 class DeviceChoice(str, Enum):
@@ -342,10 +342,74 @@ def transcribe_core(
     return text
 
 
-@app.command()
+def transcribe_multiple(files: list[str], **kwargs):
+    """Transcribe and diarize multiple audio files.
+
+    Args:
+        files: List of paths to audio files to transcribe
+        **kwargs: All arguments passed to transcribe_core for each file
+
+    Returns:
+        dict: Dictionary mapping file paths to their transcription results
+
+    Raises:
+        Exception: If all files fail to process
+    """
+    results = {}
+    successful_files = 0
+
+    logger.info(f"Processing {len(files)} files...")
+
+    for i, file in enumerate(files, 1):
+        logger.info(f"Processing file {i}/{len(files)}: {file}")
+
+        try:
+            result = transcribe_core(file=file, **kwargs)
+            results[file] = result
+            successful_files += 1
+            logger.info(f"Successfully processed {file}")
+
+        except Exception as e:
+            logger.error(f"Failed to process {file}: {e}")
+            results[file] = {"error": str(e)}
+
+    logger.info(f"Completed processing {successful_files}/{len(files)} files successfully")
+
+    if successful_files == 0:
+        raise Exception("All files failed to process")
+
+    return results
+
+
+def transcribe(files: str | list[str], **kwargs):
+    """Transcribe and diarize audio file(s).
+
+    Args:
+        files: Path to audio file (str) or list of paths (list[str])
+        **kwargs: All arguments passed to transcribe_core
+
+    Returns:
+        For single file: List of tuples containing (segment, speaker, text)
+        For multiple files: Dictionary mapping file paths to their results
+
+    Raises:
+        ModelInitializationError: If model initialization fails
+        DiarizationError: If speaker diarization fails
+        AudioConversionError: If audio conversion fails
+        TypeError: If files is not str or list[str]
+    """
+    if isinstance(files, str):
+        return transcribe_core(file=files, **kwargs)
+    elif isinstance(files, list):
+        return transcribe_multiple(files=files, **kwargs)
+    else:
+        raise TypeError(f"files must be str or list[str], got {type(files)}")
+
+
+@app.command(name="transcribe")
 @timing
-def transcribe(
-    file: str = Argument(..., help="Path to the audio file."),
+def transcribe_cli(
+    files: list[str] = Argument(..., help="Path(s) to the audio file(s)."),
     trim: float | None = Option(
         transcribe_config.get("trim"),
         help="Trim the audio file from 0 to the specified number of seconds.",
@@ -408,9 +472,12 @@ def transcribe(
         None, help="Hugging Face token for accessing gated models."
     ),
 ):
-    """CLI wrapper for transcribe_core function."""
-    return transcribe_core(
-        file=file,
+    """CLI wrapper for transcribe function."""
+    # If only one file provided, pass as string; otherwise pass as list
+    files_input = files[0] if len(files) == 1 else files
+
+    return transcribe(
+        files=files_input,
         trim=trim,
         device=device,
         cpu_threads=cpu_threads,
