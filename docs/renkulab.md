@@ -26,8 +26,7 @@
 	- Copy token to clipboard!
 
 ## Run ghe_transcribe
-- Visit [https://renkulab.io/p/nmassari/ghe-transcribe](https://renkulab.io/p/nmassari/ghe-transcribe)
-- Launch
+- Launch [Renkulab](https://renkulab.io/p/nmassari/ghe-transcribe/sessions/01K7KK30KS1CS1ZW45MZCKR6TD/start?HF_HUB_DISABLE_TELEMETRY=1&HF_HUB_DISABLE_PROGRESS_BARS=1)
 - Paste your Huggingface token and continue
 - Wait for renkulab ~5-10 min
 - Open app.ipynb (Left panel)
