@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v1.0.0...v1.0.1) (2025-11-05)
+
+
+### Bug Fixes
+
+* remove community link, https://hf.co/pyannote/segmentation-3.0 instead ([0cb9ef0](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/0cb9ef056994546533e1e27086a861e21c7094e7))
+
 ## [1.0.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.9.0...v1.0.0) (2025-10-17)
 
 
@@ -143,16 +150,4 @@
 * restrict Python version to <3.13 for dependency compatibility ([49603a0](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/49603a06dac2b9152f24bf7b078e4c42a9322481))
 * separate CLI and programmatic interfaces ([6cd93c1](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/6cd93c11b824af6515f457761f234b7f2a584df6))
 * update app.py to use transcribe_core ([d3b1f21](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/d3b1f21d7a3854679b470781f356278d947347ad))
-
-## [0.4.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.3.3...v0.4.0) (2025-06-23)
-
-
-### Features
-
-* added app UI ([1a91972](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/1a91972b0dba8e161f72559fff6ce0195afb5b8e))
-
-
-### Bug Fixes
-
-* remove unnecessary newlines in app.py ([3a7d4b8](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/3a7d4b89ad308c7289131bac0326a1726e029d3b))
 
