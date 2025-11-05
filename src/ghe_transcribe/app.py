@@ -82,11 +82,7 @@ def setup_hf_authentication():
     logger.warning(
         "No Hugging Face authentication found. Please provide your HF token to access gated models."
     )
-    logger.info("Steps to get a token:")
-    logger.info("1. Accept user conditions for BOTH models:")
-    logger.info("   • https://hf.co/pyannote/speaker-diarization-3.1")
-    logger.info("   • https://hf.co/pyannote/speaker-diarization-community-1")
-    logger.info("2. Visit https://hf.co/settings/tokens and create an access token")
+    log_hf_authentication_error(logger, "No Hugging Face authentication found. Please provide your HF token to access gated models.")
 
     try:
         import getpass
