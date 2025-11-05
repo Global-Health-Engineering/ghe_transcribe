@@ -5,10 +5,11 @@
 [![Run on RenkuLab](https://img.shields.io/badge/Run%20on-RenkuLab-orange)](https://renkulab.io/p/nmassari/ghe-transcribe)
 
 A tool to transcribe audio files with speaker diarization using **Faster Whisper** and **Pyannote**.
-
-## Quick Start
-
-**Run online without installation**: [Launch on RenkuLab](https://renkulab.io/p/nmassari/ghe-transcribe)
+- **Fast transcription** with optimized Whisper models
+- **Speaker diarization** to identify different speakers
+- **Multiple output formats** (TXT, SRT)
+- **Jupyter interface** for interactive use
+- **CLI tool** for global compatibility
 
 <details>
 <summary>Interface Preview</summary>
@@ -36,34 +37,35 @@ sudo apt update && sudo apt install ffmpeg
 choco install ffmpeg
 ```
 
-### Python Package
+### ghe_transcribe
 
 ```bash
 git clone https://github.com/Global-Health-Engineering/ghe_transcribe.git
 cd ghe_transcribe
+python -m venv venv
+source venv/bin/activate
 pip install -e .
 ```
 
-For Euler cluster or development setup, see the [detailed installation guide](docs/INSTALLATION.md).
+> [!NOTE]
+> See the [detailed installation guide](docs/INSTALLATION.md).
 
-## Hugging Face Authentication
+### Hugging Face Authentication
 
 This tool uses gated models from Hugging Face that require authentication. You need to:
 
-1. **Join Hugging Face**: [huggingface.co/join](https://huggingface.co/join)
-1. **Accept User Conditions**: You must accept conditions for BOTH models:
-   - [https://hf.co/pyannote/speaker-diarization-3.1](https://hf.co/pyannote/speaker-diarization-3.1)
-   - [https://hf.co/pyannote/speaker-diarization-community-1](https://hf.co/pyannote/speaker-diarization-community-1)
-2. **Create Access Token**: Visit [https://hf.co/settings/tokens](https://hf.co/settings/tokens) to create a new access token with read permissions
-
+1. **Join Hugging Face**, to access Pyannote
+	- [https://hf.co/join](https://hf.co/join)
+2. **Accept User Conditions**, to use Pyannote
+    - [https://hf.co/pyannote/speaker-diarization-3.1](https://hf.co/pyannote/speaker-diarization-3.1)
+    - [https://hf.co/pyannote/segmentation-3.0](https://hf.co/pyannote/segmentation-3.0)
+3. **Create Access Token**, to use ghe_transcribe
+	- [https://hf.co/settings/tokens](https://hf.co/settings/tokens)
 
 ## Usage
 
-### Live build on Renkulab
-1. Open [https://renkulab.io/p/nmassari/ghe-transcribe](https://renkulab.io/p/nmassari/ghe-transcribe)
-2. Click "Launch"
-3. Add your Hugging Face token when prompted (see [authentication section](#hugging-face-authentication))
-4. Open and run `app.ipynb`
+### Renkulab
+See the [detailed documentation for Renkulab](docs/renkulab.md)
 
 ### Jupyter Interface (Local)
 Open `app.ipynb` and run the cell:
@@ -90,14 +92,6 @@ transcribe media/test01.mp3 media/test02.m4a --trim 5
 transcribe --help 
 ```
 
-## Key Features
-
-- **Fast transcription** with optimized Whisper models
-- **Speaker diarization** to identify different speakers
-- **Multiple output formats** (TXT, SRT)
-- **Jupyter interface** for interactive use
-- **CLI tool** for batch processing
-
 ## Editors
 
 - **For SRT files** [subtitle-editor.org/](https://subtitle-editor.org/), runs locally on your browser
@@ -106,7 +100,8 @@ transcribe --help
 ## Contributing
 
 We welcome contributions! Please use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/).
+See our [contributions guidelines](docs/CONTRIBUTING.md).
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License - see [LICENSE](LICENSE).

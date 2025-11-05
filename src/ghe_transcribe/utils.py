@@ -38,11 +38,11 @@ def log_hf_authentication_error(logger_instance, error_message: str = None):
     logger_instance.error(
         "This appears to be an authentication issue with gated models."
     )
-    logger_instance.error("Please ensure you have:")
-    logger_instance.error("1. Accepted user conditions for BOTH models:")
+    logger_instance.error("Please ensure to:")
+    logger_instance.error("1. Accept user conditions for BOTH models:")
     logger_instance.error("   • https://hf.co/pyannote/speaker-diarization-3.1")
-    logger_instance.error("   • https://hf.co/pyannote/speaker-diarization-community-1")
-    logger_instance.error("2. Created a token at https://hf.co/settings/tokens")
+    logger_instance.error("   • https://hf.co/pyannote/segmentation-3.0")
+    logger_instance.error("2. Visit https://hf.co/settings/tokens and create an access token")
     logger_instance.error("3. Successfully logged in to Hugging Face")
     logger_instance.error("4. Restarted the app after accepting conditions")
 
