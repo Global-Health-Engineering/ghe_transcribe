@@ -2,7 +2,7 @@
 
 [![Python Versions](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Run on RenkuLab](https://img.shields.io/badge/Run%20on-RenkuLab-orange)](https://renkulab.io/p/nmassari/ghe-transcribe)
+[![launch - renku](https://renkulab.io/renku-badge.svg)](https://renkulab.io/p/nmassari/ghe-transcribe/sessions/01K7KK30KS1CS1ZW45MZCKR6TD/start?HF_HUB_DISABLE_TELEMETRY=1&HF_HUB_DISABLE_PROGRESS_BARS=1)
 
 A tool to transcribe audio files with speaker diarization using **Faster Whisper** and **Pyannote**.
 - **Fast transcription** with optimized Whisper models
