@@ -29,6 +29,8 @@
 - Launch [Renkulab](https://renkulab.io/p/nmassari/ghe-transcribe/sessions/01K7KK30KS1CS1ZW45MZCKR6TD/start?HF_HUB_DISABLE_TELEMETRY=1&HF_HUB_DISABLE_PROGRESS_BARS=1)
 - Paste your Huggingface token and continue
 - Wait for renkulab ~5-10 min
+- Open ghe_transcribe folder (Left panel)
 - Open app.ipynb (Left panel)
 - Run all (Top panel)
-- Upload your audio file(s) and transcribe
+- Select recommended virtual environment
+- **Upload your audio file(s) and transcribe!**
