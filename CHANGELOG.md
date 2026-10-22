@@ -1,3 +1,18 @@
+## [1.1.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v1.0.1...v1.1.0) (2026-10-22)
+
+
+### Features
+
+* use session launch link for github:latest ([9b8b8b0](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/9b8b8b0f381985a3457caf9e0c6a568b09e16d95))
+
+
+### Bug Fixes
+
+* add ORCID, affiliation and a contact person to the Zenodo metadata ([c0732b0](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/c0732b0634910b63cf3caed585e31ad312116a65))
+* add target _blank ([9b4c370](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/9b4c3706275f96000314443a5787cac80095cd30))
+* add Zenodo archiving metadata ([ba38a7c](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/ba38a7c48da49f3e6a6f4e9cdecb75842f267640))
+* better instructions in renkulab ([0023c24](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/0023c24216f5e3f54896b021dc7dbd12b43ba658))
+
 ## [1.0.1](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v1.0.0...v1.0.1) (2025-11-05)
 
 
@@ -128,26 +143,4 @@
 ### Bug Fixes
 
 * need fix for version control ([20cafbd](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/20cafbd019a80f947ebae005da6a1a9040d6d37e))
-
-## [0.5.0](https://github.com/Global-Health-Engineering/ghe_transcribe/compare/v0.4.0...v0.5.0) (2025-06-23)
-
-
-### Features
-
-* add auto-installation to execute() function ([9a16c86](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/9a16c8639ca00c0937aff39514dbe51e8bd8a81c))
-* improve code quality with logging, error handling, docs, and tests ([00cc7bc](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/00cc7bc2c94a1df0e2f9a061673610b435e6da1a))
-* modernize packaging with pyproject.toml and uv ([90f5b44](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/90f5b4451341b0ad8f6cd138f81dd48118578baf))
-
-
-### Bug Fixes
-
-* add ipykernel to ui dependencies ([4d6a6e8](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/4d6a6e8db1f77a01e88da7d503c93b0418de85d0))
-* correct uv PATH setup for Euler cluster ([a27a026](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/a27a026cc53dabceb2d8f30624fa4bec692c3cea))
-* resolve conflict ([f0988d4](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/f0988d4096358e34db5fafebc973329b862acbea))
-* resolve conflict ([ff5829b](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/ff5829bdb001d9156c2231ed2f8218dc514ea1ea))
-* resolve conflict ([686bc4e](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/686bc4e9cef107f09c7be7c33d46be4a711c18df))
-* resolve conflict ([c5cae1b](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/c5cae1b27a20db1a628827d20d9ca5af8278fb18))
-* restrict Python version to <3.13 for dependency compatibility ([49603a0](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/49603a06dac2b9152f24bf7b078e4c42a9322481))
-* separate CLI and programmatic interfaces ([6cd93c1](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/6cd93c11b824af6515f457761f234b7f2a584df6))
-* update app.py to use transcribe_core ([d3b1f21](https://github.com/Global-Health-Engineering/ghe_transcribe/commit/d3b1f21d7a3854679b470781f356278d947347ad))
 
