@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata from this file."
+type: software
+title: "ghe_transcribe: audio transcription with speaker diarization using Faster Whisper and Pyannote"
+abstract: >-
+  ghe_transcribe is a Python tool to transcribe audio files with speaker
+  diarization. It uses Faster Whisper for transcription and Pyannote for
+  speaker diarization, writes TXT and SRT output, and offers both a Jupyter
+  interface and a command line tool.
+authors:
+  - family-names: Massari
+    given-names: Nicolo
+    email: nmassari@ethz.ch
+    # TODO: confirm and add the ORCID, for example
+    # orcid: "https://orcid.org/XXXX-XXXX-XXXX-XXXX"
+    # TODO: confirm and add the affiliation, for example
+    # affiliation: "..."
+repository-code: "https://github.com/Global-Health-Engineering/ghe_transcribe"
+url: "https://github.com/Global-Health-Engineering/ghe_transcribe"
+license: MIT
+keywords:
+  - transcription
+  - speech-to-text
+  - speaker-diarization
+  - whisper
+  - pyannote
+  - python

@@ -1,0 +1,29 @@
+{
+  "title": "ghe_transcribe: audio transcription with speaker diarization using Faster Whisper and Pyannote",
+  "description": "<p>ghe_transcribe is a Python tool to transcribe audio files with speaker diarization. It uses Faster Whisper for transcription and Pyannote for speaker diarization, writes TXT and SRT output, and offers both a Jupyter interface and a command line tool. It is developed by the Global Health Engineering group at ETH Zurich.</p>",
+  "upload_type": "software",
+  "creators": [
+    {
+      "name": "Massari, Nicolo"
+    }
+  ],
+  "license": "MIT",
+  "keywords": [
+    "transcription",
+    "speech-to-text",
+    "speaker-diarization",
+    "whisper",
+    "pyannote",
+    "python"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/Global-Health-Engineering/ghe_transcribe",
+      "relation": "isSupplementTo",
+      "resource_type": "software",
+      "scheme": "url"
+    }
+  ],
+  "access_right": "open",
+  "language": "eng"
+}
